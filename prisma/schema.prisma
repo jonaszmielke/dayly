@@ -10,3 +10,35 @@ enum MeetingMode {
     DAYS
     HOURS
 }
+
+model Meeting {
+    id      String      @id @default(cuid())
+    shortId String      @unique
+    mode    MeetingMode @default(DAYS)
+
+    name String
+
+    startDate DateTime @db.Date
+    endDate   DateTime @db.Date
+    deadline  DateTime @db.Date
+
+    responses Response[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Response {
+    id       String     @id @default(cuid())
+    userName String
+    days     DateTime[] @db.Date
+
+    meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+    meetingId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([meetingId, userName])
+    @@index([meetingId])
+}
