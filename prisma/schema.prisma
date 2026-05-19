@@ -12,7 +12,7 @@ enum MeetingMode {
 }
 
 model Meeting {
-    id      String      @id @default(cuid())
+    id      Int         @id @default(autoincrement())
     shortId String      @unique
     mode    MeetingMode @default(DAYS)
 
@@ -29,12 +29,12 @@ model Meeting {
 }
 
 model Response {
-    id       String     @id @default(cuid())
+    id       Int        @id @default(autoincrement())
     userName String
     days     DateTime[] @db.Date
 
     meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-    meetingId String
+    meetingId Int
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

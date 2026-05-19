@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { GridCell } from '@/lib/dates'
-import { pickHeat, pickFg } from '@/lib/heat'
+import { pickHeat, pickFg, HEAT_PALETTE } from '@/lib/heat'
 import { HoverTip } from './HoverTip'
 import { cn } from '@/lib/utils'
 
 interface Person {
-    id: string
+    id: number
     name: string
     availSet: Set<string>
 }
@@ -16,7 +16,7 @@ interface SummaryCellProps {
     cell: GridCell
     inRange: boolean
     people: Person[]
-    selectedPersonId: string | null
+    selectedPersonId: number | null
 }
 
 function isWeekend(iso: string): boolean {
@@ -26,7 +26,7 @@ function isWeekend(iso: string): boolean {
 }
 
 export function SummaryCell({ cell, inRange, people, selectedPersonId }: SummaryCellProps) {
-    const [hovered, setHovered] = useState(false)
+    const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
 
     if (!inRange || !cell.inMonth) {
         return (
@@ -35,7 +35,7 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
                     'relative flex items-start justify-start p-1',
                     'bg-hatch opacity-40',
                 )}
-                style={{ height: 'var(--b-cell-h)' }}
+                style={{ height: '100%' }}
             >
                 <span className="font-mono text-[12px] text-ink/35">{cell.dom}</span>
             </div>
@@ -44,8 +44,6 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
 
     const freeCount = people.filter((p) => p.availSet.has(cell.date)).length
     const total = people.length
-    const heat = pickHeat(freeCount, total)
-    const fg = pickFg(heat)
     const ratio = total > 0 ? freeCount / total : 0
     const prominent = ratio >= 0.8 && freeCount > 0
     const weekend = isWeekend(cell.date)
@@ -54,6 +52,14 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
         selectedPersonId !== null
             ? people.find((p) => p.id === selectedPersonId)?.availSet.has(cell.date) ?? false
             : null
+
+    const heat =
+        selectedPersonId !== null
+            ? selectedAvail
+                ? HEAT_PALETTE[4]
+                : HEAT_PALETTE[0]
+            : pickHeat(freeCount, total)
+    const fg = pickFg(heat)
 
     const tipPeople = people.map((p) => ({
         name: p.name,
@@ -65,13 +71,13 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
             <div
                 className="relative flex flex-col justify-between p-1.5 cursor-default transition-all"
                 style={{
-                    height: 'var(--b-cell-h)',
+                    height: '100%',
                     backgroundColor: heat,
                     color: fg,
-                    boxShadow: hovered ? `inset 0 0 0 3px #161514` : undefined,
+                    boxShadow: hoverPos ? `inset 0 0 0 3px #161514` : undefined,
                 }}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
+                onMouseEnter={(e) => setHoverPos({ x: e.clientX, y: e.clientY })}
+                onMouseLeave={() => setHoverPos(null)}
             >
                 {/* Weekend diagonal hatch overlay */}
                 {weekend && (
@@ -119,13 +125,15 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
                 </div>
             </div>
 
-            {hovered && (
+            {hoverPos && (
                 <HoverTip
                     iso={cell.date}
                     people={tipPeople}
                     freeCount={freeCount}
                     totalCount={total}
                     anchorEl={null}
+                    initialMouseX={hoverPos.x}
+                    initialMouseY={hoverPos.y}
                 />
             )}
         </>

@@ -12,12 +12,12 @@ interface StatCardProps {
 
 export function StatCard({ rows, className }: StatCardProps) {
     return (
-        <div className={cn('bg-white border-brutal shadow-brutal-sm', className)}>
+        <div className={cn('bg-white border-brutal shadow-brutal-sm py-1', className)}>
             {rows.map((row, i) => (
                 <div
                     key={row.label}
                     className={cn(
-                        'flex items-center justify-between px-4 py-2',
+                        'flex items-center justify-between px-4 py-2.5',
                         i > 0 && 'border-t border-ink/10',
                     )}
                 >

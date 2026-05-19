@@ -1,65 +1,88 @@
-import Link from 'next/link'
-import { Wordmark } from '@/components/Wordmark'
-import { Footer } from '@/components/Footer'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
-import { HEAT_PALETTE } from '@/lib/heat'
+import { Footer } from '@/components/Footer'
+import { Wordmark } from '@/components/Wordmark'
+import Link from 'next/link'
 
 // Static hero mock data for landing calendar — June 2026
 const HERO_PEOPLE = [
     {
-        id: 'p1',
+        id: 1,
         name: 'Alice',
         availSet: new Set([
-            '2026-06-13', '2026-06-14', '2026-06-15', '2026-06-16',
-            '2026-06-20', '2026-06-21', '2026-06-22',
+            '2026-06-13',
+            '2026-06-14',
+            '2026-06-15',
+            '2026-06-16',
+            '2026-06-20',
+            '2026-06-21',
+            '2026-06-22',
         ]),
     },
     {
-        id: 'p2',
+        id: 2,
         name: 'Bob',
         availSet: new Set([
-            '2026-06-14', '2026-06-15', '2026-06-20', '2026-06-21',
-            '2026-06-27', '2026-06-28',
+            '2026-06-14',
+            '2026-06-15',
+            '2026-06-20',
+            '2026-06-21',
+            '2026-06-27',
+            '2026-06-28',
         ]),
     },
     {
-        id: 'p3',
+        id: 3,
         name: 'Carla',
         availSet: new Set([
-            '2026-06-13', '2026-06-14', '2026-06-20', '2026-06-21',
-            '2026-06-22', '2026-06-23',
+            '2026-06-13',
+            '2026-06-14',
+            '2026-06-20',
+            '2026-06-21',
+            '2026-06-22',
+            '2026-06-23',
         ]),
     },
     {
-        id: 'p4',
+        id: 4,
         name: 'Daniel',
         availSet: new Set([
-            '2026-06-20', '2026-06-21', '2026-06-22', '2026-06-24',
-            '2026-06-27', '2026-06-28',
+            '2026-06-20',
+            '2026-06-21',
+            '2026-06-22',
+            '2026-06-24',
+            '2026-06-27',
+            '2026-06-28',
         ]),
     },
     {
-        id: 'p5',
+        id: 5,
         name: 'Erin',
         availSet: new Set([
-            '2026-06-14', '2026-06-20', '2026-06-21', '2026-06-22',
-            '2026-06-28', '2026-06-29',
+            '2026-06-14',
+            '2026-06-20',
+            '2026-06-21',
+            '2026-06-22',
+            '2026-06-28',
+            '2026-06-29',
         ]),
     },
 ]
 
-export default function HomePage() {
+const HomePage = () => {
     return (
         <div className="min-h-screen flex flex-col">
             {/* Nav */}
             <nav className="sticky top-0 z-10 bg-paper border-b-2 border-ink">
-                <div className="max-w-[1440px] mx-auto px-10 py-3.5 grid items-center gap-8" style={{ gridTemplateColumns: 'auto 1fr auto' }}>
+                <div
+                    className="max-w-[1440px] mx-auto px-10 py-3.5 grid items-center gap-8"
+                    style={{ gridTemplateColumns: 'auto 1fr auto' }}
+                >
                     <Link href="/">
                         <Wordmark />
                     </Link>
-                    <div className="flex items-center justify-center gap-6">
-                        {[
+                    <div className="flex items-center justify-center gap-6" />
+                    {/* {[
                             { label: 'How it works', href: '#how' },
                             { label: 'Features', href: '#features' },
                             { label: 'Example', href: '/mock' },
@@ -72,7 +95,7 @@ export default function HomePage() {
                                 {l.label}
                             </a>
                         ))}
-                    </div>
+                    </div> */}
                     <Link
                         href="/create"
                         className="inline-flex items-center gap-2 px-4 py-2.5 bg-ink text-paper-2 border-2 border-ink font-sans text-[13px] font-extrabold uppercase tracking-[0.06em] press-effect transition-all"
@@ -85,7 +108,10 @@ export default function HomePage() {
 
             {/* Hero */}
             <section className="max-w-[1440px] mx-auto w-full px-10 py-14">
-                <div className="grid gap-12 items-start" style={{ gridTemplateColumns: 'minmax(0,1fr) 420px' }}>
+                <div
+                    className="grid gap-12 items-start"
+                    style={{ gridTemplateColumns: 'minmax(0,1fr) 420px' }}
+                >
                     {/* Left: mini calendar */}
                     <div className="w-full">
                         <MonthGrid
@@ -111,14 +137,16 @@ export default function HomePage() {
                             className="font-sans font-extrabold leading-[0.86] tracking-[-0.045em]"
                             style={{ fontSize: '76px' }}
                         >
-                            Find the<br />
-                            <em className="not-italic text-mocha">days</em> that<br />
+                            Find the
+                            <br />
+                            <em className="not-italic text-mocha">days</em> that
+                            <br />
                             work.
                         </h1>
 
                         <p className="font-sans text-[18px] font-medium max-w-[380px] text-ink/80 leading-snug">
-                            Share a link. Everyone picks their free days.
-                            Dayly shows you where they overlap.
+                            Share a link. Everyone picks their free days. Dayly shows you where they
+                            overlap.
                         </p>
 
                         <div className="flex items-center gap-3">
@@ -142,7 +170,10 @@ export default function HomePage() {
                                 '/ Works for any group size',
                                 '/ Free forever',
                             ].map((b) => (
-                                <div key={b} className="font-mono text-[11px] text-ink/55 uppercase tracking-[0.06em]">
+                                <div
+                                    key={b}
+                                    className="font-mono text-[11px] text-ink/55 uppercase tracking-[0.06em]"
+                                >
                                     {b}
                                 </div>
                             ))}
@@ -200,3 +231,5 @@ export default function HomePage() {
         </div>
     )
 }
+
+export default HomePage

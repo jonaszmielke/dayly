@@ -8,6 +8,7 @@ import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
 import { cn } from '@/lib/utils'
+import { MeetingFooter } from '../_components/Footer'
 
 const meeting = MOCK_MEETING
 const rangeStart = ymd(meeting.startDate)
@@ -107,7 +108,15 @@ const RespondPage = () => {
         saveState === 'saving' ? 'SAVING…' : saveState === 'saved' ? '✓ SAVED' : 'SAVE'
 
     return (
-        <div className="grid gap-8 p-8" style={{ gridTemplateColumns: '304px 1fr' }}>
+        <div
+            className="grid py-8"
+            style={{
+                gridTemplateColumns: '12.5vw 47.06vw',
+                columnGap: '1.47vw',
+                paddingLeft: '19.48vw',
+                paddingRight: '19.48vw',
+            }}
+        >
             {/* Sidebar */}
             <aside className="flex flex-col gap-4 sticky top-6 self-start">
                 {/* Name panel */}
@@ -253,6 +262,8 @@ const RespondPage = () => {
                         )}
                     />
                 ))}
+
+                <MeetingFooter />
             </main>
         </div>
     )

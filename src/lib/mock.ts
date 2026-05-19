@@ -2,7 +2,7 @@ import { MeetingMode } from '@prisma/client'
 import { dateRange } from './dates'
 
 export const MOCK_MEETING = {
-    id: 'mock-id',
+    id: 1,
     shortId: 'mock',
     mode: MeetingMode.DAYS,
     name: 'PRAGUE TRIP',
@@ -17,8 +17,8 @@ const now = new Date('2026-05-01T00:00:00')
 
 export const MOCK_RESPONSES = [
     {
-        id: 'r1',
-        meetingId: 'mock-id',
+        id: 1,
+        meetingId: 1,
         userName: 'Tomáš',
         days: [
             ...dateRange('2026-06-13', '2026-06-21'),
@@ -28,8 +28,8 @@ export const MOCK_RESPONSES = [
         updatedAt: now,
     },
     {
-        id: 'r2',
-        meetingId: 'mock-id',
+        id: 2,
+        meetingId: 1,
         userName: 'Marta',
         days: [
             ...dateRange('2026-06-20', '2026-06-28'),
@@ -39,8 +39,8 @@ export const MOCK_RESPONSES = [
         updatedAt: now,
     },
     {
-        id: 'r3',
-        meetingId: 'mock-id',
+        id: 3,
+        meetingId: 1,
         userName: 'Klára',
         days: [
             ...dateRange('2026-06-20', '2026-06-26'),
@@ -50,8 +50,8 @@ export const MOCK_RESPONSES = [
         updatedAt: now,
     },
     {
-        id: 'r4',
-        meetingId: 'mock-id',
+        id: 4,
+        meetingId: 1,
         userName: 'Jakub',
         days: [
             ...dateRange('2026-06-14', '2026-06-22'),
@@ -61,8 +61,8 @@ export const MOCK_RESPONSES = [
         updatedAt: now,
     },
     {
-        id: 'r5',
-        meetingId: 'mock-id',
+        id: 5,
+        meetingId: 1,
         userName: 'Eva',
         days: [
             ...dateRange('2026-06-20', '2026-06-28'),

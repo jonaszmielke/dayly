@@ -28,7 +28,7 @@ export function RespondCell({
         return (
             <div
                 className="relative bg-hatch opacity-40 p-1"
-                style={{ height: 'var(--b-cell-h)' }}
+                style={{ height: '100%' }}
             >
                 <span className="font-mono text-[12px] text-ink/35">{cell.dom}</span>
             </div>
@@ -45,7 +45,7 @@ export function RespondCell({
                 !selected && 'hover:bg-paper-3',
             )}
             style={{
-                height: 'var(--b-cell-h)',
+                height: '100%',
             }}
             onMouseDown={() => onMouseDown(cell.date)}
             onMouseEnter={() => onMouseEnter(cell.date)}

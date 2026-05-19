@@ -1,11 +1,20 @@
-import { Meeting } from '@prisma/client'
-import { TopBar } from '@/components/TopBar'
 import { CopyButton } from '@/components/CopyButton'
-import { formatDate } from '@/lib/dates'
+import { TopBar } from '@/components/TopBar'
+import { Meeting } from '@prisma/client'
 
 const MONTH_ABBR = [
-    'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
 ]
 
 function fmtDate(d: Date): string {
@@ -18,10 +27,7 @@ const MeetingHeader = ({ meeting }: { meeting: Meeting }) => {
 
     return (
         <TopBar
-            crumbs={[
-                { label: 'Surveys', href: '/' },
-                { label: meeting.name },
-            ]}
+            crumbs={[{ label: 'Surveys', href: '/' }, { label: meeting.name }]}
             title={meeting.name}
             meta={[dateRange, mode]}
             right={

@@ -43,12 +43,12 @@ export function MonthGrid({
             </div>
 
             {/* DOW header */}
-            <div className="grid grid-cols-7 bg-paper">
+            <div className="grid grid-cols-7 bg-paper border-b-[1.5px] border-ink">
                 {DOW_ABBR.map((d, i) => (
                     <div
                         key={d}
                         className={cn(
-                            'py-2 text-center font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55',
+                            'py-2 text-center font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 border-r-[1.5px] border-ink last:border-r-0',
                             i >= 5 && 'bg-paper-shade',
                         )}
                     >
@@ -62,7 +62,11 @@ export function MonthGrid({
                 {cells.map((cell) => {
                     const inRange = cell.date >= rangeStart && cell.date <= rangeEnd
                     return (
-                        <div key={cell.date} className="border-r border-b border-ink/10 last:border-r-0">
+                        <div
+                            key={cell.date}
+                            className="border-r-[1.5px] border-b-[1.5px] border-ink [&:nth-child(7n)]:border-r-0 [&:nth-last-child(-n+7)]:border-b-0"
+                            style={{ aspectRatio: '140/100' }}
+                        >
                             {cellRenderer(cell, inRange)}
                         </div>
                     )
