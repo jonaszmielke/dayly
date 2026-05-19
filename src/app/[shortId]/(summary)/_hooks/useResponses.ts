@@ -2,10 +2,10 @@
 
 import { Response } from '@prisma/client'
 import { useMemo } from 'react'
+import { MOCK_RESPONSES } from '@/lib/mock'
 
 export const useResponses = () => {
-    // mock responses here
-    const responses = useMemo<Response[]>(() => [], [])
-
+    // TODO: replace with useQuery when API is ready
+    const responses = useMemo<Response[]>(() => MOCK_RESPONSES as Response[], [])
     return { responses }
 }

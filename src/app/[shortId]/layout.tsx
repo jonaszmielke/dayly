@@ -1,5 +1,6 @@
 import { getMeeting } from './_actions/getMeeting'
 import MeetingHeader from './_components/Header'
+import { Meeting } from '@prisma/client'
 
 const MeetingLayout = async ({
     children,
@@ -13,9 +14,9 @@ const MeetingLayout = async ({
     const meeting = await getMeeting(shortId)
 
     return (
-        <div>
-            <MeetingHeader meeting={meeting} />
-            {children}
+        <div className="min-h-screen flex flex-col">
+            <MeetingHeader meeting={meeting as Meeting} />
+            <div className="flex-1">{children}</div>
         </div>
     )
 }
