@@ -1,11 +1,15 @@
 'use client'
 
-import { Response } from '@prisma/client'
-import { useMemo } from 'react'
-import { MOCK_RESPONSES } from '@/lib/mock'
+import { getResponses } from '../_actions/getResponses'
+import { useQuery } from '@tanstack/react-query'
 
-export const useResponses = () => {
-    // TODO: replace with useQuery when API is ready
-    const responses = useMemo<Response[]>(() => MOCK_RESPONSES as Response[], [])
-    return { responses }
+export const useResponses = (meetingShortId: string) => {
+    const { data, isLoading, isError, refetch } = useQuery({
+        queryKey: ['responses', meetingShortId],
+        queryFn: () => getResponses(meetingShortId),
+    })
+
+    const responses = data?.success ? data.data : []
+
+    return { responses, isLoading, isError, refetch }
 }
