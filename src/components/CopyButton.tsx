@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
-interface CopyButtonProps {
+type CopyButtonProps = {
     text: string
     className?: string
 }
 
-export function CopyButton({ text, className }: CopyButtonProps) {
+export const CopyButton = ({ text, className }: CopyButtonProps) => {
     const [copied, setCopied] = useState(false)
 
     const handleCopy = () => {
@@ -25,7 +25,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
                 'inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em]',
                 'border-brutal shadow-brutal-sm press-effect transition-all',
                 copied ? 'bg-ink text-paper-2' : 'bg-white text-ink',
-                className,
+                className
             )}
         >
             <span>{copied ? '✓' : '⎘'}</span>

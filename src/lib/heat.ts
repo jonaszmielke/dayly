@@ -7,7 +7,7 @@ export const HEAT_PALETTE = [
     '#46311A',
 ] as const
 
-export function pickHeat(count: number, total: number): string {
+export const pickHeat = (count: number, total: number): string => {
     if (total === 0 || count === 0) return HEAT_PALETTE[0]
     const ratio = count / total
     if (ratio <= 0) return HEAT_PALETTE[0]
@@ -18,7 +18,7 @@ export function pickHeat(count: number, total: number): string {
     return HEAT_PALETTE[5]
 }
 
-export function pickFg(hex: string): string {
+export const pickFg = (hex: string): string => {
     if (!hex || hex[0] !== '#' || hex.length < 7) return '#161514'
     const r = parseInt(hex.slice(1, 3), 16) / 255
     const g = parseInt(hex.slice(3, 5), 16) / 255

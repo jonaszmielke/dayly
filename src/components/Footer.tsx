@@ -1,23 +1,23 @@
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
-interface FooterLink {
+type FooterLink = {
     label: string
     href: string
 }
 
-interface FooterProps {
+type FooterProps = {
     links?: FooterLink[]
     version?: string
     className?: string
 }
 
-export function Footer({ links, version = 'v0.1', className }: FooterProps) {
+export const Footer = ({ links, version = 'v0.1', className }: FooterProps) => {
     return (
         <footer
             className={cn(
                 'flex items-center justify-between px-6 py-4 mt-8 border-t border-ink/30',
-                className,
+                className
             )}
         >
             <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55">

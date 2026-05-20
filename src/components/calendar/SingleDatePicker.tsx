@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { Popover } from '@base-ui/react/popover'
 import { DPMonth } from './DPMonth'
 import { formatDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { Popover } from '@base-ui/react/popover'
+import { useState } from 'react'
 
-interface SingleDatePickerProps {
+type SingleDatePickerProps = {
     value: string | null
     onChange: (v: string) => void
     placeholder?: string
@@ -14,13 +14,13 @@ interface SingleDatePickerProps {
     label?: string
 }
 
-export function SingleDatePicker({
+export const SingleDatePicker = ({
     value,
     onChange,
     placeholder = 'SELECT DATE',
     minDate,
     label,
-}: SingleDatePickerProps) {
+}: SingleDatePickerProps) => {
     const [open, setOpen] = useState(false)
 
     const handlePick = (iso: string) => {
@@ -33,16 +33,13 @@ export function SingleDatePicker({
             <Popover.Trigger
                 className={cn(
                     'w-full text-left border-brutal shadow-brutal bg-white transition-all',
-                    open && 'bg-paper shadow-brutal-mocha',
+                    open && 'bg-paper shadow-brutal-mocha'
                 )}
                 style={{ padding: '14px 48px 14px 16px' }}
             >
                 <div className="relative">
                     <span
-                        className={cn(
-                            'font-sans font-bold text-[18px]',
-                            !value && 'text-ink/30',
-                        )}
+                        className={cn('font-sans font-bold text-[18px]', !value && 'text-ink/30')}
                     >
                         {formatDate(value) || placeholder}
                     </span>

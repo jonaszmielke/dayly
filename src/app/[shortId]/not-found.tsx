@@ -1,10 +1,10 @@
 'use client'
 
+import { Footer } from '@/components/Footer'
+import { Wordmark } from '@/components/Wordmark'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { Wordmark } from '@/components/Wordmark'
-import { Footer } from '@/components/Footer'
 
 const MeetingNotFoundPage = () => {
     const router = useRouter()
@@ -38,7 +38,7 @@ const MeetingNotFoundPage = () => {
                 </div>
                 <Link
                     href="/create"
-                    className="bg-ink text-paper-2 border-brutal shadow-brutal-sm press-effect px-4 py-2 font-mono text-[11px] uppercase tracking-[0.1em]"
+                    className="bg-ink text-paper-2 border-brutal shadow-brutal-sm press-effect px-4 py-2 font-mono text-[11px] uppercase tracking-widest"
                 >
                     Start a survey →
                 </Link>
@@ -48,21 +48,27 @@ const MeetingNotFoundPage = () => {
             <section className="flex-1 max-w-[1440px] mx-auto w-full px-10 py-14">
                 {/* Crumbs */}
                 <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink/55 mb-10 flex items-center gap-1">
-                    <Link href="/" className="hover:text-ink">DAYLY</Link>
+                    <Link href="/" className="hover:text-ink">
+                        DAYLY
+                    </Link>
                     <span className="text-ink/30">/</span>
                     <span>ROOM</span>
                     <span className="text-ink/30">/</span>
                     <span className="text-danger">404 · NOT FOUND</span>
                 </div>
 
-                <div className="grid gap-14" style={{ gridTemplateColumns: 'minmax(0,560px) minmax(0,1fr)' }}>
+                <div
+                    className="grid gap-14"
+                    style={{ gridTemplateColumns: 'minmax(0,560px) minmax(0,1fr)' }}
+                >
                     {/* Left copy */}
                     <div className="flex flex-col gap-6">
                         <h1
                             className="font-sans font-extrabold leading-[0.86] tracking-[-0.045em]"
                             style={{ fontSize: '88px' }}
                         >
-                            No such<br />
+                            No such
+                            <br />
                             <em className="not-italic text-danger">room.</em>
                         </h1>
 
@@ -73,7 +79,7 @@ const MeetingNotFoundPage = () => {
                         {/* Rejoin card */}
                         <div className="bg-white border-2 border-ink shadow-brutal-sm">
                             <div className="px-4 py-3 border-b border-ink/10">
-                                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-ink/55">
+                                <span className="font-mono text-[11px] uppercase tracking-widest text-ink/55">
                                     01 · Try the code again
                                 </span>
                             </div>
@@ -154,9 +160,7 @@ const MeetingNotFoundPage = () => {
                             </div>
 
                             {/* 404 stamp */}
-                            <div
-                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                            >
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div
                                     className="bg-danger text-paper-2 border-2 border-ink px-6 py-4 text-center"
                                     style={{
@@ -180,20 +184,33 @@ const MeetingNotFoundPage = () => {
                 <div className="mt-16 bg-white border-2 border-ink shadow-brutal-sm">
                     <div className="grid grid-cols-3 divide-x-2 divide-ink">
                         {[
-                            { num: '01', title: 'Mistyped link', body: 'Double-check the code you received. Codes are case-insensitive.' },
-                            { num: '02', title: 'Survey deleted', body: 'The survey organizer may have removed this room.' },
-                            { num: '03', title: 'Expired room', body: 'Rooms may expire after the deadline has passed.' },
+                            {
+                                num: '01',
+                                title: 'Mistyped link',
+                                body: 'Double-check the code you received. Codes are case-insensitive.',
+                            },
+                            {
+                                num: '02',
+                                title: 'Survey deleted',
+                                body: 'The survey organizer may have removed this room.',
+                            },
+                            {
+                                num: '03',
+                                title: 'Expired room',
+                                body: 'Rooms may expire after the deadline has passed.',
+                            },
                         ].map((item) => (
                             <div key={item.num} className="p-5">
                                 <div className="flex items-center justify-center w-11 h-11 bg-ink mb-3">
-                                    <span className="font-mono text-[13px] text-paper-2">{item.num}</span>
+                                    <span className="font-mono text-[13px] text-paper-2">
+                                        {item.num}
+                                    </span>
                                 </div>
                                 <div className="font-sans text-[20px] font-bold mb-2">
-                                    <b className="text-danger">{item.num} · </b>{item.title}
+                                    <b className="text-danger">{item.num} · </b>
+                                    {item.title}
                                 </div>
-                                <div className="font-sans text-[14px] text-ink/72">
-                                    {item.body}
-                                </div>
+                                <div className="font-sans text-[14px] text-ink/72">{item.body}</div>
                             </div>
                         ))}
                     </div>

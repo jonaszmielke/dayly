@@ -1,29 +1,29 @@
 'use client'
 
-import { useState } from 'react'
-import { Popover } from '@base-ui/react/popover'
 import { DPMonth } from './DPMonth'
 import { formatDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { Popover } from '@base-ui/react/popover'
+import { useState } from 'react'
 
-interface DateRangeValue {
+type DateRangeValue = {
     start: string | null
     end: string | null
 }
 
-interface DateRangePickerProps {
+type DateRangePickerProps = {
     value: DateRangeValue
     onChange: (v: DateRangeValue) => void
     placeholder?: string
     minDate?: string
 }
 
-export function DateRangePicker({
+export const DateRangePicker = ({
     value,
     onChange,
     placeholder = 'SELECT DATE RANGE',
     minDate,
-}: DateRangePickerProps) {
+}: DateRangePickerProps) => {
     const [open, setOpen] = useState(false)
     const [pending, setPending] = useState<DateRangeValue>({ start: null, end: null })
     const [hoverIso, setHoverIso] = useState<string | null>(null)
@@ -53,16 +53,14 @@ export function DateRangePicker({
     }
 
     const displayText =
-        value.start && value.end
-            ? `${formatDate(value.start)} — ${formatDate(value.end)}`
-            : null
+        value.start && value.end ? `${formatDate(value.start)} — ${formatDate(value.end)}` : null
 
     return (
         <Popover.Root open={open} onOpenChange={setOpen}>
             <Popover.Trigger
                 className={cn(
                     'w-full text-left border-brutal shadow-brutal bg-white transition-all',
-                    open && 'bg-paper shadow-brutal-mocha',
+                    open && 'bg-paper shadow-brutal-mocha'
                 )}
                 style={{ padding: '14px 48px 14px 16px' }}
             >
@@ -70,7 +68,7 @@ export function DateRangePicker({
                     <span
                         className={cn(
                             'font-sans font-bold text-[18px]',
-                            !displayText && 'text-ink/30',
+                            !displayText && 'text-ink/30'
                         )}
                     >
                         {displayText || placeholder}
@@ -100,9 +98,7 @@ export function DateRangePicker({
                         />
                         <div className="flex items-center gap-3 p-4 border-t border-ink/10">
                             <div className="flex-1 font-mono text-[12px] text-ink/50">
-                                {current.start && !current.end && (
-                                    <span>Pick end date</span>
-                                )}
+                                {current.start && !current.end && <span>Pick end date</span>}
                                 {current.start && current.end && (
                                     <span className="font-bold text-ink">
                                         {formatDate(current.start)} → {formatDate(current.end)}

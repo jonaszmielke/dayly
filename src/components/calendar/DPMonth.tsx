@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { addMonths, monthGrid, monthName, DOW_ABBR, ymd } from '@/lib/dates'
+import { addMonths, DOW_ABBR, monthGrid, monthName, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
-interface DPMonthProps {
+type DPMonthProps = {
     mode: 'single' | 'range'
     value: string | null
     rangeValue: { start: string | null; end: string | null }
@@ -15,7 +15,7 @@ interface DPMonthProps {
     initialMonth?: { year: number; month: number }
 }
 
-export function DPMonth({
+export const DPMonth = ({
     mode,
     value,
     rangeValue,
@@ -24,14 +24,11 @@ export function DPMonth({
     hoverIso,
     onHoverIso,
     initialMonth,
-}: DPMonthProps) {
+}: DPMonthProps) => {
     const today = new Date()
     const [{ year, month }, setYM] = useState(() => {
         if (initialMonth) return initialMonth
-        const seed =
-            mode === 'single'
-                ? value || ymd(today)
-                : rangeValue.start || ymd(today)
+        const seed = mode === 'single' ? value || ymd(today) : rangeValue.start || ymd(today)
         const d = new Date(seed + 'T00:00:00')
         return { year: d.getFullYear(), month: d.getMonth() }
     })
@@ -77,9 +74,8 @@ export function DPMonth({
                 >
                     ‹
                 </button>
-                <div className="text-center font-sans text-[15px] font-bold uppercase tracking-[0.05em] py-3">
-                    {monthName(month)}{' '}
-                    <span className="font-mono text-ink/55">{year}</span>
+                <div className="text-center font-sans text-[15px] font-bold uppercase tracking-wider py-3">
+                    {monthName(month)} <span className="font-mono text-ink/55">{year}</span>
                 </div>
                 <button
                     type="button"
@@ -97,7 +93,7 @@ export function DPMonth({
                         key={d}
                         className={cn(
                             'py-1.5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-ink/50',
-                            i >= 5 && 'bg-paper-shade',
+                            i >= 5 && 'bg-paper-shade'
                         )}
                     >
                         {d}
@@ -116,18 +112,18 @@ export function DPMonth({
                         <div
                             key={c.date}
                             className={cn(
-                                'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink/[0.06] transition-all',
+                                'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink/6 transition-all',
                                 !c.inMonth && 'text-ink/30 bg-paper-2',
-                                c.inMonth && !disabled && !endpoint && !inSel && 'hover:bg-paper-range',
+                                c.inMonth &&
+                                    !disabled &&
+                                    !endpoint &&
+                                    !inSel &&
+                                    'hover:bg-paper-range',
                                 inSel && !endpoint && 'bg-paper-range hover:bg-paper-shade',
                                 endpoint && 'bg-ink text-paper-2',
-                                disabled && 'bg-hatch-light cursor-not-allowed text-ink/30',
+                                disabled && 'bg-hatch-light cursor-not-allowed text-ink/30'
                             )}
-                            style={
-                                endpoint
-                                    ? { boxShadow: 'inset 0 0 0 3px #7E6038' }
-                                    : undefined
-                            }
+                            style={endpoint ? { boxShadow: 'inset 0 0 0 3px #7E6038' } : undefined}
                             onClick={() => !disabled && onPick(c.date)}
                             onMouseEnter={() => onHoverIso?.(c.date)}
                             onMouseLeave={() => onHoverIso?.(null)}

@@ -17,7 +17,7 @@ const MONTH_ABBR = [
     'DEC',
 ]
 
-function fmtDate(d: Date): string {
+const fmtDate = (d: Date): string => {
     return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBR[d.getMonth()]} ${d.getFullYear()}`
 }
 

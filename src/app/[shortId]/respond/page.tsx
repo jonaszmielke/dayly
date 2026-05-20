@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { MOCK_MEETING } from '@/lib/mock'
-import { ymd, formatDate, formatDateLong, daysBetweenInclusive, computeBest, getDisplayMonths, dateRange } from '@/lib/dates'
+import { MeetingFooter } from '../_components/Footer'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
+import { dateRange, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
+import { MOCK_MEETING } from '@/lib/mock'
 import { cn } from '@/lib/utils'
-import { MeetingFooter } from '../_components/Footer'
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const meeting = MOCK_MEETING
 const rangeStart = ymd(meeting.startDate)
@@ -21,26 +21,15 @@ const RespondPage = () => {
     const [name, setName] = useState('')
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
-    const [shiftAnchor, setShiftAnchor] = useState<string | null>(null)
     const [saveState, setSaveState] = useState<SaveState>('idle')
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
-
-    const toggleDay = (iso: string) => {
-        setSelected((prev) => {
-            const next = new Set(prev)
-            if (next.has(iso)) next.delete(iso)
-            else next.add(iso)
-            return next
-        })
-    }
 
     const handleMouseDown = useCallback(
         (iso: string) => {
             const isSelected = selected.has(iso)
             const mode = isSelected ? 'remove' : 'add'
             setDragging(mode)
-            setShiftAnchor(iso)
             setSelected((prev) => {
                 const next = new Set(prev)
                 if (mode === 'remove') next.delete(iso)
@@ -48,7 +37,7 @@ const RespondPage = () => {
                 return next
             })
         },
-        [selected],
+        [selected]
     )
 
     const handleMouseEnter = useCallback(
@@ -61,7 +50,7 @@ const RespondPage = () => {
                 return next
             })
         },
-        [dragging],
+        [dragging]
     )
 
     useEffect(() => {
@@ -72,7 +61,6 @@ const RespondPage = () => {
 
     const handleReset = () => {
         setSelected(new Set())
-        setShiftAnchor(null)
     }
 
     const handleSave = async () => {
@@ -133,9 +121,7 @@ const RespondPage = () => {
                         <input
                             type="text"
                             value={name}
-                            onChange={(e) =>
-                                setName(e.target.value.toUpperCase().slice(0, 32))
-                            }
+                            onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
                             placeholder="YOUR NAME"
                             autoFocus
                             maxLength={32}
@@ -143,7 +129,7 @@ const RespondPage = () => {
                                 'w-full bg-paper border-thin px-3 py-3',
                                 'font-sans text-[22px] font-bold uppercase',
                                 'placeholder:text-ink/30 text-ink',
-                                'outline-none focus:bg-white',
+                                'outline-none focus:bg-white'
                             )}
                             style={{
                                 caretColor: '#7E6038',
@@ -154,7 +140,7 @@ const RespondPage = () => {
 
                 {/* Quick picks */}
                 <div className="bg-white border-brutal shadow-brutal-sm p-3">
-                    <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-mocha/70 mb-2">
+                    <div className="font-mono text-[11px] uppercase tracking-widest text-mocha/70 mb-2">
                         Quick Picks
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -176,11 +162,9 @@ const RespondPage = () => {
                 <StatCard rows={statRows} />
 
                 {/* Counter */}
-                <div
-                    className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4"
-                >
+                <div className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4">
                     <span
-                        className="font-sans font-extrabold leading-none tracking-[-0.05em]"
+                        className="font-sans font-extrabold leading-none tracking-tighter"
                         style={{ fontSize: '56px' }}
                     >
                         {String(selected.size).padStart(2, '0')}
@@ -204,7 +188,7 @@ const RespondPage = () => {
                             'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
                             saveState === 'saved'
                                 ? 'bg-mocha-dark text-paper-2 shadow-brutal'
-                                : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed',
+                                : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
                         )}
                     >
                         {saveLabel}

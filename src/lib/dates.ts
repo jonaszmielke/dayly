@@ -1,15 +1,15 @@
-export function ymd(d: Date): string {
+export const ymd = (d: Date): string => {
     const y = d.getFullYear()
     const m = String(d.getMonth() + 1).padStart(2, '0')
     const day = String(d.getDate()).padStart(2, '0')
     return `${y}-${m}-${day}`
 }
 
-export function parseISO(iso: string): Date {
+export const parseISO = (iso: string): Date => {
     return new Date(iso + 'T00:00:00')
 }
 
-export function dateRange(startISO: string, endISO: string): string[] {
+export const dateRange = (startISO: string, endISO: string): string[] => {
     const out: string[] = []
     const d = new Date(startISO + 'T00:00:00')
     const end = new Date(endISO + 'T00:00:00')
@@ -20,22 +20,22 @@ export function dateRange(startISO: string, endISO: string): string[] {
     return out
 }
 
-export function addMonths(
+export const addMonths = (
     year: number,
     month: number,
-    delta: number,
-): { year: number; month: number } {
+    delta: number
+): { year: number; month: number } => {
     const d = new Date(year, month + delta, 1)
     return { year: d.getFullYear(), month: d.getMonth() }
 }
 
-export interface GridCell {
+export type GridCell = {
     date: string
     inMonth: boolean
     dom: number
 }
 
-export function monthGrid(year: number, month: number): GridCell[] {
+export const monthGrid = (year: number, month: number): GridCell[] => {
     const first = new Date(year, month, 1)
     const startCol = (first.getDay() + 6) % 7 // Mon-first
     const cells: GridCell[] = []
@@ -74,43 +74,53 @@ export const MONTH_NAMES = [
 ] as const
 
 export const MONTH_ABBR = [
-    'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC',
 ] as const
 
 export const DOW_ABBR = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'] as const
 
-export function monthName(month: number): string {
+export const monthName = (month: number): string => {
     return MONTH_NAMES[month]
 }
 
-export function formatDate(iso: string | null | undefined): string | null {
+export const formatDate = (iso: string | null | undefined): string | null => {
     if (!iso) return null
     const d = parseISO(iso)
     return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBR[d.getMonth()]} ${d.getFullYear()}`
 }
 
-export function formatDateLong(iso: string): string {
+export const formatDateLong = (iso: string): string => {
     const d = parseISO(iso)
     const dow = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][d.getDay()]
     return `${dow} ${d.getDate()} ${MONTH_ABBR[d.getMonth()]}`
 }
 
-export function daysBetweenInclusive(
+export const daysBetweenInclusive = (
     a: string | null | undefined,
-    b: string | null | undefined,
-): number {
+    b: string | null | undefined
+): number => {
     if (!a || !b) return 0
     return Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / 86400000) + 1
 }
 
-export interface BestResult {
+export type BestResult = {
     max: number
     range: [string, string] | null
     allDays: string[]
 }
 
-export function computeBest(availSets: string[][]): BestResult {
+export const computeBest = (availSets: string[][]): BestResult => {
     const counts: Record<string, number> = {}
     for (const avail of availSets) {
         for (const d of avail) counts[d] = (counts[d] || 0) + 1
@@ -142,10 +152,10 @@ export function computeBest(availSets: string[][]): BestResult {
     return { max, range: [bestStart, bestEnd], allDays: days }
 }
 
-export function getDisplayMonths(
+export const getDisplayMonths = (
     startISO: string,
-    endISO: string,
-): { year: number; month: number }[] {
+    endISO: string
+): { year: number; month: number }[] => {
     const start = parseISO(startISO)
     const end = parseISO(endISO)
     const months: { year: number; month: number }[] = []

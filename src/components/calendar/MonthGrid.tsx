@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
-import { GridCell, monthGrid, monthName, DOW_ABBR } from '@/lib/dates'
+import { DOW_ABBR, GridCell, monthGrid, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { ReactNode } from 'react'
 
-interface MonthGridProps {
+type MonthGridProps = {
     year: number
     month: number
     rangeStart: string
@@ -12,7 +12,7 @@ interface MonthGridProps {
     className?: string
 }
 
-export function MonthGrid({
+export const MonthGrid = ({
     year,
     month,
     rangeStart,
@@ -20,7 +20,7 @@ export function MonthGrid({
     cellRenderer,
     daysInRange,
     className,
-}: MonthGridProps) {
+}: MonthGridProps) => {
     const cells = monthGrid(year, month)
 
     return (
@@ -31,12 +31,10 @@ export function MonthGrid({
                     <span className="font-sans text-[36px] font-extrabold leading-none tracking-[-0.03em]">
                         {monthName(month)}
                     </span>
-                    <span className="font-mono text-[18px] text-ink/55 leading-none">
-                        {year}
-                    </span>
+                    <span className="font-mono text-[18px] text-ink/55 leading-none">{year}</span>
                 </div>
                 {daysInRange !== undefined && (
-                    <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-ink/55">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-ink/55">
                         {daysInRange} DAYS IN RANGE
                     </span>
                 )}
@@ -49,7 +47,7 @@ export function MonthGrid({
                         key={d}
                         className={cn(
                             'py-2 text-center font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 border-r-[1.5px] border-ink last:border-r-0',
-                            i >= 5 && 'bg-paper-shade',
+                            i >= 5 && 'bg-paper-shade'
                         )}
                     >
                         {d}
@@ -64,7 +62,7 @@ export function MonthGrid({
                     return (
                         <div
                             key={cell.date}
-                            className="border-r-[1.5px] border-b-[1.5px] border-ink [&:nth-child(7n)]:border-r-0 [&:nth-last-child(-n+7)]:border-b-0"
+                            className="border-r-[1.5px] border-b-[1.5px] border-ink nth-[7n]:border-r-0 nth-last-[-n+7]:border-b-0"
                             style={{ aspectRatio: '140/100' }}
                         >
                             {cellRenderer(cell, inRange)}

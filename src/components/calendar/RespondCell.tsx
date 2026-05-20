@@ -2,8 +2,9 @@
 
 import { GridCell } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { isWeekend } from '@/utils/isWeekend'
 
-interface RespondCellProps {
+type RespondCellProps = {
     cell: GridCell
     inRange: boolean
     selected: boolean
@@ -11,25 +12,16 @@ interface RespondCellProps {
     onMouseEnter: (iso: string) => void
 }
 
-function isWeekend(iso: string): boolean {
-    const d = new Date(iso + 'T00:00:00')
-    const dow = d.getDay()
-    return dow === 0 || dow === 6
-}
-
-export function RespondCell({
+export const RespondCell = ({
     cell,
     inRange,
     selected,
     onMouseDown,
     onMouseEnter,
-}: RespondCellProps) {
+}: RespondCellProps) => {
     if (!inRange || !cell.inMonth) {
         return (
-            <div
-                className="relative bg-hatch opacity-40 p-1"
-                style={{ height: '100%' }}
-            >
+            <div className="relative bg-hatch opacity-40 p-1" style={{ height: '100%' }}>
                 <span className="font-mono text-[12px] text-ink/35">{cell.dom}</span>
             </div>
         )
@@ -42,7 +34,7 @@ export function RespondCell({
             className={cn(
                 'relative flex flex-col justify-between p-1.5 cursor-pointer select-none transition-all',
                 selected ? 'bg-mocha text-paper-2' : 'bg-white text-ink',
-                !selected && 'hover:bg-paper-3',
+                !selected && 'hover:bg-paper-3'
             )}
             style={{
                 height: '100%',
@@ -65,19 +57,15 @@ export function RespondCell({
             <div
                 className={cn(
                     'absolute inset-0 pointer-events-none transition-all',
-                    !selected && 'hover-ring',
+                    !selected && 'hover-ring'
                 )}
             />
 
-            <span className="font-mono text-[12px] opacity-85 relative z-10">
-                {cell.dom}
-            </span>
+            <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>
 
             {selected && (
                 <div className="flex justify-end relative z-10">
-                    <span className="font-sans text-[28px] font-extrabold leading-none">
-                        ✓
-                    </span>
+                    <span className="font-sans text-[28px] font-extrabold leading-none">✓</span>
                 </div>
             )}
         </div>

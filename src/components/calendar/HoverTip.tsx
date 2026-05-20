@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { formatDateLong } from '@/lib/dates'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-interface Person {
+type Person = {
     name: string
     available: boolean
 }
 
-interface HoverTipProps {
+type HoverTipProps = {
     iso: string
     people: Person[]
     freeCount: number
@@ -18,7 +18,7 @@ interface HoverTipProps {
     initialMouseY: number
 }
 
-function calcPos(mouseX: number, mouseY: number, el: HTMLElement | null) {
+const calcPos = (mouseX: number, mouseY: number, el: HTMLElement | null) => {
     const vw = window.innerWidth
     const vh = window.innerHeight
     let x = mouseX + 16
@@ -30,7 +30,14 @@ function calcPos(mouseX: number, mouseY: number, el: HTMLElement | null) {
     return { x, y }
 }
 
-export function HoverTip({ iso, people, freeCount, totalCount, initialMouseX, initialMouseY }: HoverTipProps) {
+export const HoverTip = ({
+    iso,
+    people,
+    freeCount,
+    totalCount,
+    initialMouseX,
+    initialMouseY,
+}: HoverTipProps) => {
     const ref = useRef<HTMLDivElement>(null)
     const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
 
@@ -57,20 +64,14 @@ export function HoverTip({ iso, people, freeCount, totalCount, initialMouseX, in
                 minWidth: '12vw',
             }}
         >
-            <div
-                className="border-b border-ink/10"
-                style={{ padding: '0.55vw 0.7vw' }}
-            >
+            <div className="border-b border-ink/10" style={{ padding: '0.55vw 0.7vw' }}>
                 <div
                     className="font-mono font-bold uppercase tracking-[0.08em]"
                     style={{ fontSize: '0.65vw' }}
                 >
                     {formatDateLong(iso)}
                 </div>
-                <div
-                    className="font-mono text-ink/55 mt-0.5"
-                    style={{ fontSize: '0.6vw' }}
-                >
+                <div className="font-mono text-ink/55 mt-0.5" style={{ fontSize: '0.6vw' }}>
                     {freeCount}/{totalCount} FREE
                 </div>
             </div>

@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { TopBar } from '@/components/TopBar'
-import { StatCard } from '@/components/StatCard'
 import { DateRangePicker } from '@/components/calendar/DateRangePicker'
 import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
-import { formatDate, daysBetweenInclusive, ymd } from '@/lib/dates'
+import { StatCard } from '@/components/StatCard'
+import { TopBar } from '@/components/TopBar'
+import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 const today = ymd(new Date())
 const MAX_NAME = 48
 
-export default function CreatePage() {
+const CreatePage = () => {
     const [name, setName] = useState('')
     const [mode, setMode] = useState<'days' | 'hours'>('days')
     const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({
@@ -21,6 +21,7 @@ export default function CreatePage() {
     const [deadline, setDeadline] = useState<string | null>(null)
 
     const handleSubmit = () => {
+        /* eslint-disable-next-line no-console */
         console.log({ name, mode, dateRange, deadline })
     }
 
@@ -42,20 +43,15 @@ export default function CreatePage() {
     return (
         <div className="min-h-screen flex flex-col">
             <TopBar
-                crumbs={[
-                    { label: 'Surveys', href: '/' },
-                    { label: 'New' },
-                ]}
+                crumbs={[{ label: 'Surveys', href: '/' }, { label: 'New' }]}
                 title="CREATE SURVEY"
                 meta={['STEP 1/1', 'BASICS', 'NO ACCOUNT NEEDED']}
                 right={
                     <div className="flex flex-col items-end gap-1">
-                        <div className="bg-ink text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.1em]">
+                        <div className="bg-ink text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest">
                             DRAFT
                         </div>
-                        <span className="font-mono text-[11px] text-ink/50">
-                            dayly.cz/new
-                        </span>
+                        <span className="font-mono text-[11px] text-ink/50">dayly.cz/new</span>
                     </div>
                 }
             />
@@ -78,7 +74,7 @@ export default function CreatePage() {
                                     'font-sans text-[28px] font-bold uppercase',
                                     'placeholder:text-ink/30 text-ink',
                                     'outline-none focus:shadow-brutal-mocha',
-                                    'transition-shadow',
+                                    'transition-shadow'
                                 )}
                             />
                             <span className="absolute right-4 top-4 font-mono text-[11px] text-ink/40">
@@ -102,10 +98,13 @@ export default function CreatePage() {
                                                 key={i}
                                                 className="w-[6px] h-[6px]"
                                                 style={{
-                                                    backgroundColor:
-                                                        [2, 5, 7, 8, 9, 12].includes(i)
-                                                            ? mode === 'days' ? '#7E6038' : '#7E6038'
-                                                            : mode === 'days' ? 'rgba(236,226,203,0.4)' : 'rgba(22,21,20,0.2)',
+                                                    backgroundColor: [2, 5, 7, 8, 9, 12].includes(i)
+                                                        ? mode === 'days'
+                                                            ? '#7E6038'
+                                                            : '#7E6038'
+                                                        : mode === 'days'
+                                                          ? 'rgba(236,226,203,0.4)'
+                                                          : 'rgba(22,21,20,0.2)',
                                                 }}
                                             />
                                         ))}
@@ -134,7 +133,11 @@ export default function CreatePage() {
                     </Section>
 
                     {/* Section 4: Deadline */}
-                    <Section number="04" title="Response Deadline" hint="By when should people respond?">
+                    <Section
+                        number="04"
+                        title="Response Deadline"
+                        hint="By when should people respond?"
+                    >
                         <SingleDatePicker
                             value={deadline}
                             onChange={setDeadline}
@@ -157,7 +160,7 @@ export default function CreatePage() {
                             'transition-all press-effect-mocha',
                             canSubmit
                                 ? 'bg-mocha text-paper-2 hover:bg-mocha-dark'
-                                : 'bg-paper-2 text-ink/30 cursor-not-allowed',
+                                : 'bg-paper-2 text-ink/30 cursor-not-allowed'
                         )}
                     >
                         Create Survey →
@@ -168,7 +171,7 @@ export default function CreatePage() {
     )
 }
 
-function Section({
+const Section = ({
     number,
     title,
     hint,
@@ -178,7 +181,7 @@ function Section({
     title: string
     hint?: string
     children: React.ReactNode
-}) {
+}) => {
     return (
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -199,7 +202,7 @@ function Section({
     )
 }
 
-function ModeCard({
+const ModeCard = ({
     active,
     disabled,
     onClick,
@@ -215,7 +218,7 @@ function ModeCard({
     desc: string
     badge?: string
     glyph: React.ReactNode
-}) {
+}) => {
     return (
         <button
             type="button"
@@ -227,25 +230,23 @@ function ModeCard({
                     ? 'bg-ink text-paper-2 shadow-brutal-mocha'
                     : disabled
                       ? 'bg-paper-2 opacity-60 cursor-not-allowed shadow-brutal-xs'
-                      : 'bg-white shadow-brutal hover:shadow-brutal-sm press-effect',
+                      : 'bg-white shadow-brutal hover:shadow-brutal-sm press-effect'
             )}
             style={{ gridTemplateColumns: '24px 1fr auto' }}
         >
-            <span className="font-mono text-[22px] leading-none mt-0.5">
-                {active ? '■' : '□'}
-            </span>
+            <span className="font-mono text-[22px] leading-none mt-0.5">{active ? '■' : '□'}</span>
             <div>
                 <div className="font-sans text-[16px] font-bold">{title}</div>
                 <div
                     className={cn(
                         'font-sans text-[13px] mt-0.5',
-                        active ? 'text-paper-2/70' : 'text-ink/60',
+                        active ? 'text-paper-2/70' : 'text-ink/60'
                     )}
                 >
                     {desc}
                 </div>
                 {badge && (
-                    <span className="inline-block mt-2 bg-ink/10 font-mono text-[10px] uppercase tracking-[0.1em] px-1.5 py-0.5">
+                    <span className="inline-block mt-2 bg-ink/10 font-mono text-[10px] uppercase tracking-widest px-1.5 py-0.5">
                         {badge}
                     </span>
                 )}
@@ -254,3 +255,5 @@ function ModeCard({
         </button>
     )
 }
+
+export default CreatePage

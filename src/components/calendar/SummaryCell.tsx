@@ -1,40 +1,32 @@
 'use client'
 
-import { useState } from 'react'
-import { GridCell } from '@/lib/dates'
-import { pickHeat, pickFg, HEAT_PALETTE } from '@/lib/heat'
 import { HoverTip } from './HoverTip'
+import { GridCell } from '@/lib/dates'
+import { HEAT_PALETTE, pickFg, pickHeat } from '@/lib/heat'
 import { cn } from '@/lib/utils'
+import { isWeekend } from '@/utils/isWeekend'
+import { useState } from 'react'
 
-interface Person {
+type Person = {
     id: number
     name: string
     availSet: Set<string>
 }
 
-interface SummaryCellProps {
+type SummaryCellProps = {
     cell: GridCell
     inRange: boolean
     people: Person[]
     selectedPersonId: number | null
 }
 
-function isWeekend(iso: string): boolean {
-    const d = new Date(iso + 'T00:00:00')
-    const dow = d.getDay()
-    return dow === 0 || dow === 6
-}
-
-export function SummaryCell({ cell, inRange, people, selectedPersonId }: SummaryCellProps) {
+export const SummaryCell = ({ cell, inRange, people, selectedPersonId }: SummaryCellProps) => {
     const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
 
     if (!inRange || !cell.inMonth) {
         return (
             <div
-                className={cn(
-                    'relative flex items-start justify-start p-1',
-                    'bg-hatch opacity-40',
-                )}
+                className={cn('relative flex items-start justify-start p-1', 'bg-hatch opacity-40')}
                 style={{ height: '100%' }}
             >
                 <span className="font-mono text-[12px] text-ink/35">{cell.dom}</span>
@@ -50,7 +42,7 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
 
     const selectedAvail =
         selectedPersonId !== null
-            ? people.find((p) => p.id === selectedPersonId)?.availSet.has(cell.date) ?? false
+            ? (people.find((p) => p.id === selectedPersonId)?.availSet.has(cell.date) ?? false)
             : null
 
     const heat =
@@ -91,9 +83,7 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
                 )}
 
                 {/* Day of month */}
-                <span className="font-mono text-[12px] opacity-85 relative z-10">
-                    {cell.dom}
-                </span>
+                <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>
 
                 {/* Count / person mark */}
                 <div className="flex justify-end relative z-10">
@@ -112,9 +102,7 @@ export function SummaryCell({ cell, inRange, people, selectedPersonId }: Summary
                                 >
                                     {freeCount}
                                 </span>
-                                <span className="font-mono text-[11px] opacity-60">
-                                    /{total}
-                                </span>
+                                <span className="font-mono text-[11px] opacity-60">/{total}</span>
                             </div>
                         ) : (
                             <span className="font-mono text-[11px] opacity-50">
