@@ -1,75 +1,24 @@
+import { HeroCell } from '@/components/calendar/HeroCell'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
-import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { Footer } from '@/components/Footer'
 import { Wordmark } from '@/components/Wordmark'
+import { ymd } from '@/lib/dates'
 import Link from 'next/link'
 
-// Static hero mock data for landing calendar — June 2026
-const HERO_PEOPLE = [
-    {
-        id: 1,
-        name: 'Alice',
-        availSet: new Set([
-            '2026-06-13',
-            '2026-06-14',
-            '2026-06-15',
-            '2026-06-16',
-            '2026-06-20',
-            '2026-06-21',
-            '2026-06-22',
-        ]),
-    },
-    {
-        id: 2,
-        name: 'Bob',
-        availSet: new Set([
-            '2026-06-14',
-            '2026-06-15',
-            '2026-06-20',
-            '2026-06-21',
-            '2026-06-27',
-            '2026-06-28',
-        ]),
-    },
-    {
-        id: 3,
-        name: 'Carla',
-        availSet: new Set([
-            '2026-06-13',
-            '2026-06-14',
-            '2026-06-20',
-            '2026-06-21',
-            '2026-06-22',
-            '2026-06-23',
-        ]),
-    },
-    {
-        id: 4,
-        name: 'Daniel',
-        availSet: new Set([
-            '2026-06-20',
-            '2026-06-21',
-            '2026-06-22',
-            '2026-06-24',
-            '2026-06-27',
-            '2026-06-28',
-        ]),
-    },
-    {
-        id: 5,
-        name: 'Erin',
-        availSet: new Set([
-            '2026-06-14',
-            '2026-06-20',
-            '2026-06-21',
-            '2026-06-22',
-            '2026-06-28',
-            '2026-06-29',
-        ]),
-    },
-]
+const HERO_TOTAL = 5
+
+const heroFreeCount = (dom: number): number => {
+    const n = (dom * 9301 + 49297) % 233280
+    return Math.floor((n / 233280) * (HERO_TOTAL + 1))
+}
 
 const HomePage = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const monthStart = ymd(new Date(year, month, 1))
+    const monthEnd = ymd(new Date(year, month + 1, 0))
+
     return (
         <div className="min-h-screen flex flex-col">
             {/* Nav */}
@@ -115,17 +64,16 @@ const HomePage = () => {
                     {/* Left: mini calendar */}
                     <div className="w-full">
                         <MonthGrid
-                            year={2026}
-                            month={5}
-                            rangeStart="2026-06-12"
-                            rangeEnd="2026-06-29"
-                            daysInRange={18}
+                            year={year}
+                            month={month}
+                            rangeStart={monthStart}
+                            rangeEnd={monthEnd}
                             cellRenderer={(cell, inRange) => (
-                                <SummaryCell
+                                <HeroCell
                                     cell={cell}
                                     inRange={inRange}
-                                    people={HERO_PEOPLE}
-                                    selectedPersonId={null}
+                                    freeCount={heroFreeCount(cell.dom)}
+                                    totalCount={HERO_TOTAL}
                                 />
                             )}
                         />
