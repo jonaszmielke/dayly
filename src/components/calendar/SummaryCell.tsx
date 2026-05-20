@@ -1,10 +1,9 @@
 'use client'
 
 import { HoverTip } from './HoverTip'
-import { GridCell } from '@/lib/dates'
+import { GridCell, isWeekend } from '@/lib/dates'
 import { HEAT_PALETTE, pickFg, pickHeat } from '@/lib/heat'
 import { cn } from '@/lib/utils'
-import { isWeekend } from '@/utils/isWeekend'
 import { useState } from 'react'
 
 type Person = {

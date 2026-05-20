@@ -21,7 +21,7 @@ export const Footer = ({ links, version = 'v0.1', className }: FooterProps) => {
             )}
         >
             <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55">
-                DAYLY — Find the days that work for everyone
+                DAYLY
             </span>
             {links && links.length > 0 && (
                 <nav className="flex items-center gap-4">

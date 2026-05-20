@@ -100,7 +100,7 @@ const HomePage = () => {
                         <div className="flex items-center gap-3">
                             <Link
                                 href="/create"
-                                className="px-5 py-3 bg-mocha text-paper-2 border-brutal shadow-brutal press-effect-mocha font-sans text-[15px] font-bold uppercase tracking-[0.04em]"
+                                className="px-5 py-3 bg-mocha text-paper-2 border-brutal shadow-brutal-sm press-effect-mocha font-sans text-[15px] font-bold uppercase tracking-[0.04em]"
                             >
                                 Create a survey
                             </Link>
@@ -170,12 +170,7 @@ const HomePage = () => {
                 </div>
             </section>
 
-            <Footer
-                links={[
-                    { label: 'Create survey', href: '/create' },
-                    { label: 'Example', href: '/mock' },
-                ]}
-            />
+            <Footer />
         </div>
     )
 }

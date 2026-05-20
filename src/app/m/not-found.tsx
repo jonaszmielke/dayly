@@ -1,20 +1,17 @@
-'use client'
-
 import { Footer } from '@/components/Footer'
 import { Wordmark } from '@/components/Wordmark'
-import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
+
+const findRoom = async (formData: FormData) => {
+    'use server'
+    const code = String(formData.get('code') ?? '')
+        .trim()
+        .toLowerCase()
+    if (code) redirect(`/m/${code}`)
+}
 
 const MeetingNotFoundPage = () => {
-    const router = useRouter()
-    const [code, setCode] = useState('')
-
-    const handleFind = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (code.trim()) router.push(`/${code.trim().toLowerCase()}`)
-    }
-
     return (
         <div className="min-h-screen flex flex-col">
             {/* Nav */}
@@ -83,13 +80,13 @@ const MeetingNotFoundPage = () => {
                                     01 · Try the code again
                                 </span>
                             </div>
-                            <form onSubmit={handleFind} className="flex items-stretch p-3 gap-2">
+                            <form action={findRoom} className="flex items-stretch p-3 gap-2">
                                 <input
                                     type="text"
-                                    value={code}
-                                    onChange={(e) => setCode(e.target.value)}
+                                    name="code"
                                     placeholder="q7-MOCHA-42"
                                     className="flex-1 bg-paper border-thin px-3 py-2 font-mono text-[20px] uppercase tracking-[0.16em] placeholder:text-ink/25 outline-none focus:bg-white"
+                                    required
                                 />
                                 <button
                                     type="submit"
