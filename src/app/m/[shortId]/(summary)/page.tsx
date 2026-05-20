@@ -1,5 +1,6 @@
 'use client'
 
+import { MeetingFooter } from '../_components/Footer'
 import { useResponses } from './_hooks/useResponses'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
@@ -15,8 +16,7 @@ import {
 } from '@/lib/dates'
 import { MOCK_MEETING } from '@/lib/mock'
 import { cn } from '@/lib/utils'
-import { useMemo, useState } from 'react'
-import { MeetingFooter } from '../_components/Footer'
+import { useCallback, useMemo, useState } from 'react'
 
 const meeting = MOCK_MEETING
 const rangeStart = ymd(meeting.startDate)
@@ -25,6 +25,10 @@ const rangeEnd = ymd(meeting.endDate)
 const SummaryPage = () => {
     const { responses } = useResponses()
     const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null)
+    const [hoveredDate, setHoveredDate] = useState<string | null>(null)
+
+    const handleCellEnter = useCallback((iso: string) => setHoveredDate(iso), [])
+    const handleCellLeave = useCallback(() => setHoveredDate(null), [])
 
     const people = useMemo(
         () =>
@@ -75,7 +79,9 @@ const SummaryPage = () => {
                         </span>
                     </div>
                     <div className="px-4 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.04em] text-ink/55 border-b border-ink/10">
-                        {selectedPersonId !== null ? 'CLICK SAME NAME TO CLEAR' : 'CLICK A NAME TO ISOLATE'}
+                        {selectedPersonId !== null
+                            ? 'CLICK SAME NAME TO CLEAR'
+                            : 'CLICK A NAME TO ISOLATE'}
                     </div>
                     <div>
                         {people.map((p, i) => (
@@ -112,10 +118,9 @@ const SummaryPage = () => {
                     </div>
                     {selectedPersonId !== null && (
                         <div className="p-3 border-t border-ink/20 flex flex-col gap-2">
-                            <button
-                                className="w-full py-2.5 px-3 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] font-bold uppercase tracking-[0.08em] press-effect-mocha"
-                            >
-                                ✎ Edit {people.find((p) => p.id === selectedPersonId)?.name}&apos;s availability
+                            <button className="w-full py-2.5 px-3 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] font-bold uppercase tracking-[0.08em] press-effect-mocha">
+                                ✎ Edit {people.find((p) => p.id === selectedPersonId)?.name}&apos;s
+                                availability
                             </button>
                             <button
                                 onClick={() => setSelectedPersonId(null)}
@@ -149,21 +154,24 @@ const SummaryPage = () => {
                             {selectedPersonId !== null ? (
                                 <>
                                     <div className="font-sans text-[22px] font-bold leading-tight uppercase">
-                                        {people.find((p) => p.id === selectedPersonId)?.name} is available
+                                        {people.find((p) => p.id === selectedPersonId)?.name} is
+                                        available
                                     </div>
                                     <div className="font-mono text-[11px] text-ink/60 mt-0.5 uppercase tracking-[0.08em]">
-                                        {people.find((p) => p.id === selectedPersonId)?.daysCount} DAYS SELECTED
+                                        {people.find((p) => p.id === selectedPersonId)?.daysCount}{' '}
+                                        DAYS SELECTED
                                     </div>
                                 </>
                             ) : (
                                 <>
                                     <div className="font-sans text-[22px] font-bold leading-tight">
-                                        {formatDateLong(best.range![0])} — {formatDateLong(best.range![1])}
+                                        {formatDateLong(best.range![0])} —{' '}
+                                        {formatDateLong(best.range![1])}
                                     </div>
                                     <div className="font-mono text-[11px] text-ink/60 mt-0.5">
                                         ALL {best.max}/{responses.length} FREE ·{' '}
-                                        {daysBetweenInclusive(best.range![0], best.range![1])} CONSECUTIVE
-                                        DAYS
+                                        {daysBetweenInclusive(best.range![0], best.range![1])}{' '}
+                                        CONSECUTIVE DAYS
                                     </div>
                                 </>
                             )}
@@ -206,6 +214,9 @@ const SummaryPage = () => {
                                     inRange={inRange}
                                     people={people}
                                     selectedPersonId={selectedPersonId}
+                                    isHovered={hoveredDate === cell.date}
+                                    onMouseEnter={handleCellEnter}
+                                    onMouseLeave={handleCellLeave}
                                 />
                             )}
                         />

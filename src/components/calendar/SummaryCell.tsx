@@ -18,12 +18,23 @@ type SummaryCellProps = {
     inRange: boolean
     people: Person[]
     selectedPersonId: number | null
+    isHovered: boolean
+    onMouseEnter: (iso: string) => void
+    onMouseLeave: () => void
 }
 
-export const SummaryCell = ({ cell, inRange, people, selectedPersonId }: SummaryCellProps) => {
+export const SummaryCell = ({
+    cell,
+    inRange,
+    people,
+    selectedPersonId,
+    isHovered,
+    onMouseEnter,
+    onMouseLeave,
+}: SummaryCellProps) => {
     const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
 
-    if (!inRange || !cell.inMonth) {
+    if (!inRange) {
         return (
             <div
                 className={cn('relative flex items-start justify-start p-1', 'bg-hatch opacity-40')}
@@ -66,10 +77,16 @@ export const SummaryCell = ({ cell, inRange, people, selectedPersonId }: Summary
                     height: '100%',
                     backgroundColor: heat,
                     color: fg,
-                    boxShadow: hoverPos ? `inset 0 0 0 3px #161514` : undefined,
+                    boxShadow: isHovered ? `inset 0 0 0 3px #161514` : undefined,
                 }}
-                onMouseEnter={(e) => setHoverPos({ x: e.clientX, y: e.clientY })}
-                onMouseLeave={() => setHoverPos(null)}
+                onMouseEnter={(e) => {
+                    setHoverPos({ x: e.clientX, y: e.clientY })
+                    onMouseEnter(cell.date)
+                }}
+                onMouseLeave={() => {
+                    setHoverPos(null)
+                    onMouseLeave()
+                }}
             >
                 {/* Weekend diagonal hatch overlay */}
                 {weekend && (

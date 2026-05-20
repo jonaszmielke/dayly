@@ -22,6 +22,7 @@ const RespondPage = () => {
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
     const [anchor, setAnchor] = useState<string | null>(null)
+    const [hoveredDate, setHoveredDate] = useState<string | null>(null)
     const [saveState, setSaveState] = useState<SaveState>('idle')
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
@@ -62,6 +63,7 @@ const RespondPage = () => {
 
     const handleMouseEnter = useCallback(
         (iso: string) => {
+            setHoveredDate(iso)
             if (!dragging) return
             setSelected((prev) => {
                 const next = new Set(prev)
@@ -72,6 +74,10 @@ const RespondPage = () => {
         },
         [dragging]
     )
+
+    const handleMouseLeave = useCallback(() => {
+        setHoveredDate(null)
+    }, [])
 
     useEffect(() => {
         const onUp = () => setDragging(null)
@@ -260,8 +266,10 @@ const RespondPage = () => {
                                 cell={cell}
                                 inRange={inRange}
                                 selected={selected.has(cell.date)}
+                                isHovered={hoveredDate === cell.date}
                                 onMouseDown={handleMouseDown}
                                 onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                             />
                         )}
                     />

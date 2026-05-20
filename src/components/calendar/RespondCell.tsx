@@ -2,32 +2,33 @@
 
 import { GridCell } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import { isWeekend } from '@/utils/isWeekend'
 
 type RespondCellProps = {
     cell: GridCell
     inRange: boolean
     selected: boolean
+    isHovered: boolean
     onMouseDown: (iso: string, shiftKey: boolean) => void
     onMouseEnter: (iso: string) => void
+    onMouseLeave: () => void
 }
 
 export const RespondCell = ({
     cell,
     inRange,
     selected,
+    isHovered,
     onMouseDown,
     onMouseEnter,
+    onMouseLeave,
 }: RespondCellProps) => {
-    if (!inRange || !cell.inMonth) {
+    if (!inRange) {
         return (
             <div className="relative bg-hatch opacity-40 p-1" style={{ height: '100%' }}>
                 <span className="font-mono text-[12px] text-ink/35">{cell.dom}</span>
             </div>
         )
     }
-
-    const weekend = isWeekend(cell.date)
 
     return (
         <div
@@ -41,25 +42,11 @@ export const RespondCell = ({
             }}
             onMouseDown={(e) => onMouseDown(cell.date, e.shiftKey)}
             onMouseEnter={() => onMouseEnter(cell.date)}
+            onMouseLeave={onMouseLeave}
         >
-            {/* Weekend hatch when unselected */}
-            {weekend && !selected && (
-                <div
-                    className="absolute inset-0 pointer-events-none opacity-[0.07]"
-                    style={{
-                        backgroundImage:
-                            'repeating-linear-gradient(45deg,#161514,#161514 1px,transparent 1px,transparent 6px)',
-                    }}
-                />
+            {isHovered && (
+                <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_0_2px_#161514] z-0" />
             )}
-
-            {/* Hover inset ring (CSS via group hover) */}
-            <div
-                className={cn(
-                    'absolute inset-0 pointer-events-none transition-all',
-                    !selected && 'hover-ring'
-                )}
-            />
 
             <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>
 
