@@ -1,29 +1,18 @@
 import { CopyButton } from '@/components/CopyButton'
 import { TopBar } from '@/components/TopBar'
+import { MONTH_ABBREVIATIONS } from '@/lib/dates'
+import { appUrl } from '@/lib/utils'
 import { Meeting } from '@prisma/client'
 
-const MONTH_ABBR = [
-    'JAN',
-    'FEB',
-    'MAR',
-    'APR',
-    'MAY',
-    'JUN',
-    'JUL',
-    'AUG',
-    'SEP',
-    'OCT',
-    'NOV',
-    'DEC',
-]
-
 const fmtDate = (d: Date): string => {
-    return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBR[d.getMonth()]} ${d.getFullYear()}`
+    return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBREVIATIONS[d.getMonth()]} ${d.getFullYear()}`
 }
 
 const MeetingHeader = ({ meeting }: { meeting: Meeting }) => {
     const dateRange = `${fmtDate(meeting.startDate)} — ${fmtDate(meeting.endDate)}`
     const mode = meeting.mode === 'DAYS' ? 'DAY MODE' : 'HOUR MODE'
+
+    const link = `${appUrl()}/m/${meeting.shortId}`
 
     return (
         <TopBar
@@ -32,9 +21,9 @@ const MeetingHeader = ({ meeting }: { meeting: Meeting }) => {
             meta={[dateRange, mode]}
             right={
                 <div className="flex flex-col items-end gap-1">
-                    <CopyButton text={`dayly.cz/s/${meeting.shortId}`} />
+                    <CopyButton text={link} />
                     <span className="font-mono text-[11px] text-ink/50 tracking-[0.04em]">
-                        dayly.cz/s/{meeting.shortId}
+                        {link}
                     </span>
                 </div>
             }

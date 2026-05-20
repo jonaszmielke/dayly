@@ -37,7 +37,7 @@ const CreatePage = () => {
                     ? `${daysBetweenInclusive(dateRange.start, dateRange.end)} days`
                     : '—',
         },
-        { label: 'Deadline', value: formatDate(deadline) || '—' },
+        { label: 'Deadline', value: deadline ? formatDate(deadline) : '—' },
     ]
 
     return (

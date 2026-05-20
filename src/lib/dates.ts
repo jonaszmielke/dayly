@@ -94,8 +94,7 @@ export const monthName = (month: number): string => {
     return MONTH_NAMES[month]
 }
 
-export const formatDate = (iso: string | null | undefined): string | null => {
-    if (!iso) return null
+export const formatDate = (iso: string): string => {
     const d = parseISO(iso)
     return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBREVIATIONS[d.getMonth()]} ${d.getFullYear()}`
 }

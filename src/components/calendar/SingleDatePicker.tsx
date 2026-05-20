@@ -1,7 +1,7 @@
 'use client'
 
 import { DPMonth } from './DPMonth'
-import { daysBetweenInclusive, formatDate, parseISO, ymd } from '@/lib/dates'
+import { daysBetweenInclusive, DOW_ABBREVIATIONS, formatDate, parseISO, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { Popover } from '@base-ui/react/popover'
 import { useState } from 'react'
@@ -14,11 +14,9 @@ type SingleDatePickerProps = {
     label?: string
 }
 
-const DOW_SHORT = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-
 const formatDateWithDow = (iso: string): string => {
     const d = parseISO(iso)
-    return `${DOW_SHORT[d.getDay()]} ${formatDate(iso)}`
+    return `${DOW_ABBREVIATIONS[d.getDay()]} ${formatDate(iso)}`
 }
 
 export const SingleDatePicker = ({
