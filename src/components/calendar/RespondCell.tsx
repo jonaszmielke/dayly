@@ -8,7 +8,7 @@ type RespondCellProps = {
     cell: GridCell
     inRange: boolean
     selected: boolean
-    onMouseDown: (iso: string) => void
+    onMouseDown: (iso: string, shiftKey: boolean) => void
     onMouseEnter: (iso: string) => void
 }
 
@@ -39,7 +39,7 @@ export const RespondCell = ({
             style={{
                 height: '100%',
             }}
-            onMouseDown={() => onMouseDown(cell.date)}
+            onMouseDown={(e) => onMouseDown(cell.date, e.shiftKey)}
             onMouseEnter={() => onMouseEnter(cell.date)}
         >
             {/* Weekend hatch when unselected */}

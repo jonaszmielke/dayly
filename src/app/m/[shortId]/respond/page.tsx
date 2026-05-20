@@ -21,15 +21,35 @@ const RespondPage = () => {
     const [name, setName] = useState('')
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
+    const [anchor, setAnchor] = useState<string | null>(null)
     const [saveState, setSaveState] = useState<SaveState>('idle')
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
 
     const handleMouseDown = useCallback(
-        (iso: string) => {
+        (iso: string, shiftKey: boolean) => {
+            if (shiftKey && anchor) {
+                const [a, b] = anchor <= iso ? [anchor, iso] : [iso, anchor]
+                const range = dateRange(a, b).filter(
+                    (d) => d >= rangeStart && d <= rangeEnd
+                )
+                const anchorSelected = selected.has(anchor)
+                const mode = anchorSelected ? 'add' : 'remove'
+                setSelected((prev) => {
+                    const next = new Set(prev)
+                    range.forEach((d) => {
+                        if (mode === 'add') next.add(d)
+                        else next.delete(d)
+                    })
+                    return next
+                })
+                setAnchor(iso)
+                return
+            }
             const isSelected = selected.has(iso)
             const mode = isSelected ? 'remove' : 'add'
             setDragging(mode)
+            setAnchor(iso)
             setSelected((prev) => {
                 const next = new Set(prev)
                 if (mode === 'remove') next.delete(iso)
@@ -37,7 +57,7 @@ const RespondPage = () => {
                 return next
             })
         },
-        [selected]
+        [selected, anchor]
     )
 
     const handleMouseEnter = useCallback(
