@@ -99,17 +99,17 @@ const HomePage = () => {
 
                         <div className="flex items-center gap-3">
                             <Link
-                                href="/create"
+                                href="/new"
                                 className="px-5 py-3 bg-mocha text-paper-2 border-brutal shadow-brutal-sm press-effect-mocha font-sans text-[15px] font-bold uppercase tracking-[0.04em]"
                             >
                                 Create a survey
                             </Link>
-                            <Link
+                            {/* <Link
                                 href="/mock"
                                 className="px-5 py-3 bg-white border-brutal shadow-brutal-sm press-effect font-sans text-[15px] font-bold uppercase tracking-[0.04em]"
                             >
                                 See example
-                            </Link>
+                            </Link> */}
                         </div>
 
                         <div className="flex flex-col gap-2 mt-2">

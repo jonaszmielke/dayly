@@ -1,35 +1,53 @@
 'use client'
 
+import { createMeeting, CreateMeetingProps } from './_actions/createMeeting'
 import { DateRangePicker } from '@/components/calendar/DateRangePicker'
 import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
 import { appUrl, cn } from '@/lib/utils'
+import { MeetingMode } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const today = ymd(new Date())
 const MAX_NAME = 48
 
 const CreatePage = () => {
-    const [name, setName] = useState('')
-    const [mode, setMode] = useState<'days' | 'hours'>('days')
+    const [name, setName] = useState<string>('')
+    const [mode, setMode] = useState<MeetingMode>(MeetingMode.DAYS)
     const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({
         start: null,
         end: null,
     })
     const [deadline, setDeadline] = useState<string | null>(null)
+    const router = useRouter()
+
+    const createMeetingMutation = useMutation({
+        mutationFn: (props: CreateMeetingProps) => createMeeting(props),
+        onSuccess: (response) => {
+            if (response.success) router.push(`/m/${response.shortId}`)
+        },
+        onError: (error) => {},
+    })
+
+    const canSubmit = Boolean(name.trim() && dateRange.start && dateRange.end && deadline)
 
     const handleSubmit = () => {
-        /* eslint-disable-next-line no-console */
-        console.log({ name, mode, dateRange, deadline })
+        if (!name.trim() || !dateRange.start || !dateRange.end || !deadline) return
+        createMeetingMutation.mutate({
+            name,
+            dateRange: { start: dateRange.start, end: dateRange.end },
+            deadline,
+            mode,
+        })
     }
-
-    const canSubmit = name.trim() && dateRange.start && dateRange.end && deadline
 
     const statRows = [
         { label: 'Name', value: name || '—' },
-        { label: 'Mode', value: mode === 'days' ? 'DAYS' : 'HOURS' },
+        { label: 'Mode', value: mode },
         {
             label: 'Range',
             value:
@@ -86,8 +104,8 @@ const CreatePage = () => {
                     <Section number="02" title="Meeting Mode" hint="BY HOUR coming soon">
                         <div className="grid grid-cols-2 gap-4">
                             <ModeCard
-                                active={mode === 'days'}
-                                onClick={() => setMode('days')}
+                                active={mode === MeetingMode.DAYS}
+                                onClick={() => setMode(MeetingMode.DAYS)}
                                 title="Day-only"
                                 desc="Pick full days you're free"
                                 glyph={
@@ -98,10 +116,10 @@ const CreatePage = () => {
                                                 className="w-[6px] h-[6px]"
                                                 style={{
                                                     backgroundColor: [2, 5, 7, 8, 9, 12].includes(i)
-                                                        ? mode === 'days'
+                                                        ? mode === MeetingMode.DAYS
                                                             ? '#7E6038'
                                                             : '#7E6038'
-                                                        : mode === 'days'
+                                                        : mode === MeetingMode.DAYS
                                                           ? 'rgba(236,226,203,0.4)'
                                                           : 'rgba(22,21,20,0.2)',
                                                 }}
