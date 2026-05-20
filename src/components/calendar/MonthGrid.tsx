@@ -1,4 +1,4 @@
-import { DOW_ABBR, GridCell, monthGrid, monthName } from '@/lib/dates'
+import { DOW_ABBREVIATIONS, GridCell, monthGrid, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 
@@ -42,7 +42,7 @@ export const MonthGrid = ({
 
             {/* DOW header */}
             <div className="grid grid-cols-7 bg-paper border-b-[1.5px] border-ink">
-                {DOW_ABBR.map((d, i) => (
+                {DOW_ABBREVIATIONS.map((d, i) => (
                     <div
                         key={d}
                         className={cn(

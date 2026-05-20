@@ -5,7 +5,7 @@ import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
-import { cn } from '@/lib/utils'
+import { appUrl, cn } from '@/lib/utils'
 import { useState } from 'react'
 
 const today = ymd(new Date())
@@ -44,14 +44,13 @@ const CreatePage = () => {
         <div className="min-h-screen flex flex-col">
             <TopBar
                 crumbs={[{ label: 'Surveys', href: '/' }, { label: 'New' }]}
-                title="CREATE SURVEY"
-                meta={['STEP 1/1', 'BASICS', 'NO ACCOUNT NEEDED']}
+                title="NEW MEETING"
                 right={
                     <div className="flex flex-col items-end gap-1">
                         <div className="bg-ink text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest">
                             DRAFT
                         </div>
-                        <span className="font-mono text-[11px] text-ink/50">dayly.cz/new</span>
+                        <span className="font-mono text-[11px] text-ink/50">{appUrl()}/new</span>
                     </div>
                 }
             />

@@ -1,6 +1,6 @@
 'use client'
 
-import { addMonths, DOW_ABBR, monthGrid, monthName, ymd } from '@/lib/dates'
+import { addMonths, DOW_ABBREVIATIONS, monthGrid, monthName, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -66,33 +66,33 @@ export const DPMonth = ({
     return (
         <div className="w-full">
             {/* Header */}
-            <div className="grid grid-cols-[44px_1fr_44px] items-center border-b border-ink/10">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center px-3.5 py-3.5 border-b-2 border-ink">
                 <button
                     type="button"
                     onClick={prev}
-                    className="flex items-center justify-center h-11 border-r border-ink/10 font-mono text-lg hover:bg-mocha hover:text-paper-2 transition-colors"
+                    className="flex items-center justify-center w-9 h-9 border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
                 >
-                    ‹
+                    &lt;
                 </button>
-                <div className="text-center font-sans text-[15px] font-bold uppercase tracking-wider py-3">
+                <div className="text-center font-sans text-[18px] font-bold uppercase tracking-wider">
                     {monthName(month)} <span className="font-mono text-ink/55">{year}</span>
                 </div>
                 <button
                     type="button"
                     onClick={next}
-                    className="flex items-center justify-center h-11 border-l border-ink/10 font-mono text-lg hover:bg-mocha hover:text-paper-2 transition-colors"
+                    className="flex items-center justify-center w-9 h-9 border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
                 >
-                    ›
+                    &gt;
                 </button>
             </div>
 
             {/* DOW */}
             <div className="grid grid-cols-7 bg-paper">
-                {DOW_ABBR.map((d, i) => (
+                {DOW_ABBREVIATIONS.map((d, i) => (
                     <div
                         key={d}
                         className={cn(
-                            'py-1.5 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-ink/50',
+                            'py-2 text-center font-mono text-[10px] uppercase tracking-[0.08em] text-ink/50 border border-ink',
                             i >= 5 && 'bg-paper-shade'
                         )}
                     >
@@ -112,7 +112,7 @@ export const DPMonth = ({
                         <div
                             key={c.date}
                             className={cn(
-                                'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink/6 transition-all',
+                                'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink transition-all',
                                 !c.inMonth && 'text-ink/30 bg-paper-2',
                                 c.inMonth &&
                                     !disabled &&

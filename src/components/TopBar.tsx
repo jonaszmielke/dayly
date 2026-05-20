@@ -17,8 +17,6 @@ export const TopBar = ({ crumbs, title, meta, right, className }: TopBarProps) =
             className={cn('relative border-b-2 border-ink', className)}
             style={{ borderBottomWidth: 'var(--b-border)' }}
         >
-            {/* double rule */}
-            <div className="absolute bottom-[-10px] left-0 right-0 h-px bg-ink/30" aria-hidden />
             <div className="grid grid-cols-[1fr_auto_1fr] gap-8 items-center px-6 py-5">
                 {/* Left: wordmark + crumbs */}
                 <div className="flex items-center gap-3">

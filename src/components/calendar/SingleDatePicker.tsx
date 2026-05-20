@@ -1,7 +1,7 @@
 'use client'
 
 import { DPMonth } from './DPMonth'
-import { formatDate } from '@/lib/dates'
+import { daysBetweenInclusive, formatDate, parseISO, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { Popover } from '@base-ui/react/popover'
 import { useState } from 'react'
@@ -14,56 +14,118 @@ type SingleDatePickerProps = {
     label?: string
 }
 
+const DOW_SHORT = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+const formatDateWithDow = (iso: string): string => {
+    const d = parseISO(iso)
+    return `${DOW_SHORT[d.getDay()]} ${formatDate(iso)}`
+}
+
 export const SingleDatePicker = ({
     value,
     onChange,
     placeholder = 'SELECT DATE',
     minDate,
-    label,
+    label = 'DEADLINE',
 }: SingleDatePickerProps) => {
     const [open, setOpen] = useState(false)
+    const [pending, setPending] = useState<string | null>(value)
+
+    const current = open ? pending : value
 
     const handlePick = (iso: string) => {
-        onChange(iso)
-        setOpen(false)
+        setPending(iso)
     }
 
+    const handleApply = () => {
+        if (pending) {
+            onChange(pending)
+            setOpen(false)
+        }
+    }
+
+    const handleReset = () => {
+        setPending(null)
+    }
+
+    const handleOpenChange = (next: boolean) => {
+        if (next) setPending(value)
+        setOpen(next)
+    }
+
+    const today = ymd(new Date())
+    const subtext = value ? `${daysBetweenInclusive(today, value)} DAYS FROM TODAY` : 'SINGLE DATE'
+
     return (
-        <Popover.Root open={open} onOpenChange={setOpen}>
+        <Popover.Root open={open} onOpenChange={handleOpenChange}>
             <Popover.Trigger
                 className={cn(
                     'w-full text-left border-brutal shadow-brutal bg-white transition-all',
                     open && 'bg-paper shadow-brutal-mocha'
                 )}
-                style={{ padding: '14px 48px 14px 16px' }}
+                style={{ padding: '18px 48px 18px 16px' }}
             >
                 <div className="relative">
                     <span
-                        className={cn('font-sans font-bold text-[18px]', !value && 'text-ink/30')}
+                        className={cn(
+                            'font-sans font-bold text-[22px] uppercase',
+                            !value && 'text-ink/30'
+                        )}
                     >
-                        {formatDate(value) || placeholder}
+                        {value ? formatDateWithDow(value) : placeholder}
                     </span>
                     <span className="absolute right-0 top-1/2 -translate-y-1/2 font-mono text-ink/50">
                         ▾
                     </span>
                 </div>
-                {label && (
-                    <div className="font-mono text-[10.5px] text-ink/50 mt-0.5 uppercase tracking-[0.08em]">
-                        {label}
-                    </div>
-                )}
             </Popover.Trigger>
+            <div className="mt-1 pl-2 font-mono text-[11px] text-ink/55 uppercase tracking-[0.08em]">
+                {subtext}
+            </div>
 
             <Popover.Portal>
-                <Popover.Positioner align="start" sideOffset={10}>
-                    <Popover.Popup className="z-50 w-[360px] bg-white border-brutal shadow-brutal">
+                <Popover.Positioner align="center" sideOffset={10}>
+                    <Popover.Popup className="z-50 w-[540px] bg-white border-brutal shadow-brutal">
                         <DPMonth
                             mode="single"
-                            value={value}
+                            value={current}
                             rangeValue={{ start: null, end: null }}
                             onPick={handlePick}
                             minDate={minDate}
                         />
+                        <div className="flex items-center gap-3 p-4 border-t border-ink">
+                            <div className="flex-1 flex items-center gap-2 font-mono text-[12px]">
+                                {current ? (
+                                    <>
+                                        <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">
+                                            {label}
+                                        </span>
+                                        <span className="font-bold text-ink">
+                                            {formatDateWithDow(current)}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span className="text-ink/50 uppercase tracking-[0.08em]">
+                                        Pick a date
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleReset}
+                                className="px-3 py-1.5 border-thin font-mono text-[11px] uppercase tracking-[0.08em] hover:bg-paper transition-colors"
+                            >
+                                Reset
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleApply}
+                                disabled={!pending}
+                                className="px-4 py-1.5 bg-mocha text-paper-2 border-brutal shadow-brutal-sm font-mono text-[11px] uppercase tracking-[0.08em] disabled:opacity-40 hover:bg-mocha-dark transition-colors press-effect"
+                            >
+                                Apply
+                            </button>
+                        </div>
                     </Popover.Popup>
                 </Popover.Positioner>
             </Popover.Portal>

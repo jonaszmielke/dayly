@@ -10,7 +10,7 @@ import {
     computeBest,
     daysBetweenInclusive,
     formatDate,
-    formatDateLong,
+    formatDateMedium,
     getDisplayMonths,
     ymd,
 } from '@/lib/dates'
@@ -165,8 +165,8 @@ const SummaryPage = () => {
                             ) : (
                                 <>
                                     <div className="font-sans text-[22px] font-bold leading-tight">
-                                        {formatDateLong(best.range![0])} —{' '}
-                                        {formatDateLong(best.range![1])}
+                                        {formatDateMedium(best.range![0])} —{' '}
+                                        {formatDateMedium(best.range![1])}
                                     </div>
                                     <div className="font-mono text-[11px] text-ink/60 mt-0.5">
                                         ALL {best.max}/{responses.length} FREE ·{' '}

@@ -1,7 +1,7 @@
 'use client'
 
 import { DPMonth } from './DPMonth'
-import { formatDate } from '@/lib/dates'
+import { daysBetweenInclusive, formatDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { Popover } from '@base-ui/react/popover'
 import { useState } from 'react'
@@ -55,6 +55,11 @@ export const DateRangePicker = ({
     const displayText =
         value.start && value.end ? `${formatDate(value.start)} — ${formatDate(value.end)}` : null
 
+    const subtext =
+        value.start && value.end
+            ? `${daysBetweenInclusive(value.start, value.end)} DAYS IN RANGE`
+            : 'TWO CLICKS — START, THEN END'
+
     return (
         <Popover.Root open={open} onOpenChange={setOpen}>
             <Popover.Trigger
@@ -62,12 +67,12 @@ export const DateRangePicker = ({
                     'w-full text-left border-brutal shadow-brutal bg-white transition-all',
                     open && 'bg-paper shadow-brutal-mocha'
                 )}
-                style={{ padding: '14px 48px 14px 16px' }}
+                style={{ padding: '18px 48px 18px 16px' }}
             >
                 <div className="relative">
                     <span
                         className={cn(
-                            'font-sans font-bold text-[18px]',
+                            'font-sans font-bold text-[22px] uppercase',
                             !displayText && 'text-ink/30'
                         )}
                     >
@@ -77,15 +82,13 @@ export const DateRangePicker = ({
                         ▾
                     </span>
                 </div>
-                {displayText && (
-                    <div className="font-mono text-[10.5px] text-ink/50 mt-0.5 uppercase tracking-[0.08em]">
-                        DATE RANGE
-                    </div>
-                )}
             </Popover.Trigger>
+            <div className="mt-1 pl-2 font-mono text-[11px] text-ink/55 uppercase tracking-[0.08em]">
+                {subtext}
+            </div>
 
             <Popover.Portal>
-                <Popover.Positioner align="start" sideOffset={10}>
+                <Popover.Positioner align="center" sideOffset={10}>
                     <Popover.Popup className="z-50 w-[540px] bg-white border-brutal shadow-brutal">
                         <DPMonth
                             mode="range"
@@ -96,30 +99,53 @@ export const DateRangePicker = ({
                             hoverIso={hoverIso}
                             onHoverIso={setHoverIso}
                         />
-                        <div className="flex items-center gap-3 p-4 border-t border-ink/10">
-                            <div className="flex-1 font-mono text-[12px] text-ink/50">
-                                {current.start && !current.end && <span>Pick end date</span>}
-                                {current.start && current.end && (
-                                    <span className="font-bold text-ink">
-                                        {formatDate(current.start)} → {formatDate(current.end)}
-                                    </span>
-                                )}
+                        <div className="flex flex-col gap-1.5 p-4 border-t border-ink">
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 flex items-center gap-2 font-mono text-[12px]">
+                                    {current.start && current.end && (
+                                        <>
+                                            <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">
+                                                FROM
+                                            </span>
+                                            <span className="font-bold text-ink">
+                                                {formatDate(current.start)}
+                                            </span>
+                                            <span className="text-ink/50">→</span>
+                                            <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">
+                                                TO
+                                            </span>
+                                            <span className="font-bold text-ink">
+                                                {formatDate(current.end)}
+                                            </span>
+                                        </>
+                                    )}
+                                    {current.start && !current.end && (
+                                        <span className="text-ink/50 uppercase tracking-[0.08em]">
+                                            Pick end date
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={handleReset}
+                                    className="px-3 py-1.5 border-thin font-mono text-[11px] uppercase tracking-[0.08em] hover:bg-paper transition-colors"
+                                >
+                                    Reset
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleApply}
+                                    disabled={!pending.start || !pending.end}
+                                    className="px-4 py-1.5 bg-mocha text-paper-2 border-brutal shadow-brutal-sm font-mono text-[11px] uppercase tracking-[0.08em] disabled:opacity-40 hover:bg-mocha-dark transition-colors press-effect"
+                                >
+                                    Apply
+                                </button>
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleReset}
-                                className="px-3 py-1.5 border-thin font-mono text-[11px] uppercase tracking-[0.08em] hover:bg-paper transition-colors"
-                            >
-                                Reset
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleApply}
-                                disabled={!pending.start || !pending.end}
-                                className="px-4 py-1.5 bg-mocha text-paper-2 border-brutal shadow-brutal-sm font-mono text-[11px] uppercase tracking-[0.08em] disabled:opacity-40 hover:bg-mocha-dark transition-colors press-effect"
-                            >
-                                Apply
-                            </button>
+                            {current.start && current.end && (
+                                <div className="font-mono text-[11px] text-ink/55 uppercase tracking-[0.08em]">
+                                    · {daysBetweenInclusive(current.start, current.end)} DAYS
+                                </div>
+                            )}
                         </div>
                     </Popover.Popup>
                 </Popover.Positioner>

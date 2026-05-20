@@ -4,3 +4,5 @@ import { twMerge } from 'tailwind-merge'
 export const cn = (...inputs: ClassValue[]): string => {
     return twMerge(clsx(inputs))
 }
+
+export const appUrl = () => process.env.NEXT_PUBLIC_APP_URL || ''

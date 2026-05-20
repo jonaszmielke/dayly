@@ -73,7 +73,7 @@ export const MONTH_NAMES = [
     'DECEMBER',
 ] as const
 
-export const MONTH_ABBR = [
+export const MONTH_ABBREVIATIONS = [
     'JAN',
     'FEB',
     'MAR',
@@ -88,7 +88,7 @@ export const MONTH_ABBR = [
     'DEC',
 ] as const
 
-export const DOW_ABBR = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'] as const
+export const DOW_ABBREVIATIONS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'] as const
 
 export const monthName = (month: number): string => {
     return MONTH_NAMES[month]
@@ -97,13 +97,21 @@ export const monthName = (month: number): string => {
 export const formatDate = (iso: string | null | undefined): string | null => {
     if (!iso) return null
     const d = parseISO(iso)
-    return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBR[d.getMonth()]} ${d.getFullYear()}`
+    return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBREVIATIONS[d.getMonth()]} ${d.getFullYear()}`
+}
+
+export const formatDateMedium = (iso: string): string => {
+    const d = parseISO(iso)
+    const dow = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][d.getDay()]
+    return `${dow} ${d.getDate()} ${MONTH_ABBREVIATIONS[d.getMonth()]}`
 }
 
 export const formatDateLong = (iso: string): string => {
     const d = parseISO(iso)
-    const dow = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][d.getDay()]
-    return `${dow} ${d.getDate()} ${MONTH_ABBR[d.getMonth()]}`
+    const dow = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][
+        d.getDay()
+    ]
+    return `${dow} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
 }
 
 export const daysBetweenInclusive = (
