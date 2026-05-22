@@ -1,12 +1,16 @@
 'use server'
 
+import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
 import { Response } from '@prisma/client'
+import { z } from 'zod'
 
-type GetUserResponseProps = {
-    meetingShortId: string
-    name: string
-}
+const getUserResponseSchema = z.object({
+    meetingShortId: z.string().refine(validateMeetingShortId, 'Invalid meeting code'),
+    name: z.string().trim().min(1),
+})
+
+export type GetUserResponseProps = z.infer<typeof getUserResponseSchema>
 
 type GetUserResponseSuccess = {
     success: true
@@ -20,10 +24,22 @@ type GetUserResponseError = {
 
 export type GetUserResponseResponse = GetUserResponseSuccess | GetUserResponseError
 
-export const getUserResponse = async ({
-    meetingShortId,
-    name,
-}: GetUserResponseProps): Promise<GetUserResponseResponse> => {
+export const getUserResponse = async (
+    props: GetUserResponseProps
+): Promise<GetUserResponseResponse> => {
+    const parsed = getUserResponseSchema.safeParse(props)
+    if (!parsed.success) {
+        const first = parsed.error.issues[0]
+        return {
+            success: false,
+            message: first
+                ? `Invalid ${first.path.join('.') || 'input'}: ${first.message}`
+                : 'Invalid input',
+        }
+    }
+
+    const { meetingShortId, name } = parsed.data
+
     try {
         const meeting = await prisma.meeting.findUnique({
             where: {

@@ -1,23 +1,34 @@
 'use server'
 
+import { validateMeetingShortId } from '@/lib/code'
 import { convertToUtc } from '@/lib/dates'
 import { prisma } from '@/lib/prisma'
+import { z } from 'zod'
 
-type SaveResponseProps = {
-    meetingShortId: string
-    name: string
-    newName?: string
-    dates: string[]
-    edit?: boolean
-}
+const saveResponseSchema = z.object({
+    meetingShortId: z.string().refine(validateMeetingShortId, 'Invalid meeting code'),
+    name: z.string().trim().min(1),
+    newName: z.string().trim().min(1).optional(),
+    dates: z.array(z.string()),
+    edit: z.boolean().optional().default(false),
+})
 
-export const saveResponse = async ({
-    meetingShortId,
-    name,
-    newName,
-    dates,
-    edit = false,
-}: SaveResponseProps) => {
+export type SaveResponseProps = z.input<typeof saveResponseSchema>
+
+export const saveResponse = async (props: SaveResponseProps) => {
+    const parsed = saveResponseSchema.safeParse(props)
+    if (!parsed.success) {
+        const first = parsed.error.issues[0]
+        return {
+            success: false,
+            message: first
+                ? `Invalid ${first.path.join('.') || 'input'}: ${first.message}`
+                : 'Invalid input',
+        }
+    }
+
+    const { meetingShortId, name, newName, dates, edit } = parsed.data
+
     try {
         const meeting = await prisma.meeting.findUnique({
             where: { shortId: meetingShortId },

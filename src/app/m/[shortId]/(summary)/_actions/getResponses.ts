@@ -1,5 +1,6 @@
 'use server'
 
+import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
 import { Response } from '@prisma/client'
 
@@ -16,6 +17,9 @@ type GetResponsesResponseError = {
 export type GetResponsesResponse = GetResponsesResponseSuccess | GetResponsesResponseError
 
 export const getResponses = async (meetingShortId: string): Promise<GetResponsesResponse> => {
+    if (!validateMeetingShortId(meetingShortId))
+        return { success: false, message: 'Invalid meeting code' }
+
     try {
         const responses = await prisma.response.findMany({
             where: {
