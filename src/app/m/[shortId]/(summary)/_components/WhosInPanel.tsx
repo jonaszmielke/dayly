@@ -62,10 +62,17 @@ export const WhosInPanel = ({
             </div>
             {selectedPersonId !== null && (
                 <div className="p-3 border-t border-ink/20 flex flex-col gap-2">
-                    <button className="w-full py-2.5 px-3 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] font-bold uppercase tracking-[0.08em] press-effect-mocha">
-                        ✎ Edit {people.find((p) => p.id === selectedPersonId)?.name}&apos;s
-                        availability
-                    </button>
+                    {(() => {
+                        const selectedName = people.find((p) => p.id === selectedPersonId)?.name
+                        return (
+                            <Link
+                                href={`/m/${meetingShortId}/respond?edit=${encodeURIComponent(selectedName ?? '')}`}
+                                className="w-full py-2.5 px-3 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] font-bold uppercase tracking-[0.08em] press-effect-mocha text-center"
+                            >
+                                ✎ Edit {selectedName}&apos;s availability
+                            </Link>
+                        )
+                    })()}
                     <button
                         onClick={onClearSelection}
                         className="w-full py-2 px-3 border-thin font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 hover:text-ink hover:border-ink transition-colors"

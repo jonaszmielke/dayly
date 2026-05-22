@@ -2,127 +2,80 @@
 
 import { saveResponse } from '../_actions/saveResponse'
 import { MeetingFooter } from '../../_components/Footer'
+import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
+import { useUserResponse } from '../hooks/useUserResponse'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
-import { dateRange, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
+import { formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { Meeting } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
-import { useCallback, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-
-type SaveState = 'idle' | 'saving' | 'saved'
+import { useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
     const router = useRouter()
+
     const rangeStart = ymd(meeting.startDate)
     const rangeEnd = ymd(meeting.endDate)
-    const [name, setName] = useState('')
-    const [selected, setSelected] = useState<Set<string>>(new Set())
-    const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
-    const [anchor, setAnchor] = useState<string | null>(null)
-    const [hoveredDate, setHoveredDate] = useState<string | null>(null)
-    const [saveState, setSaveState] = useState<SaveState>('idle')
 
-    const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
+    const searchParams = useSearchParams()
+    const edit = searchParams.get('edit')
+    const editOriginalName = useMemo(() => edit ?? undefined, [edit])
+    const [name, setName] = useState<string>('')
 
-    const handleMouseDown = useCallback(
-        (iso: string, shiftKey: boolean) => {
-            if (shiftKey && anchor) {
-                const [a, b] = anchor <= iso ? [anchor, iso] : [iso, anchor]
-                const range = dateRange(a, b).filter((d) => d >= rangeStart && d <= rangeEnd)
-                const anchorSelected = selected.has(anchor)
-                const mode = anchorSelected ? 'add' : 'remove'
-                setSelected((prev) => {
-                    const next = new Set(prev)
-                    range.forEach((d) => {
-                        if (mode === 'add') next.add(d)
-                        else next.delete(d)
-                    })
-                    return next
-                })
-                setAnchor(iso)
-                return
-            }
-            const isSelected = selected.has(iso)
-            const mode = isSelected ? 'remove' : 'add'
-            setDragging(mode)
-            setAnchor(iso)
-            setSelected((prev) => {
-                const next = new Set(prev)
-                if (mode === 'remove') next.delete(iso)
-                else next.add(iso)
-                return next
-            })
-        },
-        [selected, anchor]
-    )
+    const { userResponse, isLoading: isUserResponseLoading } = useUserResponse({
+        meetingShortId: meeting.shortId,
+        name: editOriginalName,
+    })
 
-    const handleMouseEnter = useCallback(
-        (iso: string) => {
-            setHoveredDate(iso)
-            if (!dragging) return
-            setSelected((prev) => {
-                const next = new Set(prev)
-                if (dragging === 'remove') next.delete(iso)
-                else next.add(iso)
-                return next
-            })
-        },
-        [dragging]
-    )
-
-    const handleMouseLeave = useCallback(() => {
-        setHoveredDate(null)
-    }, [])
+    const {
+        selected,
+        setSelected,
+        hoveredDate,
+        handleMouseDown,
+        handleMouseEnter,
+        handleMouseLeave,
+        handleReset,
+        handleQuickPick,
+    } = useCalendarSelectLogic({ rangeStart, rangeEnd })
 
     useEffect(() => {
-        const onUp = () => setDragging(null)
-        window.addEventListener('mouseup', onUp)
-        return () => window.removeEventListener('mouseup', onUp)
-    }, [])
+        if (!editOriginalName || isUserResponseLoading || !userResponse) return
+        setName(editOriginalName)
+        setSelected(new Set(userResponse.days.map((d) => ymd(d))))
+    }, [userResponse, editOriginalName, isUserResponseLoading])
 
-    const handleReset = () => {
-        setSelected(new Set())
-    }
+    const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
 
     const updateResponsesCache = useUpdateResponsesCache()
 
     const saveMutation = useMutation({
         mutationFn: () =>
-            saveResponse({ meetingShortId: meeting.shortId, name, dates: Array.from(selected) }),
-        onMutate: () => setSaveState('saving'),
+            saveResponse({
+                meetingShortId: meeting.shortId,
+                name,
+                dates: Array.from(selected),
+                edit: !!editOriginalName,
+                newName: !!editOriginalName && name !== editOriginalName ? name : undefined,
+            }),
         onSuccess: () => {
-            setSaveState('saved')
             updateResponsesCache({
                 meetingShortId: meeting.shortId,
                 name,
                 dates: Array.from(selected),
+                edit: !!editOriginalName,
+                originalName: editOriginalName,
             })
             setTimeout(() => router.push(`/m/${meeting.shortId}`), 600)
         },
-        onError: () => setSaveState('idle'),
     })
 
     const handleSave = async () => {
-        if (!name.trim() || saveState !== 'idle') return
+        if (!name.trim() || !saveMutation.isIdle) return
         saveMutation.mutate()
-    }
-
-    const handleQuickPick = (type: 'weekends' | 'weekdays') => {
-        const all = dateRange(rangeStart, rangeEnd)
-        const filtered = all.filter((iso) => {
-            const dow = new Date(iso + 'T00:00:00').getDay()
-            const isWeekend = dow === 0 || dow === 6
-            return type === 'weekends' ? isWeekend : !isWeekend
-        })
-        setSelected((prev) => {
-            const next = new Set(prev)
-            filtered.forEach((iso) => next.add(iso))
-            return next
-        })
     }
 
     const statRows = [
@@ -131,8 +84,11 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         { label: 'Respond by', value: formatDate(ymd(meeting.deadline)) ?? '—' },
     ]
 
-    const saveLabel =
-        saveState === 'saving' ? 'SAVING…' : saveState === 'saved' ? '✓ SAVED' : 'SAVE'
+    const saveLabel = saveMutation.isPending
+        ? 'SAVING…'
+        : saveMutation.isSuccess
+          ? '✓ SAVED'
+          : 'SAVE'
 
     return (
         <div
@@ -222,10 +178,10 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                 <div className="grid grid-cols-2 gap-3">
                     <button
                         onClick={handleSave}
-                        disabled={!name.trim() || saveState !== 'idle'}
+                        disabled={!name.trim() || !saveMutation.isIdle}
                         className={cn(
                             'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
-                            saveState === 'saved'
+                            saveMutation.isSuccess
                                 ? 'bg-mocha-dark text-paper-2 shadow-brutal'
                                 : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
                         )}
