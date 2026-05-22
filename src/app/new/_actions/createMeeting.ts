@@ -1,7 +1,7 @@
 'use server'
 
+import { generateMeetingId } from '@/lib/code'
 import { convertToUtc } from '@/lib/dates'
-import { generateMeetingId } from '@/lib/generateCode'
 import { prisma } from '@/lib/prisma'
 import { MeetingMode } from '@prisma/client'
 import { z } from 'zod'
