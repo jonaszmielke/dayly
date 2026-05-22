@@ -13,7 +13,7 @@ type GetResponsesResponseError = {
     message: string
 }
 
-type GetResponsesResponse = GetResponsesResponseSuccess | GetResponsesResponseError
+export type GetResponsesResponse = GetResponsesResponseSuccess | GetResponsesResponseError
 
 export const getResponses = async (meetingShortId: string): Promise<GetResponsesResponse> => {
     try {
