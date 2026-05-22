@@ -3,12 +3,12 @@
 import { useResponses } from '../_hooks/useResponses'
 import { MeetingFooter } from '../../_components/Footer'
 import { BestDayBanner } from './BestDayBanner'
+import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { StatCard } from '@/components/StatCard'
 import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
-import { cn } from '@/lib/utils'
 import { Meeting } from '@prisma/client'
 import { useCallback, useMemo, useState } from 'react'
 
@@ -70,73 +70,13 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
         >
             {/* Sidebar */}
             <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                {/* Who's In panel */}
-                <div className="bg-white border-brutal shadow-brutal">
-                    <div className="flex items-center justify-between px-4 py-3 border-b-[1.5px] border-ink">
-                        <span className="font-sans text-[18px] font-bold tracking-[-0.01em]">
-                            WHO&apos;S IN
-                        </span>
-                        {/* <span className="font-mono text-[12px] text-ink/60">
-                            {responses.length}/{responses.length}
-                        </span> */}
-                        <button>+</button>
-                    </div>
-                    <div className="px-4 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.04em] text-ink/55 border-b border-ink/10">
-                        {selectedPersonId !== null
-                            ? 'CLICK SAME NAME TO CLEAR'
-                            : 'CLICK A NAME TO ISOLATE'}
-                    </div>
-                    <div>
-                        {people.map((p, i) => (
-                            <button
-                                key={p.id}
-                                onClick={() => handlePersonClick(p.id)}
-                                className={cn(
-                                    'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
-                                    i > 0 && 'border-t border-ink/10',
-                                    selectedPersonId === p.id
-                                        ? 'bg-ink text-paper-2'
-                                        : 'hover:bg-paper-3'
-                                )}
-                            >
-                                <span
-                                    className={cn(
-                                        'text-[16px]',
-                                        selectedPersonId === p.id
-                                            ? 'text-mocha-pale'
-                                            : 'text-ink/40'
-                                    )}
-                                >
-                                    {selectedPersonId === p.id ? '●' : '○'}
-                                </span>
-                                <span className="flex-1 font-sans text-[14px] font-semibold">
-                                    {p.name}
-                                </span>
-                                <span className="font-mono text-[11px]">
-                                    {p.daysCount}
-                                    <span className="text-ink/40">d</span>
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-                    {selectedPersonId !== null && (
-                        <div className="p-3 border-t border-ink/20 flex flex-col gap-2">
-                            <button className="w-full py-2.5 px-3 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] font-bold uppercase tracking-[0.08em] press-effect-mocha">
-                                ✎ Edit {people.find((p) => p.id === selectedPersonId)?.name}&apos;s
-                                availability
-                            </button>
-                            <button
-                                onClick={() => setSelectedPersonId(null)}
-                                className="w-full py-2 px-3 border-thin font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 hover:text-ink hover:border-ink transition-colors"
-                                style={{
-                                    borderStyle: 'dashed',
-                                }}
-                            >
-                                ← Back to heatmap
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <WhosInPanel
+                    meetingShortId={meeting.shortId}
+                    people={people}
+                    selectedPersonId={selectedPersonId}
+                    onPersonClick={handlePersonClick}
+                    onClearSelection={() => setSelectedPersonId(null)}
+                />
 
                 <HeatLegend total={responses.length} />
                 <StatCard rows={statRows} />

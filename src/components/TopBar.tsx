@@ -19,7 +19,7 @@ export const TopBar = ({ crumbs, title, meta, right, className }: TopBarProps) =
         >
             <div className="grid grid-cols-[1fr_auto_1fr] gap-8 items-center px-6 py-5">
                 {/* Left: wordmark + crumbs */}
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-10">
                     <Link href="/">
                         <Wordmark />
                     </Link>
@@ -49,7 +49,7 @@ export const TopBar = ({ crumbs, title, meta, right, className }: TopBarProps) =
                 </div>
 
                 {/* Center: title + meta pills */}
-                <div className="flex flex-col items-center gap-1">
+                <div className="flex flex-col items-center gap-2">
                     <h1
                         className="font-sans font-extrabold whitespace-nowrap tracking-[-0.035em] leading-none"
                         style={{ fontSize: 'var(--b-title)' }}

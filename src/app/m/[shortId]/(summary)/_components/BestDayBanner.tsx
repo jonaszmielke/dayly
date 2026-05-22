@@ -38,16 +38,23 @@ export const BestDayBanner = ({
 const BestDayBannerNoResponses = ({ meetingShortId }: { meetingShortId: string }) => {
     return (
         <>
-            <div className="bg-ink text-paper-2 px-2.5 py-1.5 font-sans text-[12px] font-extrabold uppercase tracking-[0.12em]">
-                NO RESPONSES YET
+            <div className="flex-1 flex flex-col items-start gap-2">
+                <div className="bg-ink text-paper-2 px-2.5 py-1.5 font-sans text-[12px] font-extrabold uppercase tracking-[0.12em]">
+                    NO RESPONSES YET
+                </div>
+                <div className="font-sans text-[22px] font-bold leading-tight">
+                    Be the first one to respond.
+                </div>
             </div>
-            <div className="flex-1">
-                <p>Be the first one to respond</p>
-            </div>
-            {/* TODO: style button */}
             <Link href={`/m/${meetingShortId}/respond`}>
-                <button>Add response</button>
+                <button className="inline-flex items-center gap-2 px-4 py-2 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[13px] font-bold uppercase tracking-[0.08em] press-effect-mocha">
+                    <span className="inline-flex items-center justify-center w-[18px] h-[18px] border border-paper-2 font-mono text-[12px] leading-none">
+                        +
+                    </span>
+                    ADD YOUR RESPONSE
+                </button>
             </Link>
+            <span className="font-mono text-[20px] text-ink/30">↗</span>
         </>
     )
 }
