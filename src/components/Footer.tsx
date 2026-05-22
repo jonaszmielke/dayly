@@ -14,31 +14,28 @@ type FooterProps = {
 
 export const Footer = ({ links, version = 'v0.1', className }: FooterProps) => {
     return (
-        <footer
-            className={cn(
-                'flex items-center justify-between px-6 py-4 mt-8 border-t border-ink/30',
-                className
-            )}
-        >
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55">
-                DAYLY
-            </span>
-            {links && links.length > 0 && (
-                <nav className="flex items-center gap-4">
-                    {links.map((l) => (
-                        <Link
-                            key={l.href}
-                            href={l.href}
-                            className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 hover:text-ink"
-                        >
-                            {l.label}
-                        </Link>
-                    ))}
-                </nav>
-            )}
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40">
-                {version}
-            </span>
+        <footer className={cn('mt-8 border-t border-ink/30', className)}>
+            <div className="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between">
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55">
+                    DAYLY
+                </span>
+                {links && links.length > 0 && (
+                    <nav className="flex items-center gap-4">
+                        {links.map((l) => (
+                            <Link
+                                key={l.href}
+                                href={l.href}
+                                className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 hover:text-ink"
+                            >
+                                {l.label}
+                            </Link>
+                        ))}
+                    </nav>
+                )}
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40">
+                    {version}
+                </span>
+            </div>
         </footer>
     )
 }

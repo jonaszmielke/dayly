@@ -1,7 +1,6 @@
 'use client'
 
 import { useResponses } from '../_hooks/useResponses'
-import { MeetingFooter } from '../../_components/Footer'
 import { BestDayBanner } from './BestDayBanner'
 import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
@@ -68,73 +67,75 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                 paddingRight: '19.48vw',
             }}
         >
-            {/* Sidebar */}
-            <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                <WhosInPanel
-                    meetingShortId={meeting.shortId}
-                    people={people}
-                    selectedPersonId={selectedPersonId}
-                    onPersonClick={handlePersonClick}
-                    onClearSelection={() => setSelectedPersonId(null)}
-                />
+                {/* Sidebar */}
+                <aside className="flex flex-col gap-4 sticky top-6 self-start">
+                    <WhosInPanel
+                        meetingShortId={meeting.shortId}
+                        people={people}
+                        selectedPersonId={selectedPersonId}
+                        onPersonClick={handlePersonClick}
+                        onClearSelection={() => setSelectedPersonId(null)}
+                    />
 
-                <HeatLegend total={responses.length} />
-                <StatCard rows={statRows} />
-            </aside>
+                    <HeatLegend total={responses.length} />
+                    <StatCard rows={statRows} />
+                </aside>
 
-            {/* Main content */}
-            <main className="flex flex-col gap-6">
-                <BestDayBanner
-                    meetingShortId={meeting.shortId}
-                    responsesLength={responses.length}
-                    selectedPerson={selectedPerson || null}
-                    best={best}
-                />
+                {/* Main content */}
+                <main className="flex flex-col gap-6">
+                    <BestDayBanner
+                        meetingShortId={meeting.shortId}
+                        responsesLength={responses.length}
+                        selectedPerson={selectedPerson || null}
+                        best={best}
+                    />
 
-                {/* Month grids */}
-                {displayMonths.map(({ year, month }) => {
-                    const daysInRange = (() => {
-                        const monthStart = new Date(year, month, 1)
-                        const monthEnd = new Date(year, month + 1, 0)
-                        const clampStart = new Date(
-                            Math.max(
-                                monthStart.getTime(),
-                                new Date(rangeStart + 'T00:00:00').getTime()
+                    {/* Month grids */}
+                    {displayMonths.map(({ year, month }) => {
+                        const daysInRange = (() => {
+                            const monthStart = new Date(year, month, 1)
+                            const monthEnd = new Date(year, month + 1, 0)
+                            const clampStart = new Date(
+                                Math.max(
+                                    monthStart.getTime(),
+                                    new Date(rangeStart + 'T00:00:00').getTime()
+                                )
                             )
-                        )
-                        const clampEnd = new Date(
-                            Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
-                        )
-                        if (clampStart > clampEnd) return 0
+                            const clampEnd = new Date(
+                                Math.min(
+                                    monthEnd.getTime(),
+                                    new Date(rangeEnd + 'T00:00:00').getTime()
+                                )
+                            )
+                            if (clampStart > clampEnd) return 0
+                            return (
+                                Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) +
+                                1
+                            )
+                        })()
+
                         return (
-                            Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
+                            <MonthGrid
+                                key={`${year}-${month}`}
+                                year={year}
+                                month={month}
+                                rangeStart={rangeStart}
+                                rangeEnd={rangeEnd}
+                                daysInRange={daysInRange}
+                                cellRenderer={(cell, inRange) => (
+                                    <SummaryCell
+                                        cell={cell}
+                                        inRange={inRange}
+                                        people={people}
+                                        selectedPersonId={selectedPersonId}
+                                        isHovered={hoveredDate === cell.date}
+                                        onMouseEnter={handleCellEnter}
+                                        onMouseLeave={handleCellLeave}
+                                    />
+                                )}
+                            />
                         )
-                    })()
-
-                    return (
-                        <MonthGrid
-                            key={`${year}-${month}`}
-                            year={year}
-                            month={month}
-                            rangeStart={rangeStart}
-                            rangeEnd={rangeEnd}
-                            daysInRange={daysInRange}
-                            cellRenderer={(cell, inRange) => (
-                                <SummaryCell
-                                    cell={cell}
-                                    inRange={inRange}
-                                    people={people}
-                                    selectedPersonId={selectedPersonId}
-                                    isHovered={hoveredDate === cell.date}
-                                    onMouseEnter={handleCellEnter}
-                                    onMouseLeave={handleCellLeave}
-                                />
-                            )}
-                        />
-                    )
-                })}
-
-                <MeetingFooter />
+                    })}
             </main>
         </div>
     )

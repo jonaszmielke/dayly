@@ -1,7 +1,6 @@
 'use client'
 
 import { saveResponse } from '../_actions/saveResponse'
-import { MeetingFooter } from '../../_components/Footer'
 import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
@@ -244,7 +243,6 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                     />
                 ))}
 
-                <MeetingFooter />
             </main>
         </div>
     )
