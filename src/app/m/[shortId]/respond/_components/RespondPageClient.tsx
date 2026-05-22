@@ -41,10 +41,13 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         handleQuickPick,
     } = useCalendarSelectLogic({ rangeStart, rangeEnd })
 
+    const [editInitialized, setEditInitialized] = useState(false)
+
     useEffect(() => {
         if (!editOriginalName || isUserResponseLoading || !userResponse) return
         setName(editOriginalName)
         setSelected(new Set(userResponse.days.map((d) => ymd(d))))
+        setEditInitialized(true)
     }, [userResponse, editOriginalName, isUserResponseLoading])
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
@@ -76,6 +79,43 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         if (!name.trim() || !saveMutation.isIdle) return
         saveMutation.mutate()
     }
+
+    const isDirty = useMemo(() => {
+        if (saveMutation.isSuccess || saveMutation.isPending) return false
+        if (editOriginalName) {
+            if (!editInitialized || !userResponse) return false
+            const original = new Set(userResponse.days.map((d) => ymd(d)))
+            if (name !== editOriginalName) return true
+            if (original.size !== selected.size) return true
+            for (const d of selected) if (!original.has(d)) return true
+            return false
+        }
+        return name.trim().length > 0 || selected.size > 0
+    }, [name, selected, editOriginalName, userResponse, editInitialized, saveMutation.isSuccess, saveMutation.isPending])
+
+    useEffect(() => {
+        if (!isDirty) return
+        const handler = (e: BeforeUnloadEvent) => {
+            e.preventDefault()
+        }
+        window.addEventListener('beforeunload', handler)
+        return () => window.removeEventListener('beforeunload', handler)
+    }, [isDirty])
+
+    useEffect(() => {
+        if (!isDirty) return
+        window.history.pushState(null, '', window.location.href)
+        const onPopState = () => {
+            if (window.confirm('You have unsaved changes. Leave this page?')) {
+                window.removeEventListener('popstate', onPopState)
+                window.history.back()
+            } else {
+                window.history.pushState(null, '', window.location.href)
+            }
+        }
+        window.addEventListener('popstate', onPopState)
+        return () => window.removeEventListener('popstate', onPopState)
+    }, [isDirty])
 
     const statRows = [
         { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },

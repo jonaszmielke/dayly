@@ -16,6 +16,7 @@ const MeetingHeader = ({ meeting }: { meeting: Meeting }) => {
 
     return (
         <TopBar
+            compact
             crumbs={[{ label: 'Surveys', href: '/' }, { label: meeting.name }]}
             title={meeting.name}
             meta={[dateRange, mode]}

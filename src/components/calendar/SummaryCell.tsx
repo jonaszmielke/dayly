@@ -1,7 +1,7 @@
 'use client'
 
 import { HoverTip } from './HoverTip'
-import { GridCell, isWeekend } from '@/lib/dates'
+import { GridCell } from '@/lib/dates'
 import { HEAT_PALETTE, pickFg, pickHeat } from '@/lib/heat'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
@@ -48,7 +48,6 @@ export const SummaryCell = ({
     const total = people.length
     const ratio = total > 0 ? freeCount / total : 0
     const prominent = ratio >= 0.8 && freeCount > 0
-    const weekend = isWeekend(cell.date)
 
     const selectedAvail =
         selectedPersonId !== null
@@ -87,17 +86,6 @@ export const SummaryCell = ({
                     onMouseLeave()
                 }}
             >
-                {/* Weekend diagonal hatch overlay */}
-                {weekend && (
-                    <div
-                        className="absolute inset-0 pointer-events-none opacity-[0.04]"
-                        style={{
-                            backgroundImage:
-                                'repeating-linear-gradient(45deg,#161514,#161514 1px,transparent 1px,transparent 6px)',
-                        }}
-                    />
-                )}
-
                 {/* Day of month */}
                 <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>
 

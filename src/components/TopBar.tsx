@@ -9,17 +9,23 @@ type TopBarProps = {
     meta?: string[]
     right?: ReactNode
     className?: string
+    compact?: boolean
 }
 
-export const TopBar = ({ crumbs, title, meta, right, className }: TopBarProps) => {
+export const TopBar = ({ crumbs, title, meta, right, className, compact }: TopBarProps) => {
     return (
         <header
             className={cn('relative border-b-2 border-ink', className)}
             style={{ borderBottomWidth: 'var(--b-border)' }}
         >
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-8 items-center px-6 py-5">
+            <div
+                className={cn(
+                    'grid grid-cols-[1fr_auto_1fr] gap-8 items-center px-6',
+                    compact ? 'py-3' : 'py-5'
+                )}
+            >
                 {/* Left: wordmark + crumbs */}
-                <div className="flex flex-col gap-10">
+                <div className={cn('flex flex-col', compact ? 'gap-5' : 'gap-10')}>
                     <Link href="/">
                         <Wordmark />
                     </Link>
@@ -52,7 +58,7 @@ export const TopBar = ({ crumbs, title, meta, right, className }: TopBarProps) =
                 <div className="flex flex-col items-center gap-2">
                     <h1
                         className="font-sans font-extrabold whitespace-nowrap tracking-[-0.035em] leading-none"
-                        style={{ fontSize: 'var(--b-title)' }}
+                        style={{ fontSize: compact ? 'calc(var(--b-title) * 0.75)' : 'var(--b-title)' }}
                     >
                         {title}
                     </h1>

@@ -6,3 +6,5 @@ export const cn = (...inputs: ClassValue[]): string => {
 }
 
 export const appUrl = () => process.env.NEXT_PUBLIC_APP_URL || ''
+
+export const appVersion = () => process.env.NEXT_PUBLIC_APP_VERSION || ''

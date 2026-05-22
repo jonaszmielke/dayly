@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { appVersion, cn } from '@/lib/utils'
 import Link from 'next/link'
 
 type FooterLink = {
@@ -8,11 +8,10 @@ type FooterLink = {
 
 type FooterProps = {
     links?: FooterLink[]
-    version?: string
     className?: string
 }
 
-export const Footer = ({ links, version = 'v0.1', className }: FooterProps) => {
+export const Footer = ({ links, className }: FooterProps) => {
     return (
         <footer className={cn('mt-8 border-t border-ink/30', className)}>
             <div className="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between">
@@ -33,7 +32,7 @@ export const Footer = ({ links, version = 'v0.1', className }: FooterProps) => {
                     </nav>
                 )}
                 <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40">
-                    {version}
+                    {appVersion()}
                 </span>
             </div>
         </footer>
