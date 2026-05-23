@@ -347,6 +347,7 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                 onSave={handleSave}
                 saveLabel={saveLabel}
                 canReset={selected.size > 0}
+                canSave={!!name.trim() && isDirty && selected.size > 0}
                 saveState={saveState}
             />
         </>

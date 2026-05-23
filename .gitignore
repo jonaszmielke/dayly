@@ -5,6 +5,8 @@ CLAUDE.md
 AGENTS.md
 /design
 .vscode
+.claude
+graphify-out
 
 # dependencies
 /node_modules
