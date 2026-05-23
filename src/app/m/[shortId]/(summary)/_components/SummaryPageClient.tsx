@@ -160,36 +160,32 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
             </div>
 
             {/* ── Desktop layout (lg+) ── */}
-            <div
-                className="hidden lg:grid py-8"
-                style={{
-                    gridTemplateColumns: '12.5vw 47.06vw',
-                    columnGap: '1.47vw',
-                    paddingLeft: '19.48vw',
-                    paddingRight: '19.48vw',
-                }}
-            >
-                <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                    <WhosInPanel
-                        meetingShortId={meeting.shortId}
-                        people={people}
-                        selectedPersonId={selectedPersonId}
-                        onPersonClick={handlePersonClick}
-                        onClearSelection={() => setSelectedPersonId(null)}
-                    />
-                    <HeatLegend total={responses.length} />
-                    <StatCard rows={statRows} />
-                </aside>
+            <div className="hidden lg:block py-8">
+                <div className="mx-auto w-full max-w-[1600px] px-6 xl:px-10">
+                    <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
+                        <aside className="flex flex-col gap-4 sticky top-6 self-start">
+                            <WhosInPanel
+                                meetingShortId={meeting.shortId}
+                                people={people}
+                                selectedPersonId={selectedPersonId}
+                                onPersonClick={handlePersonClick}
+                                onClearSelection={() => setSelectedPersonId(null)}
+                            />
+                            <HeatLegend total={responses.length} />
+                            <StatCard rows={statRows} />
+                        </aside>
 
-                <main className="flex flex-col gap-6">
-                    <BestDayBanner
-                        meetingShortId={meeting.shortId}
-                        responsesLength={responses.length}
-                        selectedPerson={selectedPerson}
-                        best={best}
-                    />
-                    {renderMonths(false)}
-                </main>
+                        <main className="flex flex-col gap-6">
+                            <BestDayBanner
+                                meetingShortId={meeting.shortId}
+                                responsesLength={responses.length}
+                                selectedPerson={selectedPerson}
+                                best={best}
+                            />
+                            {renderMonths(false)}
+                        </main>
+                    </div>
+                </div>
             </div>
 
             {/* Mobile: sticky day detail sheet */}
