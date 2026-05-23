@@ -132,33 +132,33 @@ export type BestResult = {
     allDays: string[]
 }
 
-export const computeBest = (availSets: string[][]): BestResult => {
+export const computeBest = (availableSets: string[][]): BestResult => {
     const counts: Record<string, number> = {}
-    for (const avail of availSets) {
-        for (const d of avail) counts[d] = (counts[d] || 0) + 1
+    for (const available of availableSets) {
+        for (const day of available) counts[day] = (counts[day] || 0) + 1
     }
     const max = Math.max(0, ...Object.values(counts))
     const days = Object.keys(counts)
-        .filter((d) => counts[d] === max)
+        .filter((day) => counts[day] === max)
         .sort()
     if (days.length === 0) return { max: 0, range: null, allDays: [] }
     let bestStart = days[0],
         bestEnd = days[0],
-        bestLen = 1
-    let curLen = 1
+        bestLength = 1
+    let currentLength = 1
     for (let i = 1; i < days.length; i++) {
-        const prev = new Date(days[i - 1] + 'T00:00:00')
-        const cur = new Date(days[i] + 'T00:00:00')
-        const diff = (cur.getTime() - prev.getTime()) / 86400000
+        const previousDay = new Date(days[i - 1] + 'T00:00:00')
+        const currentDay = new Date(days[i] + 'T00:00:00')
+        const diff = (currentDay.getTime() - previousDay.getTime()) / 86400000
         if (diff === 1) {
-            curLen++
-            if (curLen > bestLen) {
-                bestLen = curLen
-                bestStart = days[i - curLen + 1]
+            currentLength++
+            if (currentLength > bestLength) {
+                bestLength = currentLength
+                bestStart = days[i - currentLength + 1]
                 bestEnd = days[i]
             }
         } else {
-            curLen = 1
+            currentLength = 1
         }
     }
     return { max, range: [bestStart, bestEnd], allDays: days }
