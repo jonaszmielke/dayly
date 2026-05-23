@@ -55,7 +55,6 @@ export const SummaryBurgerSheet = ({
             {/* Sheet */}
             <div
                 className={`absolute left-0 right-0 bottom-0 mx-auto max-w-[430px] max-h-[88vh] overflow-y-auto bg-paper border-t-[2.5px] border-x-[2.5px] border-ink flex flex-col gap-4 p-4 transition-transform duration-220 ease-[cubic-bezier(.2,.8,.2,1)] pointer-events-auto ${open ? 'translate-y-0' : 'translate-y-full'}`}
-                style={{ boxShadow: '0 -10px 0 #161514, 0 -14px 0 -2px #C5AC6A' }}
                 role="dialog"
                 aria-modal="true"
                 aria-label="Menu"

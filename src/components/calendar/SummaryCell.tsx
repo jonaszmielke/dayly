@@ -19,6 +19,7 @@ type SummaryCellProps = {
     selectedPersonId: number | null
     isHovered: boolean
     isSelected?: boolean
+    hideTotal?: boolean
     onMouseEnter: (iso: string) => void
     onMouseLeave: () => void
     onTap?: (iso: string) => void
@@ -31,6 +32,7 @@ export const SummaryCell = ({
     selectedPersonId,
     isHovered,
     isSelected,
+    hideTotal,
     onMouseEnter,
     onMouseLeave,
     onTap,
@@ -119,11 +121,15 @@ export const SummaryCell = ({
                                 >
                                     {freeCount}
                                 </span>
-                                <span className="font-mono text-[11px] opacity-60">/{total}</span>
+                                {!hideTotal && (
+                                    <span className="font-mono text-[11px] opacity-60">
+                                        /{total}
+                                    </span>
+                                )}
                             </div>
                         ) : (
                             <span className="font-mono text-[11px] opacity-50">
-                                {freeCount}/{total}
+                                {hideTotal ? freeCount : `${freeCount}/${total}`}
                             </span>
                         )
                     ) : null}

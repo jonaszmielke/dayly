@@ -6,6 +6,7 @@ import { MONTH_ABBREVIATIONS } from '@/lib/dates'
 import { appUrl } from '@/lib/utils'
 import { Meeting, MeetingMode } from '@prisma/client'
 import { ReactNode } from 'react'
+import Link from 'next/link'
 
 const fmtDate = (d: Date): string => {
     return `${String(d.getDate()).padStart(2, '0')} ${MONTH_ABBREVIATIONS[d.getMonth()]} ${d.getFullYear()}`
@@ -14,13 +15,31 @@ const fmtDate = (d: Date): string => {
 type MeetingHeaderProps = {
     meeting: Meeting
     mobileRight?: ReactNode
+    showMobileAddResponseButton?: boolean
 }
 
-const MeetingHeader = ({ meeting, mobileRight }: MeetingHeaderProps) => {
+const MeetingHeader = ({
+    meeting,
+    mobileRight,
+    showMobileAddResponseButton = false,
+}: MeetingHeaderProps) => {
     const dateRange = `${fmtDate(meeting.startDate)} — ${fmtDate(meeting.endDate)}`
     const mode = meeting.mode === MeetingMode.DAYS ? 'DAY MODE' : 'HOUR MODE'
 
     const link = `${appUrl()}/m/${meeting.shortId}`
+
+    const addResponseButton = showMobileAddResponseButton ? (
+        <Link
+            href={`/m/${meeting.shortId}/respond`}
+            className="flex items-center gap-2 px-3 py-2 bg-ink press-effect text-paper-2 font-sans text-[11px] font-bold uppercase tracking-[0.06em]"
+            style={{ boxShadow: '3px 3px 0 #C5AC6A' }}
+        >
+            <span className="inline-flex items-center justify-center w-3.5 h-3.5 border border-paper-2 font-mono text-[10px] leading-none">
+                +
+            </span>
+            ADD RESPONSE
+        </Link>
+    ) : undefined
 
     return (
         <TopBar
@@ -29,6 +48,7 @@ const MeetingHeader = ({ meeting, mobileRight }: MeetingHeaderProps) => {
             title={meeting.name}
             meta={[dateRange, mode]}
             mobileRight={mobileRight}
+            mobileAction={addResponseButton}
             right={
                 <div className="flex flex-col items-end gap-2">
                     <CopyButton text={link} />

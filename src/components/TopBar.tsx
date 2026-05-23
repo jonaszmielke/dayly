@@ -9,18 +9,33 @@ type TopBarProps = {
     meta?: string[]
     right?: ReactNode
     mobileRight?: ReactNode
+    mobileAction?: ReactNode
     className?: string
     compact?: boolean
 }
 
-export const TopBar = ({ crumbs, title, meta, right, mobileRight, className, compact }: TopBarProps) => {
+export const TopBar = ({
+    crumbs,
+    title,
+    meta,
+    right,
+    mobileRight,
+    mobileAction,
+    className,
+    compact,
+}: TopBarProps) => {
     return (
         <header
             className={cn('relative border-b-2 border-ink', className)}
             style={{ borderBottomWidth: 'var(--b-border)' }}
         >
             {/* ── Mobile layout (default, hidden lg+) ── */}
-            <div className={cn('lg:hidden flex flex-col gap-2 px-4', compact ? 'pt-3 pb-4' : 'pt-4 pb-5')}>
+            <div
+                className={cn(
+                    'lg:hidden flex flex-col gap-4 px-4',
+                    compact ? 'pt-3 pb-4' : 'pt-4 pb-5'
+                )}
+            >
                 {/* Row 1: wordmark + mobile action */}
                 <div className="flex items-center justify-between">
                     <Link href="/">
@@ -56,26 +71,31 @@ export const TopBar = ({ crumbs, title, meta, right, mobileRight, className, com
 
                 {/* Title */}
                 <h1
-                    className="font-sans font-extrabold tracking-[-0.045em] leading-[0.86] break-words"
+                    className="font-sans font-extrabold tracking-[-0.045em] leading-[0.86] wrap-break-word"
                     style={{ fontSize: 'clamp(36px, 11vw, 52px)' }}
                 >
                     {title}
                 </h1>
 
-                {/* Meta pills */}
-                {meta && meta.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2">
-                        {meta.map((m, i) => (
-                            <span key={i} className="flex items-center gap-2">
-                                {i > 0 && (
-                                    <span className="font-mono text-[10px] text-ink/40">•</span>
-                                )}
-                                <span className="bg-white border border-ink px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest">
-                                    {m}
+                {/* Meta pills or mobile action */}
+                {mobileAction ? (
+                    <div className="flex justify-end">{mobileAction}</div>
+                ) : (
+                    meta &&
+                    meta.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2">
+                            {meta.map((m, i) => (
+                                <span key={i} className="flex items-center gap-2">
+                                    {i > 0 && (
+                                        <span className="font-mono text-[10px] text-ink/40">•</span>
+                                    )}
+                                    <span className="bg-white border border-ink px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest">
+                                        {m}
+                                    </span>
                                 </span>
-                            </span>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )
                 )}
             </div>
 
@@ -120,7 +140,9 @@ export const TopBar = ({ crumbs, title, meta, right, mobileRight, className, com
                 <div className="flex flex-col items-center gap-2">
                     <h1
                         className="font-sans font-extrabold whitespace-nowrap tracking-[-0.035em] leading-none"
-                        style={{ fontSize: compact ? 'calc(var(--b-title) * 0.75)' : 'var(--b-title)' }}
+                        style={{
+                            fontSize: compact ? 'calc(var(--b-title) * 0.75)' : 'var(--b-title)',
+                        }}
                     >
                         {title}
                     </h1>

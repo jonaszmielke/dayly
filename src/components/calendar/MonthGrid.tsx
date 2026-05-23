@@ -10,6 +10,7 @@ type MonthGridProps = {
     cellRenderer: (cell: GridCell, inRange: boolean) => ReactNode
     daysInRange?: number
     className?: string
+    cellAspectClassName?: string
 }
 
 export const MonthGrid = ({
@@ -20,6 +21,7 @@ export const MonthGrid = ({
     cellRenderer,
     daysInRange,
     className,
+    cellAspectClassName = 'aspect-[140/100]',
 }: MonthGridProps) => {
     const cells = monthGrid(year, month)
 
@@ -63,8 +65,10 @@ export const MonthGrid = ({
                     return (
                         <div
                             key={cell.date}
-                            className="border-r-[1.5px] border-b-[1.5px] border-ink nth-[7n]:border-r-0 nth-last-[-n+7]:border-b-0"
-                            style={{ aspectRatio: '140/100' }}
+                            className={cn(
+                                'border-r-[1.5px] border-b-[1.5px] border-ink nth-[7n]:border-r-0 nth-last-[-n+7]:border-b-0',
+                                cellAspectClassName
+                            )}
                         >
                             {cellRenderer(cell, inRange)}
                         </div>

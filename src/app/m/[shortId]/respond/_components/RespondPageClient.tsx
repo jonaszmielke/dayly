@@ -1,7 +1,7 @@
 'use client'
 
 import { saveResponse } from '../_actions/saveResponse'
-import MeetingHeader from '../../_components/Header'
+import MeetingHeader from '../../_components/MeetingHeader'
 import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'

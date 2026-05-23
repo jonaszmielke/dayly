@@ -1,7 +1,7 @@
 'use client'
 
 import { useResponses } from '../_hooks/useResponses'
-import MeetingHeader from '../../_components/Header'
+import MeetingHeader from '../../_components/MeetingHeader'
 import { BestDayBanner } from './BestDayBanner'
 import { DayDetailSheet } from './DayDetailSheet'
 import { SummaryBurgerSheet } from './SummaryBurgerSheet'
@@ -101,6 +101,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                 rangeStart={rangeStart}
                 rangeEnd={rangeEnd}
                 daysInRange={calcDaysInRange(year, month, rangeStart, rangeEnd)}
+                cellAspectClassName={mobile ? 'aspect-square' : 'aspect-[140/100]'}
                 cellRenderer={(cell, inRange) => (
                     <SummaryCell
                         cell={cell}
@@ -109,6 +110,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                         selectedPersonId={selectedPersonId}
                         isHovered={mobile ? false : hoveredDate === cell.date}
                         isSelected={selectedDate === cell.date}
+                        hideTotal={mobile}
                         onMouseEnter={handleCellEnter}
                         onMouseLeave={handleCellLeave}
                         onTap={handleCellTap}
@@ -120,7 +122,11 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     if (isLoading) {
         return (
             <>
-                <MeetingHeader meeting={meeting} mobileRight={burgerButton} />
+                <MeetingHeader
+                    meeting={meeting}
+                    mobileRight={burgerButton}
+                    showMobileAddResponseButton
+                />
                 <div className="px-4 py-8 font-mono text-[12px] text-ink/55 uppercase tracking-widest">
                     Loading…
                 </div>
@@ -130,7 +136,11 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
 
     return (
         <>
-            <MeetingHeader meeting={meeting} mobileRight={burgerButton} />
+            <MeetingHeader
+                meeting={meeting}
+                mobileRight={burgerButton}
+                showMobileAddResponseButton
+            />
 
             {/* ── Mobile layout (default, hidden lg) ── */}
             <div className="flex flex-col gap-4 px-4 py-6 lg:hidden">
