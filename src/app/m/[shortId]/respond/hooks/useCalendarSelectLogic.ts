@@ -1,14 +1,21 @@
 'use client'
 
-import { dateRange } from '@/lib/dates'
+import { dateRange, ymd } from '@/lib/dates'
 import { useCallback, useEffect, useState } from 'react'
 
 type UseCalendarSelectLogicProps = {
     rangeStart: string
     rangeEnd: string
+    initialSelected?: Date[]
+    edit?: boolean
 }
 
-export const useCalendarSelectLogic = ({ rangeStart, rangeEnd }: UseCalendarSelectLogicProps) => {
+export const useCalendarSelectLogic = ({
+    rangeStart,
+    rangeEnd,
+    initialSelected,
+    edit = false,
+}: UseCalendarSelectLogicProps) => {
     const [selected, setSelected] = useState<Set<string>>(new Set())
     const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
     const [anchor, setAnchor] = useState<string | null>(null)
@@ -71,8 +78,9 @@ export const useCalendarSelectLogic = ({ rangeStart, rangeEnd }: UseCalendarSele
     }, [])
 
     const handleReset = useCallback(() => {
-        setSelected(new Set())
-    }, [])
+        if (edit && initialSelected) setSelected(new Set(initialSelected.map((d) => ymd(d))))
+        else setSelected(new Set())
+    }, [initialSelected])
 
     const handleQuickPick = useCallback(
         (type: 'weekends' | 'weekdays') => {

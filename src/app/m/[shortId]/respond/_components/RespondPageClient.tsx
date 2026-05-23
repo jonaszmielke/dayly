@@ -39,7 +39,12 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         handleMouseLeave,
         handleReset,
         handleQuickPick,
-    } = useCalendarSelectLogic({ rangeStart, rangeEnd })
+    } = useCalendarSelectLogic({
+        rangeStart,
+        rangeEnd,
+        initialSelected: userResponse?.days,
+        edit: !!editOriginalName,
+    })
 
     const [editInitialized, setEditInitialized] = useState(false)
 
@@ -91,7 +96,15 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
             return false
         }
         return name.trim().length > 0 || selected.size > 0
-    }, [name, selected, editOriginalName, userResponse, editInitialized, saveMutation.isSuccess, saveMutation.isPending])
+    }, [
+        name,
+        selected,
+        editOriginalName,
+        userResponse,
+        editInitialized,
+        saveMutation.isSuccess,
+        saveMutation.isPending,
+    ])
 
     useEffect(() => {
         if (!isDirty) return
@@ -109,8 +122,6 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
             if (window.confirm('You have unsaved changes. Leave this page?')) {
                 window.removeEventListener('popstate', onPopState)
                 window.history.back()
-            } else {
-                window.history.pushState(null, '', window.location.href)
             }
         }
         window.addEventListener('popstate', onPopState)
@@ -282,7 +293,6 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                         )}
                     />
                 ))}
-
             </main>
         </div>
     )
