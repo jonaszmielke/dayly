@@ -11,6 +11,7 @@ import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { StatCard } from '@/components/StatCard'
 import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
+import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
 import { Meeting, MeetingMode } from '@prisma/client'
 import { useCallback, useMemo, useState } from 'react'
 
@@ -33,6 +34,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
     const [selectedDate, setSelectedDate] = useState<string | null>(null)
     const [burgerOpen, setBurgerOpen] = useState(false)
+    const isTouch = useIsTouchDevice()
 
     const rangeStart = ymd(meeting.startDate)
     const rangeEnd = ymd(meeting.endDate)
@@ -115,6 +117,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                         isHovered={mobile ? false : hoveredDate === cell.date}
                         isSelected={selectedDate === cell.date}
                         hideTotal={mobile}
+                        isTouch={isTouch}
                         onMouseEnter={handleCellEnter}
                         onMouseLeave={handleCellLeave}
                         onTap={handleCellTap}

@@ -258,17 +258,11 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
             </div>
 
             {/* ── Desktop layout ── */}
-            <div
-                className="hidden lg:grid py-8"
-                style={{
-                    gridTemplateColumns: '12.5vw 47.06vw',
-                    columnGap: '1.47vw',
-                    paddingLeft: '19.48vw',
-                    paddingRight: '19.48vw',
-                }}
-            >
-                {/* Sidebar */}
-                <aside className="flex flex-col gap-4 sticky top-6 self-start">
+            <div className="hidden lg:block py-8">
+                <div className="mx-auto w-full max-w-[1600px] px-6 xl:px-10">
+                    <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
+                        {/* Sidebar */}
+                        <aside className="flex flex-col gap-4 sticky top-6 self-start">
                     {namePanel}
                     {quickPicks}
                     <StatCard rows={statRows} />
@@ -338,6 +332,8 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                     </div>
                     {monthGrids}
                 </main>
+                    </div>
+                </div>
             </div>
 
             {/* Mobile sticky action bar */}

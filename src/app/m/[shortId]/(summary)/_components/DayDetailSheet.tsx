@@ -22,7 +22,7 @@ export const DayDetailSheet = ({ iso, people, onClose }: DayDetailSheetProps) =>
 
     return (
         <div
-            className="fixed bottom-0 inset-x-0 z-40 lg:hidden mx-auto max-w-[430px] bg-white border-t-[2.5px] border-x-[2.5px] border-ink p-3"
+            className="fixed bottom-0 inset-x-0 z-40 mx-auto max-w-[430px] bg-white border-t-[2.5px] border-x-[2.5px] border-ink p-3"
             style={{
                 boxShadow: '0 -4px 0 -1px rgba(22,21,20,.08)',
                 paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',

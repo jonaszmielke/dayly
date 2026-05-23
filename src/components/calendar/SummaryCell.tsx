@@ -20,6 +20,7 @@ type SummaryCellProps = {
     isHovered: boolean
     isSelected?: boolean
     hideTotal?: boolean
+    isTouch: boolean
     onMouseEnter: (iso: string) => void
     onMouseLeave: () => void
     onTap?: (iso: string) => void
@@ -33,6 +34,7 @@ export const SummaryCell = ({
     isHovered,
     isSelected,
     hideTotal,
+    isTouch,
     onMouseEnter,
     onMouseLeave,
     onTap,
@@ -88,18 +90,20 @@ export const SummaryCell = ({
                           : undefined,
                 }}
                 onPointerEnter={(e) => {
-                    if (e.pointerType === 'mouse') {
+                    if (!isTouch && e.pointerType === 'mouse') {
                         setHoverPos({ x: e.clientX, y: e.clientY })
                         onMouseEnter(cell.date)
                     }
                 }}
                 onPointerLeave={(e) => {
-                    if (e.pointerType === 'mouse') {
+                    if (!isTouch && e.pointerType === 'mouse') {
                         setHoverPos(null)
                         onMouseLeave()
                     }
                 }}
-                onClick={() => onTap?.(cell.date)}
+                onClick={() => {
+                    if (isTouch) onTap?.(cell.date)
+                }}
             >
                 {/* Day of month */}
                 <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>
