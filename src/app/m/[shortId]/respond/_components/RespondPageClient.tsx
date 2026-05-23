@@ -148,7 +148,11 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         <div className="bg-white border-brutal shadow-brutal">
             <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
                 <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
-                    Your Name
+                    {!!editOriginalName
+                        ? name === editOriginalName
+                            ? 'Keeping the same name'
+                            : 'Changing name'
+                        : 'Your Name'}
                 </span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-mocha">
                     Required
@@ -161,6 +165,7 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                     onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
                     placeholder="YOUR NAME"
                     autoFocus
+                    minLength={3}
                     maxLength={32}
                     className={cn(
                         'w-full bg-paper border-thin px-3 py-3',
@@ -203,6 +208,7 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
             month={month}
             rangeStart={rangeStart}
             rangeEnd={rangeEnd}
+            cellAspectClassName="aspect-square lg:aspect-[140/100]"
             cellRenderer={(cell, inRange) => (
                 <RespondCell
                     cell={cell}
@@ -226,11 +232,13 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                 {/* Banner */}
                 <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 px-3 py-3">
                     <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] shrink-0">
-                        PICK
+                        {!!editOriginalName ? 'EDIT' : 'PICK'}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="font-sans text-[17px] font-bold leading-tight">
-                            When are you free?
+                            {!!editOriginalName
+                                ? `Editing ${editOriginalName}'s response`
+                                : 'When are you free?'}
                         </div>
                         <div className="font-mono text-[10px] text-ink/55 mt-0.5">
                             TAP · DRAG TO PAINT MANY

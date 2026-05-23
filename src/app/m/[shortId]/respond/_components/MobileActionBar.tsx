@@ -26,11 +26,13 @@ export const MobileActionBar = ({
         >
             {/* Days picked counter */}
             <div className="bg-ink text-paper-2 grid grid-cols-[auto_auto] items-center gap-2 px-3 py-2">
-                <span className="font-sans font-extrabold leading-[0.9] tracking-tighter tabular-nums"
-                    style={{ fontSize: '30px' }}>
+                <span
+                    className="font-sans font-extrabold leading-[0.9] tracking-tighter tabular-nums"
+                    style={{ fontSize: '30px' }}
+                >
                     {String(count).padStart(2, '0')}
                 </span>
-                <span className="font-sans text-[11px] font-bold uppercase tracking-[0.1em] text-paper/70 leading-tight">
+                <span className="font-sans text-[11px] font-bold uppercase tracking-widest text-paper/70 leading-tight">
                     DAYS PICKED
                 </span>
             </div>

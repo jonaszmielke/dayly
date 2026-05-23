@@ -4,14 +4,14 @@ import { useResponses } from '../_hooks/useResponses'
 import MeetingHeader from '../../_components/MeetingHeader'
 import { BestDayBanner } from './BestDayBanner'
 import { DayDetailSheet } from './DayDetailSheet'
-import { SummaryBurgerSheet } from './SummaryBurgerSheet'
+import { SummaryMobileDrawer } from './SummaryMobileDrawer'
 import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { StatCard } from '@/components/StatCard'
 import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
-import { Meeting } from '@prisma/client'
+import { Meeting, MeetingMode } from '@prisma/client'
 import { useCallback, useMemo, useState } from 'react'
 
 const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {
@@ -63,6 +63,10 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
         { label: 'Deadline', value: formatDate(ymd(meeting.deadline)) ?? '—' },
         { label: 'Responses', value: String(responses.length) },
     ]
+
+    const drawerMeta = `${formatDate(rangeStart)} — ${formatDate(rangeEnd)} • ${
+        meeting.mode === MeetingMode.DAYS ? 'DAY MODE' : 'HOUR MODE'
+    }`
 
     const handlePersonClick = (id: number) => {
         setSelectedPersonId((prev) => (prev === id ? null : id))
@@ -196,10 +200,11 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
             />
 
             {/* Mobile: burger sheet */}
-            <SummaryBurgerSheet
+            <SummaryMobileDrawer
                 open={burgerOpen}
                 onClose={() => setBurgerOpen(false)}
                 meetingShortId={meeting.shortId}
+                meta={drawerMeta}
                 people={people}
                 selectedPersonId={selectedPersonId}
                 onPersonClick={handlePersonClick}

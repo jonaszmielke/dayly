@@ -32,6 +32,7 @@ export const RespondCell = ({
 
     return (
         <div
+            data-iso={cell.date}
             className={cn(
                 'relative flex flex-col justify-between p-1.5 cursor-pointer select-none transition-all',
                 selected ? 'bg-mocha text-paper-2' : 'bg-white text-ink',

@@ -7,8 +7,8 @@ import { z } from 'zod'
 
 const saveResponseSchema = z.object({
     meetingShortId: z.string().refine(validateMeetingShortId, 'Invalid meeting code'),
-    name: z.string().trim().min(1),
-    newName: z.string().trim().min(1).optional(),
+    name: z.string().trim().min(3).max(32),
+    newName: z.string().trim().min(3).max(32).optional(),
     dates: z.array(z.string()),
     edit: z.boolean().optional().default(false),
 })
