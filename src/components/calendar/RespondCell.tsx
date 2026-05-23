@@ -8,9 +8,9 @@ type RespondCellProps = {
     inRange: boolean
     selected: boolean
     isHovered: boolean
-    onMouseDown: (iso: string, shiftKey: boolean) => void
-    onMouseEnter: (iso: string) => void
-    onMouseLeave: () => void
+    onPointerDown: (iso: string, shiftKey: boolean) => void
+    onPointerEnter: (iso: string) => void
+    onPointerLeave: () => void
 }
 
 export const RespondCell = ({
@@ -18,9 +18,9 @@ export const RespondCell = ({
     inRange,
     selected,
     isHovered,
-    onMouseDown,
-    onMouseEnter,
-    onMouseLeave,
+    onPointerDown,
+    onPointerEnter,
+    onPointerLeave,
 }: RespondCellProps) => {
     if (!inRange) {
         return (
@@ -37,12 +37,10 @@ export const RespondCell = ({
                 selected ? 'bg-mocha text-paper-2' : 'bg-white text-ink',
                 !selected && 'hover:bg-paper-3'
             )}
-            style={{
-                height: '100%',
-            }}
-            onMouseDown={(e) => onMouseDown(cell.date, e.shiftKey)}
-            onMouseEnter={() => onMouseEnter(cell.date)}
-            onMouseLeave={onMouseLeave}
+            style={{ height: '100%', touchAction: 'none' }}
+            onPointerDown={(e) => onPointerDown(cell.date, e.shiftKey)}
+            onPointerEnter={() => onPointerEnter(cell.date)}
+            onPointerLeave={onPointerLeave}
         >
             {isHovered && (
                 <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_0_2px_#161514] z-0" />

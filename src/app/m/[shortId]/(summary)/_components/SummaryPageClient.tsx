@@ -1,7 +1,10 @@
 'use client'
 
 import { useResponses } from '../_hooks/useResponses'
+import MeetingHeader from '../../_components/Header'
 import { BestDayBanner } from './BestDayBanner'
+import { DayDetailSheet } from './DayDetailSheet'
+import { SummaryBurgerSheet } from './SummaryBurgerSheet'
 import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
@@ -11,16 +14,34 @@ import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { Meeting } from '@prisma/client'
 import { useCallback, useMemo, useState } from 'react'
 
+const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {
+    const monthStart = new Date(year, month, 1)
+    const monthEnd = new Date(year, month + 1, 0)
+    const clampStart = new Date(
+        Math.max(monthStart.getTime(), new Date(rangeStart + 'T00:00:00').getTime())
+    )
+    const clampEnd = new Date(
+        Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
+    )
+    if (clampStart > clampEnd) return 0
+    return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
+}
+
 export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     const { responses, isLoading } = useResponses(meeting.shortId)
     const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null)
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
+    const [selectedDate, setSelectedDate] = useState<string | null>(null)
+    const [burgerOpen, setBurgerOpen] = useState(false)
 
     const rangeStart = ymd(meeting.startDate)
     const rangeEnd = ymd(meeting.endDate)
 
     const handleCellEnter = useCallback((iso: string) => setHoveredDate(iso), [])
     const handleCellLeave = useCallback(() => setHoveredDate(null), [])
+    const handleCellTap = useCallback((iso: string) => {
+        setSelectedDate((prev) => (prev === iso ? null : iso))
+    }, [])
 
     const people = useMemo(
         () =>
@@ -34,7 +55,6 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     )
 
     const best = useMemo(() => computeBest(people.map((p) => Array.from(p.availSet))), [people])
-
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
 
     const statRows = [
@@ -48,26 +68,93 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
         setSelectedPersonId((prev) => (prev === id ? null : id))
     }
 
-    const selectedPerson = useMemo(() => {
-        if (!selectedPersonId) return null
-        return people.find((p) => p.id === selectedPersonId)
-    }, [people, selectedPersonId])
+    const selectedPerson = useMemo(
+        () => (selectedPersonId ? (people.find((p) => p.id === selectedPersonId) ?? null) : null),
+        [people, selectedPersonId]
+    )
+
+    const dayDetailPeople = useMemo(
+        () =>
+            selectedDate
+                ? people.map((p) => ({ name: p.name, available: p.availSet.has(selectedDate) }))
+                : [],
+        [selectedDate, people]
+    )
+
+    const burgerButton = (
+        <button
+            className="flex items-center justify-center w-9 h-9 bg-white border-2 border-ink font-sans text-[20px] font-bold leading-none"
+            style={{ boxShadow: '3px 3px 0 #161514' }}
+            onClick={() => setBurgerOpen(true)}
+            aria-label="Open menu"
+        >
+            ≡
+        </button>
+    )
+
+    const renderMonths = (mobile: boolean) =>
+        displayMonths.map(({ year, month }) => (
+            <MonthGrid
+                key={`${year}-${month}`}
+                year={year}
+                month={month}
+                rangeStart={rangeStart}
+                rangeEnd={rangeEnd}
+                daysInRange={calcDaysInRange(year, month, rangeStart, rangeEnd)}
+                cellRenderer={(cell, inRange) => (
+                    <SummaryCell
+                        cell={cell}
+                        inRange={inRange}
+                        people={people}
+                        selectedPersonId={selectedPersonId}
+                        isHovered={mobile ? false : hoveredDate === cell.date}
+                        isSelected={selectedDate === cell.date}
+                        onMouseEnter={handleCellEnter}
+                        onMouseLeave={handleCellLeave}
+                        onTap={handleCellTap}
+                    />
+                )}
+            />
+        ))
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return (
+            <>
+                <MeetingHeader meeting={meeting} mobileRight={burgerButton} />
+                <div className="px-4 py-8 font-mono text-[12px] text-ink/55 uppercase tracking-widest">
+                    Loading…
+                </div>
+            </>
+        )
     }
 
     return (
-        <div
-            className="grid py-8"
-            style={{
-                gridTemplateColumns: '12.5vw 47.06vw',
-                columnGap: '1.47vw',
-                paddingLeft: '19.48vw',
-                paddingRight: '19.48vw',
-            }}
-        >
-                {/* Sidebar */}
+        <>
+            <MeetingHeader meeting={meeting} mobileRight={burgerButton} />
+
+            {/* ── Mobile layout (default, hidden lg) ── */}
+            <div className="flex flex-col gap-4 px-4 py-6 lg:hidden">
+                <BestDayBanner
+                    meetingShortId={meeting.shortId}
+                    responsesLength={responses.length}
+                    selectedPerson={selectedPerson}
+                    best={best}
+                />
+                {renderMonths(true)}
+                <HeatLegend total={responses.length} />
+                <StatCard rows={statRows} />
+            </div>
+
+            {/* ── Desktop layout (lg+) ── */}
+            <div
+                className="hidden lg:grid py-8"
+                style={{
+                    gridTemplateColumns: '12.5vw 47.06vw',
+                    columnGap: '1.47vw',
+                    paddingLeft: '19.48vw',
+                    paddingRight: '19.48vw',
+                }}
+            >
                 <aside className="flex flex-col gap-4 sticky top-6 self-start">
                     <WhosInPanel
                         meetingShortId={meeting.shortId}
@@ -76,67 +163,38 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                         onPersonClick={handlePersonClick}
                         onClearSelection={() => setSelectedPersonId(null)}
                     />
-
                     <HeatLegend total={responses.length} />
                     <StatCard rows={statRows} />
                 </aside>
 
-                {/* Main content */}
                 <main className="flex flex-col gap-6">
                     <BestDayBanner
                         meetingShortId={meeting.shortId}
                         responsesLength={responses.length}
-                        selectedPerson={selectedPerson || null}
+                        selectedPerson={selectedPerson}
                         best={best}
                     />
+                    {renderMonths(false)}
+                </main>
+            </div>
 
-                    {/* Month grids */}
-                    {displayMonths.map(({ year, month }) => {
-                        const daysInRange = (() => {
-                            const monthStart = new Date(year, month, 1)
-                            const monthEnd = new Date(year, month + 1, 0)
-                            const clampStart = new Date(
-                                Math.max(
-                                    monthStart.getTime(),
-                                    new Date(rangeStart + 'T00:00:00').getTime()
-                                )
-                            )
-                            const clampEnd = new Date(
-                                Math.min(
-                                    monthEnd.getTime(),
-                                    new Date(rangeEnd + 'T00:00:00').getTime()
-                                )
-                            )
-                            if (clampStart > clampEnd) return 0
-                            return (
-                                Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) +
-                                1
-                            )
-                        })()
+            {/* Mobile: sticky day detail sheet */}
+            <DayDetailSheet
+                iso={selectedDate}
+                people={dayDetailPeople}
+                onClose={() => setSelectedDate(null)}
+            />
 
-                        return (
-                            <MonthGrid
-                                key={`${year}-${month}`}
-                                year={year}
-                                month={month}
-                                rangeStart={rangeStart}
-                                rangeEnd={rangeEnd}
-                                daysInRange={daysInRange}
-                                cellRenderer={(cell, inRange) => (
-                                    <SummaryCell
-                                        cell={cell}
-                                        inRange={inRange}
-                                        people={people}
-                                        selectedPersonId={selectedPersonId}
-                                        isHovered={hoveredDate === cell.date}
-                                        onMouseEnter={handleCellEnter}
-                                        onMouseLeave={handleCellLeave}
-                                    />
-                                )}
-                            />
-                        )
-                    })}
-            </main>
-        </div>
+            {/* Mobile: burger sheet */}
+            <SummaryBurgerSheet
+                open={burgerOpen}
+                onClose={() => setBurgerOpen(false)}
+                meetingShortId={meeting.shortId}
+                people={people}
+                selectedPersonId={selectedPersonId}
+                onPersonClick={handlePersonClick}
+                onClearSelection={() => setSelectedPersonId(null)}
+            />
+        </>
     )
 }

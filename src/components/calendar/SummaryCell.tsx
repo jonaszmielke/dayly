@@ -18,8 +18,10 @@ type SummaryCellProps = {
     people: Person[]
     selectedPersonId: number | null
     isHovered: boolean
+    isSelected?: boolean
     onMouseEnter: (iso: string) => void
     onMouseLeave: () => void
+    onTap?: (iso: string) => void
 }
 
 export const SummaryCell = ({
@@ -28,8 +30,10 @@ export const SummaryCell = ({
     people,
     selectedPersonId,
     isHovered,
+    isSelected,
     onMouseEnter,
     onMouseLeave,
+    onTap,
 }: SummaryCellProps) => {
     const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null)
 
@@ -70,21 +74,30 @@ export const SummaryCell = ({
     return (
         <>
             <div
-                className="relative flex flex-col justify-between p-1.5 cursor-default transition-all"
+                className="relative flex flex-col justify-between p-1.5 cursor-pointer transition-all"
                 style={{
                     height: '100%',
                     backgroundColor: heat,
                     color: fg,
-                    boxShadow: isHovered ? `inset 0 0 0 3px #161514` : undefined,
+                    boxShadow: isSelected
+                        ? 'inset 0 0 0 2.5px #161514'
+                        : isHovered
+                          ? 'inset 0 0 0 3px #161514'
+                          : undefined,
                 }}
-                onMouseEnter={(e) => {
-                    setHoverPos({ x: e.clientX, y: e.clientY })
-                    onMouseEnter(cell.date)
+                onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse') {
+                        setHoverPos({ x: e.clientX, y: e.clientY })
+                        onMouseEnter(cell.date)
+                    }
                 }}
-                onMouseLeave={() => {
-                    setHoverPos(null)
-                    onMouseLeave()
+                onPointerLeave={(e) => {
+                    if (e.pointerType === 'mouse') {
+                        setHoverPos(null)
+                        onMouseLeave()
+                    }
                 }}
+                onClick={() => onTap?.(cell.date)}
             >
                 {/* Day of month */}
                 <span className="font-mono text-[12px] opacity-85 relative z-10">{cell.dom}</span>

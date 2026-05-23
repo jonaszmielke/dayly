@@ -1,7 +1,7 @@
 'use client'
 
 import { dateRange, ymd } from '@/lib/dates'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type UseCalendarSelectLogicProps = {
     rangeStart: string
@@ -17,70 +17,101 @@ export const useCalendarSelectLogic = ({
     edit = false,
 }: UseCalendarSelectLogicProps) => {
     const [selected, setSelected] = useState<Set<string>>(new Set())
-    const [dragging, setDragging] = useState<'add' | 'remove' | null>(null)
-    const [anchor, setAnchor] = useState<string | null>(null)
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
 
-    useEffect(() => {
-        const onUp = () => setDragging(null)
-        window.addEventListener('mouseup', onUp)
-        return () => window.removeEventListener('mouseup', onUp)
+    const dragRef = useRef<{
+        active: boolean
+        mode: 'add' | 'remove'
+        lastIso: string | null
+        anchor: string | null
+    }>({ active: false, mode: 'add', lastIso: null, anchor: null })
+
+    const apply = useCallback((mut: (s: Set<string>) => void) => {
+        setSelected((prev) => {
+            const next = new Set(prev)
+            mut(next)
+            return next
+        })
     }, [])
 
-    const handleMouseDown = useCallback(
+    // End drag on pointer up / cancel
+    useEffect(() => {
+        const onUp = () => {
+            dragRef.current.active = false
+            dragRef.current.lastIso = null
+        }
+        window.addEventListener('pointerup', onUp)
+        window.addEventListener('pointercancel', onUp)
+        return () => {
+            window.removeEventListener('pointerup', onUp)
+            window.removeEventListener('pointercancel', onUp)
+        }
+    }, [])
+
+    // Touch-drag via elementFromPoint so dragging across cells works on mobile
+    useEffect(() => {
+        const onTouchMove = (e: TouchEvent) => {
+            if (!dragRef.current.active) return
+            const touch = e.touches[0]
+            if (!touch) return
+            const el = document.elementFromPoint(touch.clientX, touch.clientY)
+            if (!el) return
+            const cellEl = el.closest('[data-iso]') as HTMLElement | null
+            if (!cellEl) return
+            const iso = cellEl.getAttribute('data-iso')
+            if (!iso || iso === dragRef.current.lastIso) return
+            if (iso < rangeStart || iso > rangeEnd) return
+            dragRef.current.lastIso = iso
+            const { mode } = dragRef.current
+            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
+            if (e.cancelable) e.preventDefault()
+        }
+        window.addEventListener('touchmove', onTouchMove, { passive: false })
+        return () => window.removeEventListener('touchmove', onTouchMove)
+    }, [apply, rangeStart, rangeEnd])
+
+    const handlePointerDown = useCallback(
         (iso: string, shiftKey: boolean) => {
-            if (shiftKey && anchor) {
+            if (shiftKey && dragRef.current.anchor) {
+                const anchor = dragRef.current.anchor
                 const [a, b] = anchor <= iso ? [anchor, iso] : [iso, anchor]
                 const range = dateRange(a, b).filter((d) => d >= rangeStart && d <= rangeEnd)
                 const anchorSelected = selected.has(anchor)
                 const mode = anchorSelected ? 'add' : 'remove'
-                setSelected((prev) => {
-                    const next = new Set(prev)
-                    range.forEach((d) => {
-                        if (mode === 'add') next.add(d)
-                        else next.delete(d)
-                    })
-                    return next
+                apply((s) => {
+                    range.forEach((d) => { if (mode === 'add') s.add(d); else s.delete(d) })
                 })
-                setAnchor(iso)
+                dragRef.current.anchor = iso
                 return
             }
-            const isSelected = selected.has(iso)
-            const mode = isSelected ? 'remove' : 'add'
-            setDragging(mode)
-            setAnchor(iso)
-            setSelected((prev) => {
-                const next = new Set(prev)
-                if (mode === 'remove') next.delete(iso)
-                else next.add(iso)
-                return next
-            })
+            const isOn = selected.has(iso)
+            const mode = isOn ? 'remove' : 'add'
+            dragRef.current = { active: true, mode, lastIso: iso, anchor: iso }
+            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
         },
-        [selected, anchor, rangeStart, rangeEnd]
+        [selected, apply, rangeStart, rangeEnd]
     )
 
-    const handleMouseEnter = useCallback(
+    const handlePointerEnter = useCallback(
         (iso: string) => {
             setHoveredDate(iso)
-            if (!dragging) return
-            setSelected((prev) => {
-                const next = new Set(prev)
-                if (dragging === 'remove') next.delete(iso)
-                else next.add(iso)
-                return next
-            })
+            if (!dragRef.current.active) return
+            if (iso === dragRef.current.lastIso) return
+            dragRef.current.lastIso = iso
+            const { mode } = dragRef.current
+            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
         },
-        [dragging]
+        [apply]
     )
 
-    const handleMouseLeave = useCallback(() => {
+    const handlePointerLeave = useCallback(() => {
         setHoveredDate(null)
     }, [])
 
     const handleReset = useCallback(() => {
         if (edit && initialSelected) setSelected(new Set(initialSelected.map((d) => ymd(d))))
         else setSelected(new Set())
-    }, [initialSelected])
+    }, [initialSelected, edit])
 
     const handleQuickPick = useCallback(
         (type: 'weekends' | 'weekdays') => {
@@ -90,23 +121,23 @@ export const useCalendarSelectLogic = ({
                 const isWeekend = dow === 0 || dow === 6
                 return type === 'weekends' ? isWeekend : !isWeekend
             })
-            setSelected((prev) => {
-                const next = new Set(prev)
-                filtered.forEach((iso) => next.add(iso))
-                return next
-            })
+            apply((s) => { filtered.forEach((iso) => s.add(iso)) })
         },
-        [rangeStart, rangeEnd]
+        [rangeStart, rangeEnd, apply]
     )
 
     return {
         selected,
         setSelected,
         hoveredDate,
-        handleMouseDown,
-        handleMouseEnter,
-        handleMouseLeave,
+        handlePointerDown,
+        handlePointerEnter,
+        handlePointerLeave,
         handleReset,
         handleQuickPick,
+        // Legacy aliases — kept so existing call sites that use old names still compile
+        handleMouseDown: handlePointerDown,
+        handleMouseEnter: handlePointerEnter,
+        handleMouseLeave: handlePointerLeave,
     }
 }

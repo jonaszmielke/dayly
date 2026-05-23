@@ -26,16 +26,16 @@ export const MonthGrid = ({
     return (
         <div className={cn('bg-white border-brutal shadow-brutal', className)}>
             {/* Month head */}
-            <div className="flex items-baseline justify-between px-5 py-4 border-b-2 border-ink">
+            <div className="flex items-baseline justify-between px-3 py-3 lg:px-5 lg:py-4 border-b-2 border-ink">
                 <div className="flex items-baseline gap-2">
-                    <span className="font-sans text-[36px] font-extrabold leading-none tracking-[-0.03em]">
+                    <span className="font-sans text-[26px] lg:text-[36px] font-extrabold leading-none tracking-[-0.03em]">
                         {monthName(month)}
                     </span>
-                    <span className="font-mono text-[18px] text-ink/55 leading-none">{year}</span>
+                    <span className="font-mono text-[14px] lg:text-[18px] text-ink/55 leading-none">{year}</span>
                 </div>
                 {daysInRange !== undefined && (
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-ink/55">
-                        {daysInRange} DAYS IN RANGE
+                    <span className="font-mono text-[10px] lg:text-[11px] uppercase tracking-widest text-ink/55">
+                        {daysInRange} DAYS
                     </span>
                 )}
             </div>
@@ -46,11 +46,12 @@ export const MonthGrid = ({
                     <div
                         key={d}
                         className={cn(
-                            'py-2 text-center font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 border-r-[1.5px] border-ink last:border-r-0',
+                            'py-1.5 lg:py-2 text-center font-mono text-[10px] lg:text-[11px] uppercase tracking-[0.04em] lg:tracking-[0.08em] text-ink/55 border-r-[1.5px] border-ink last:border-r-0',
                             i >= 5 && 'bg-paper-shade'
                         )}
                     >
-                        {d}
+                        {d.slice(0, 1)}
+                        <span className="hidden lg:inline">{d.slice(1)}</span>
                     </div>
                 ))}
             </div>

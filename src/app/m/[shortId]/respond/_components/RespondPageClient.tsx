@@ -1,9 +1,11 @@
 'use client'
 
 import { saveResponse } from '../_actions/saveResponse'
+import MeetingHeader from '../../_components/Header'
 import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
+import { MobileActionBar } from './MobileActionBar'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
@@ -34,9 +36,9 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         selected,
         setSelected,
         hoveredDate,
-        handleMouseDown,
-        handleMouseEnter,
-        handleMouseLeave,
+        handlePointerDown,
+        handlePointerEnter,
+        handlePointerLeave,
         handleReset,
         handleQuickPick,
     } = useCalendarSelectLogic({
@@ -56,7 +58,6 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
     }, [userResponse, editOriginalName, isUserResponseLoading])
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
-
     const updateResponsesCache = useUpdateResponsesCache()
 
     const saveMutation = useMutation({
@@ -134,166 +135,212 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
         { label: 'Respond by', value: formatDate(ymd(meeting.deadline)) ?? '—' },
     ]
 
-    const saveLabel = saveMutation.isPending
-        ? 'SAVING…'
+    const saveState = saveMutation.isPending
+        ? 'pending'
         : saveMutation.isSuccess
-          ? '✓ SAVED'
-          : 'SAVE'
+          ? 'success'
+          : 'idle'
+
+    const saveLabel =
+        saveState === 'pending' ? 'SAVING…' : saveState === 'success' ? '✓ SAVED' : 'SAVE'
+
+    const namePanel = (
+        <div className="bg-white border-brutal shadow-brutal">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
+                <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
+                    Your Name
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-mocha">
+                    Required
+                </span>
+            </div>
+            <div className="p-3">
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
+                    placeholder="YOUR NAME"
+                    autoFocus
+                    maxLength={32}
+                    className={cn(
+                        'w-full bg-paper border-thin px-3 py-3',
+                        'font-sans text-[22px] font-bold uppercase',
+                        'placeholder:text-ink/30 text-ink',
+                        'outline-none focus:bg-white'
+                    )}
+                    style={{ caretColor: '#7E6038' }}
+                />
+            </div>
+        </div>
+    )
+
+    const quickPicks = (
+        <div className="bg-white border-brutal shadow-brutal-sm p-3">
+            <div className="font-mono text-[11px] uppercase tracking-widest text-mocha/70 mb-2">
+                Quick Picks
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+                <button
+                    onClick={() => handleQuickPick('weekends')}
+                    className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
+                >
+                    Weekends
+                </button>
+                <button
+                    onClick={() => handleQuickPick('weekdays')}
+                    className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
+                >
+                    Weekdays
+                </button>
+            </div>
+        </div>
+    )
+
+    const monthGrids = displayMonths.map(({ year, month }) => (
+        <MonthGrid
+            key={`${year}-${month}`}
+            year={year}
+            month={month}
+            rangeStart={rangeStart}
+            rangeEnd={rangeEnd}
+            cellRenderer={(cell, inRange) => (
+                <RespondCell
+                    cell={cell}
+                    inRange={inRange}
+                    selected={selected.has(cell.date)}
+                    isHovered={hoveredDate === cell.date}
+                    onPointerDown={handlePointerDown}
+                    onPointerEnter={handlePointerEnter}
+                    onPointerLeave={handlePointerLeave}
+                />
+            )}
+        />
+    ))
 
     return (
-        <div
-            className="grid py-8"
-            style={{
-                gridTemplateColumns: '12.5vw 47.06vw',
-                columnGap: '1.47vw',
-                paddingLeft: '19.48vw',
-                paddingRight: '19.48vw',
-            }}
-        >
-            {/* Sidebar */}
-            <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                {/* Name panel */}
-                <div className="bg-white border-brutal shadow-brutal">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
-                        <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
-                            Your Name
-                        </span>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-mocha">
-                            Required
-                        </span>
-                    </div>
-                    <div className="p-3 relative">
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
-                            placeholder="YOUR NAME"
-                            autoFocus
-                            maxLength={32}
-                            className={cn(
-                                'w-full bg-paper border-thin px-3 py-3',
-                                'font-sans text-[22px] font-bold uppercase',
-                                'placeholder:text-ink/30 text-ink',
-                                'outline-none focus:bg-white'
-                            )}
-                            style={{
-                                caretColor: '#7E6038',
-                            }}
-                        />
-                    </div>
-                </div>
+        <>
+            <MeetingHeader meeting={meeting} />
 
-                {/* Quick picks */}
-                <div className="bg-white border-brutal shadow-brutal-sm p-3">
-                    <div className="font-mono text-[11px] uppercase tracking-widest text-mocha/70 mb-2">
-                        Quick Picks
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                        <button
-                            onClick={() => handleQuickPick('weekends')}
-                            className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
-                        >
-                            Weekends
-                        </button>
-                        <button
-                            onClick={() => handleQuickPick('weekdays')}
-                            className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
-                        >
-                            Weekdays
-                        </button>
-                    </div>
-                </div>
-
-                <StatCard rows={statRows} />
-
-                {/* Counter */}
-                <div className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4">
-                    <span
-                        className="font-sans font-extrabold leading-none tracking-tighter"
-                        style={{ fontSize: '56px' }}
-                    >
-                        {String(selected.size).padStart(2, '0')}
-                    </span>
-                    <div>
-                        <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
-                            DAYS
-                        </div>
-                        <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
-                            SELECTED
-                        </div>
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="grid grid-cols-2 gap-3">
-                    <button
-                        onClick={handleSave}
-                        disabled={!name.trim() || !saveMutation.isIdle}
-                        className={cn(
-                            'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
-                            saveMutation.isSuccess
-                                ? 'bg-mocha-dark text-paper-2 shadow-brutal'
-                                : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
-                        )}
-                    >
-                        {saveLabel}
-                    </button>
-                    <button
-                        onClick={handleReset}
-                        className="py-3 bg-white border-brutal shadow-brutal-sm font-sans text-[13px] font-bold uppercase tracking-[0.08em] hover:bg-paper transition-colors press-effect"
-                    >
-                        Reset
-                    </button>
-                </div>
-
-                {/* Help */}
-                <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
-                    <div>CLICK to toggle a day</div>
-                    <div>DRAG to select multiple</div>
-                    <div>⇧ CLICK for range</div>
-                </div>
-            </aside>
-
-            {/* Main */}
-            <main className="flex flex-col gap-6">
+            {/* ── Mobile layout ── */}
+            <div className="flex flex-col gap-4 px-4 py-6 pb-[130px] lg:hidden">
                 {/* Banner */}
-                <div className="bg-white border-brutal shadow-brutal flex items-center gap-4 px-5 py-4">
-                    <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em]">
+                <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 px-3 py-3">
+                    <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] shrink-0">
                         PICK
                     </div>
-                    <div className="flex-1">
-                        <div className="font-sans text-[22px] font-bold leading-tight">
+                    <div className="flex-1 min-w-0">
+                        <div className="font-sans text-[17px] font-bold leading-tight">
                             When are you free?
                         </div>
-                        <div className="font-mono text-[11px] text-ink/55 mt-0.5">
-                            Click or drag days in the calendar below
+                        <div className="font-mono text-[10px] text-ink/55 mt-0.5">
+                            TAP · DRAG TO PAINT MANY
                         </div>
                     </div>
-                    <span className="font-mono text-[20px] text-ink/30">↗</span>
                 </div>
 
-                {/* Month grids */}
-                {displayMonths.map(({ year, month }) => (
-                    <MonthGrid
-                        key={`${year}-${month}`}
-                        year={year}
-                        month={month}
-                        rangeStart={rangeStart}
-                        rangeEnd={rangeEnd}
-                        cellRenderer={(cell, inRange) => (
-                            <RespondCell
-                                cell={cell}
-                                inRange={inRange}
-                                selected={selected.has(cell.date)}
-                                isHovered={hoveredDate === cell.date}
-                                onMouseDown={handleMouseDown}
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                            />
-                        )}
-                    />
-                ))}
-            </main>
-        </div>
+                {namePanel}
+                {quickPicks}
+                {monthGrids}
+
+                {/* Mobile help + stat */}
+                <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
+                    <div>TAP toggle · DRAG paint multiple · ⇧ CLICK range</div>
+                </div>
+                <StatCard rows={statRows} />
+            </div>
+
+            {/* ── Desktop layout ── */}
+            <div
+                className="hidden lg:grid py-8"
+                style={{
+                    gridTemplateColumns: '12.5vw 47.06vw',
+                    columnGap: '1.47vw',
+                    paddingLeft: '19.48vw',
+                    paddingRight: '19.48vw',
+                }}
+            >
+                {/* Sidebar */}
+                <aside className="flex flex-col gap-4 sticky top-6 self-start">
+                    {namePanel}
+                    {quickPicks}
+                    <StatCard rows={statRows} />
+
+                    {/* Counter */}
+                    <div className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4">
+                        <span
+                            className="font-sans font-extrabold leading-none tracking-tighter"
+                            style={{ fontSize: '56px' }}
+                        >
+                            {String(selected.size).padStart(2, '0')}
+                        </span>
+                        <div>
+                            <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
+                                DAYS
+                            </div>
+                            <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
+                                SELECTED
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <button
+                            onClick={handleSave}
+                            disabled={!name.trim() || !saveMutation.isIdle}
+                            className={cn(
+                                'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
+                                saveMutation.isSuccess
+                                    ? 'bg-mocha-dark text-paper-2 shadow-brutal'
+                                    : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
+                            )}
+                        >
+                            {saveLabel}
+                        </button>
+                        <button
+                            onClick={handleReset}
+                            className="py-3 bg-white border-brutal shadow-brutal-sm font-sans text-[13px] font-bold uppercase tracking-[0.08em] hover:bg-paper transition-colors press-effect"
+                        >
+                            Reset
+                        </button>
+                    </div>
+
+                    <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
+                        <div>CLICK to toggle a day</div>
+                        <div>DRAG to select multiple</div>
+                        <div>⇧ CLICK for range</div>
+                    </div>
+                </aside>
+
+                {/* Main */}
+                <main className="flex flex-col gap-6">
+                    <div className="bg-white border-brutal shadow-brutal flex items-center gap-4 px-5 py-4">
+                        <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em]">
+                            PICK
+                        </div>
+                        <div className="flex-1">
+                            <div className="font-sans text-[22px] font-bold leading-tight">
+                                When are you free?
+                            </div>
+                            <div className="font-mono text-[11px] text-ink/55 mt-0.5">
+                                Click or drag days in the calendar below
+                            </div>
+                        </div>
+                        <span className="font-mono text-[20px] text-ink/30">↗</span>
+                    </div>
+                    {monthGrids}
+                </main>
+            </div>
+
+            {/* Mobile sticky action bar */}
+            <MobileActionBar
+                count={selected.size}
+                onReset={handleReset}
+                onSave={handleSave}
+                saveLabel={saveLabel}
+                canReset={selected.size > 0}
+                saveState={saveState}
+            />
+        </>
     )
 }

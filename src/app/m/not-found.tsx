@@ -14,13 +14,11 @@ const findRoom = async (formData: FormData) => {
 const MeetingNotFoundPage = () => {
     return (
         <div className="min-h-screen flex flex-col">
-            {/* Nav */}
             <SmallHeader />
 
-            {/* Content */}
-            <section className="flex-1 max-w-[1440px] mx-auto w-full px-10 py-14">
+            <section className="flex-1 max-w-[1440px] mx-auto w-full px-4 lg:px-10 py-10 lg:py-14">
                 {/* Crumbs */}
-                <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink/55 mb-10 flex items-center gap-1">
+                <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink/55 mb-8 lg:mb-10 flex items-center gap-1">
                     <Link href="/" className="hover:text-ink">
                         DAYLY
                     </Link>
@@ -31,27 +29,27 @@ const MeetingNotFoundPage = () => {
                 </div>
 
                 <div
-                    className="grid gap-24"
-                    style={{ gridTemplateColumns: 'minmax(0,560px) minmax(0,1fr)' }}
+                    className="grid gap-10 lg:gap-24 grid-cols-1 lg:[grid-template-columns:minmax(0,560px)_minmax(0,1fr)]"
                 >
                     {/* Left copy */}
                     <div className="flex flex-col gap-6">
                         <h1
                             className="font-sans font-extrabold leading-[0.86] tracking-[-0.045em] mb-2"
-                            style={{ fontSize: '88px' }}
+                            style={{ fontSize: 'clamp(40px, 12vw, 88px)' }}
                         >
-                            Nothing on the <em className="not-italic text-danger">calendar</em>{' '}
+                            Nothing on the{' '}
+                            <em className="not-italic text-danger">calendar</em>{' '}
                             here.
                         </h1>
 
-                        <p className="font-sans text-[18px] font-medium max-w-[460px] text-ink/72 leading-[1.4]">
+                        <p className="font-sans text-[16px] lg:text-[18px] font-medium max-w-[460px] text-ink/72 leading-[1.4]">
                             We couldn&apos;t find the survey you were looking for. The code might be
                             mistyped, or the room may have expired.
                         </p>
 
                         {/* Rejoin card */}
                         <div
-                            className="bg-white border-2 border-ink p-[22px]"
+                            className="bg-white border-2 border-ink p-[18px] lg:p-[22px]"
                             style={{ boxShadow: '6px 6px 0 #161514' }}
                         >
                             <div className="mb-[14px] flex items-center gap-[10px]">
@@ -71,12 +69,12 @@ const MeetingNotFoundPage = () => {
                                     type="text"
                                     name="code"
                                     placeholder="ROOM-CODE"
-                                    className="bg-paper border-thin border-ink px-4 py-[14px] font-mono text-[20px] font-semibold uppercase tracking-[0.16em] placeholder:text-ink/35 placeholder:font-medium outline-none focus:bg-white min-w-0"
+                                    className="bg-paper border-thin border-ink px-4 py-[14px] font-mono text-[18px] lg:text-[20px] font-semibold uppercase tracking-[0.16em] placeholder:text-ink/35 placeholder:font-medium outline-none focus:bg-white min-w-0"
                                     required
                                 />
                                 <button
                                     type="submit"
-                                    className="px-[22px] bg-ink text-paper-2 border-thin border-ink shadow-brutal-sm press-effect font-sans text-[14px] font-extrabold tracking-[0.08em] inline-flex items-center gap-2"
+                                    className="px-4 lg:px-[22px] bg-ink text-paper-2 border-thin border-ink shadow-brutal-sm press-effect font-sans text-[13px] lg:text-[14px] font-extrabold tracking-[0.08em] inline-flex items-center gap-2"
                                 >
                                     <span>Find</span>
                                     <span aria-hidden>→</span>
@@ -89,10 +87,10 @@ const MeetingNotFoundPage = () => {
                         </div>
 
                         {/* CTAs */}
-                        <div className="flex flex-wrap items-center gap-[14px] mt-2">
+                        <div className="flex flex-col lg:flex-row flex-wrap items-start lg:items-center gap-3 lg:gap-[14px] mt-2">
                             <Link
                                 href="/create"
-                                className="inline-flex items-center gap-3 px-6 py-4 bg-mocha text-paper-2 border-brutal shadow-brutal-sm press-effect-mocha font-sans text-[16px] font-extrabold tracking-[0.06em]"
+                                className="inline-flex items-center gap-3 px-6 py-4 bg-mocha text-paper-2 border-brutal shadow-brutal-sm press-effect-mocha font-sans text-[15px] lg:text-[16px] font-extrabold tracking-[0.06em]"
                             >
                                 <span>Start a new survey</span>
                                 <span aria-hidden className="text-[20px] leading-none">
@@ -108,18 +106,18 @@ const MeetingNotFoundPage = () => {
                         </div>
                     </div>
 
-                    {/* Right visual — mock card with stamp */}
-                    <div className="relative self-stretch">
+                    {/* Right visual — mock card with stamp (tape overflow must be visible) */}
+                    <div className="relative self-stretch mt-4 lg:mt-0 overflow-visible">
                         <div
-                            className="relative bg-white border-2 border-ink w-full"
+                            className="relative bg-white border-2 border-ink w-full overflow-visible"
                             style={{
                                 transform: 'rotate(0.4deg)',
                                 boxShadow: '10px 10px 0 #161514',
                             }}
                         >
-                            {/* Tape */}
+                            {/* Tape — overflow-visible so rotation doesn't clip */}
                             <div
-                                className="absolute -top-4 left-7 bg-ink text-paper font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] px-3 py-[6px] z-2"
+                                className="absolute -top-4 left-7 bg-ink text-paper font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] px-3 py-[6px] z-[2] whitespace-nowrap"
                                 style={{
                                     transform: 'rotate(-2deg)',
                                     boxShadow: '3px 3px 0 #7e6038',
@@ -129,14 +127,14 @@ const MeetingNotFoundPage = () => {
                             </div>
 
                             {/* Mock header */}
-                            <div className="px-5 pt-4 pb-[14px] border-b-2 border-ink bg-white flex items-baseline justify-between">
-                                <div className="font-sans text-[26px] font-extrabold tracking-[-0.03em] leading-none text-ink/35">
+                            <div className="px-4 lg:px-5 pt-6 pb-[14px] border-b-2 border-ink bg-white flex items-baseline justify-between">
+                                <div className="font-sans text-[22px] lg:text-[26px] font-extrabold tracking-[-0.03em] leading-none text-ink/35">
                                     —{' '}
-                                    <span className="font-mono text-[14px] font-medium tracking-[-0.01em] text-ink/30 ml-1">
+                                    <span className="font-mono text-[12px] lg:text-[14px] font-medium tracking-[-0.01em] text-ink/30 ml-1">
                                         —
                                     </span>
                                 </div>
-                                <div className="font-mono text-[10px] uppercase tracking-widest text-ink/35 flex items-center gap-3">
+                                <div className="font-mono text-[9px] lg:text-[10px] uppercase tracking-widest text-ink/35 flex items-center gap-2 lg:gap-3">
                                     <span>
                                         <b className="text-ink/50 font-bold">—</b> PEOPLE
                                     </span>
@@ -154,11 +152,12 @@ const MeetingNotFoundPage = () => {
                                 {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((d, i) => (
                                     <div
                                         key={d}
-                                        className={`px-[10px] py-[7px] font-sans text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink/55 ${
+                                        className={`px-1 lg:px-[10px] py-[7px] font-sans text-[9px] lg:text-[10.5px] font-semibold uppercase tracking-[0.08em] lg:tracking-[0.14em] text-ink/55 ${
                                             i < 6 ? 'border-r-[1.5px] border-ink' : ''
                                         }`}
                                     >
-                                        {d}
+                                        {d.slice(0, 1)}
+                                        <span className="hidden lg:inline">{d.slice(1)}</span>
                                     </div>
                                 ))}
                             </div>
@@ -168,11 +167,11 @@ const MeetingNotFoundPage = () => {
                                 {Array.from({ length: 35 }).map((_, i) => (
                                     <div
                                         key={i}
-                                        className={`bg-hatch h-[74px] px-[9px] py-[7px] relative ${
+                                        className={`bg-hatch h-[44px] lg:h-[74px] px-[6px] lg:px-[9px] py-[5px] lg:py-[7px] relative ${
                                             i % 7 < 6 ? 'border-r-[1.5px] border-ink' : ''
                                         } ${i < 28 ? 'border-b-[1.5px] border-ink' : ''}`}
                                     >
-                                        <span className="font-mono text-[11px] font-medium text-ink/30">
+                                        <span className="font-mono text-[9px] lg:text-[11px] font-medium text-ink/30">
                                             ·
                                         </span>
                                     </div>
@@ -186,14 +185,14 @@ const MeetingNotFoundPage = () => {
                                     top: '38%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%) rotate(-6deg)',
-                                    padding: '16px 28px 18px',
+                                    padding: '12px 20px 14px',
                                     boxShadow: '6px 6px 0 #161514',
                                 }}
                             >
-                                <div className="font-sans text-[44px] font-extrabold leading-[0.9] tracking-[0.04em]">
+                                <div className="font-sans text-[32px] lg:text-[44px] font-extrabold leading-[0.9] tracking-[0.04em]">
                                     404
                                 </div>
-                                <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.24em] mt-[6px] text-paper/80">
+                                <div className="font-mono text-[10px] lg:text-[11px] font-semibold uppercase tracking-[0.24em] mt-[6px] text-paper/80">
                                     NO SUCH ROOM
                                 </div>
                             </div>
