@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
     output: 'standalone',
     reactCompiler: true,
     outputFileTracingIncludes: {
-        '*': ['./node_modules/.prisma/client/**/*', './node_modules/@prisma/client/**/*'],
+        '*': ['./src/generated/prisma/**/*'],
     },
 }
 
