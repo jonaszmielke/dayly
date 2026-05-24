@@ -8,6 +8,8 @@ AGENTS.md
 .claude
 graphify-out
 
+/src/generated
+
 # dependencies
 /node_modules
 /.pnp
