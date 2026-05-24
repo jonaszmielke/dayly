@@ -4,6 +4,7 @@ import Link from 'next/link'
 const NAV_LINKS = [
     { label: 'Privacy', href: '/privacy' },
     { label: 'Terms', href: '/terms' },
+    { label: 'GitHub', href: 'https://github.com/jonaszmielke/dayly' },
 ]
 
 export const Footer = () => (
