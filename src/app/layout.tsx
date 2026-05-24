@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import QueryProvider from '@/components/QueryProvider'
+import { appUrl } from '@/lib/utils'
 
 const spaceGrotesk = Space_Grotesk({
     variable: '--font-sans',
@@ -18,6 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
     title: 'Dayly',
     description: 'Find the days that work for everyone',
+    metadataBase: new URL(appUrl()),
 }
 
 const RootLayout = ({

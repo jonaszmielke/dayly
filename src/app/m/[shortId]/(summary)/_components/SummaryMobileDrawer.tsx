@@ -10,7 +10,7 @@ import {
     DrawerDescription,
     DrawerTitle,
 } from '@/components/ui/drawer'
-import { appUrl } from '@/lib/utils'
+import { appShortUrl } from '@/lib/utils'
 import Link from 'next/link'
 
 type SummaryMobileDrawerProps = {
@@ -64,7 +64,7 @@ export const SummaryMobileDrawer = ({
                 {/* Share section */}
                 <div className="grid grid-cols-2 gap-2.5">
                     <CopyButton
-                        text={`${appUrl()}/m/${meetingShortId}`}
+                        text={`${appShortUrl()}/m/${meetingShortId}`}
                         className="w-full h-12 justify-center px-2 text-[12px] whitespace-nowrap"
                     />
                     <Link

@@ -9,7 +9,7 @@ type CopyButtonProps = {
 }
 
 export const CopyButton = ({ text, className }: CopyButtonProps) => {
-    const [copied, setCopied] = useState(false)
+    const [copied, setCopied] = useState<boolean>(false)
 
     const handleCopy = () => {
         navigator.clipboard.writeText(text).then(() => {

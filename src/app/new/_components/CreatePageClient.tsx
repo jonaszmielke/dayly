@@ -8,7 +8,7 @@ import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
-import { appUrl, cn } from '@/lib/utils'
+import { appShortUrl, cn } from '@/lib/utils'
 import { MeetingMode } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -69,7 +69,9 @@ const CreatePageClient = () => {
                         <div className="bg-ink text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest">
                             DRAFT
                         </div>
-                        <span className="font-mono text-[11px] text-ink/50">{appUrl()}/new</span>
+                        <span className="font-mono text-[11px] text-ink/50">
+                            {appShortUrl()}/new
+                        </span>
                     </div>
                 }
             />

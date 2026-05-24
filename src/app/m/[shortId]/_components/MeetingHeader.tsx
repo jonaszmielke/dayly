@@ -3,7 +3,7 @@
 import { CopyButton } from '@/components/CopyButton'
 import { TopBar } from '@/components/TopBar'
 import { MONTH_ABBREVIATIONS } from '@/lib/dates'
-import { appUrl } from '@/lib/utils'
+import { appShortUrl, appUrl } from '@/lib/utils'
 import { Meeting, MeetingMode } from '@prisma/client'
 import { ReactNode } from 'react'
 import Link from 'next/link'
@@ -25,8 +25,6 @@ const MeetingHeader = ({
 }: MeetingHeaderProps) => {
     const dateRange = `${fmtDate(meeting.startDate)} — ${fmtDate(meeting.endDate)}`
     const mode = meeting.mode === MeetingMode.DAYS ? 'DAY MODE' : 'HOUR MODE'
-
-    const link = `${appUrl()}/m/${meeting.shortId}`
 
     const addResponseButton = showMobileAddResponseButton ? (
         <Link
@@ -51,9 +49,9 @@ const MeetingHeader = ({
             mobileAction={addResponseButton}
             right={
                 <div className="flex flex-col items-end gap-2">
-                    <CopyButton text={link} />
+                    <CopyButton text={`${appUrl()}/m/${meeting.shortId}`} />
                     <span className="font-mono text-[11px] text-ink/50 tracking-[0.04em]">
-                        {link}
+                        {`${appShortUrl()}/m/${meeting.shortId}`}
                     </span>
                 </div>
             }
