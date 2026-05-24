@@ -2,7 +2,7 @@
 
 import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
-import { Response } from '@prisma/client'
+import type { Response } from '@/generated/prisma/client'
 import { z } from 'zod'
 
 const getUserResponseSchema = z.object({

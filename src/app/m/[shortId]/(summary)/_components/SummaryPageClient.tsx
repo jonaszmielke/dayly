@@ -12,7 +12,8 @@ import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { StatCard } from '@/components/StatCard'
 import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
-import { Meeting, MeetingMode } from '@prisma/client'
+import type { Meeting } from '@/generated/prisma/client'
+import { MeetingMode } from '@/generated/prisma/enums'
 import { useCallback, useMemo, useState } from 'react'
 
 const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {

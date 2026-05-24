@@ -3,7 +3,7 @@
 import { generateMeetingId } from '@/lib/code'
 import { convertToUtc } from '@/lib/dates'
 import { prisma } from '@/lib/prisma'
-import { MeetingMode } from '@prisma/client'
+import { MeetingMode } from '@/generated/prisma/client'
 import { z } from 'zod'
 
 const MAX_NAME = 48

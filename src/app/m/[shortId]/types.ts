@@ -1,4 +1,4 @@
-import { Response as PrismaResponse } from '@prisma/client'
+import type { Response as PrismaResponse } from '@/generated/prisma/client'
 
 export type Response = Pick<PrismaResponse, 'id' | 'userName' | 'days'>
 
