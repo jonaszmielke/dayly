@@ -49,11 +49,12 @@ export const HeroCell = ({ cell, freeCount, totalCount }: HeroCellProps) => {
                             >
                                 {freeCount}
                             </span>
-                            <span className="font-mono text-[11px] opacity-60">/{totalCount}</span>
+                            <span className="hidden lg:inline font-mono text-[11px] opacity-60">/{totalCount}</span>
                         </div>
                     ) : (
                         <span className="font-mono text-[11px] opacity-50">
-                            {freeCount}/{totalCount}
+                            <span className="lg:hidden">{freeCount}</span>
+                            <span className="hidden lg:inline">{freeCount}/{totalCount}</span>
                         </span>
                     ))}
             </div>

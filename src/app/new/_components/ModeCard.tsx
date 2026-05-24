@@ -24,13 +24,13 @@ export const ModeCard = ({
             disabled={disabled}
             className={cn(
                 'grid items-start text-left p-4 border-brutal transition-all',
+                'grid-cols-[24px_1fr] lg:grid-cols-[24px_1fr_auto]',
                 active
                     ? 'bg-ink text-paper-2 shadow-brutal-mocha'
                     : disabled
                       ? 'bg-paper-2 opacity-60 cursor-not-allowed shadow-brutal-xs'
                       : 'bg-white shadow-brutal hover:shadow-brutal-sm press-effect'
             )}
-            style={{ gridTemplateColumns: '24px 1fr auto' }}
         >
             <span className="font-mono text-[22px] leading-none mt-0.5">{active ? '■' : '□'}</span>
             <div>
@@ -49,7 +49,7 @@ export const ModeCard = ({
                     </span>
                 )}
             </div>
-            <div className="pt-1">{glyph}</div>
+            <div className="col-start-2 mt-2 lg:col-start-auto lg:mt-0 lg:pt-1">{glyph}</div>
         </button>
     )
 }

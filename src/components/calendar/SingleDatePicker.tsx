@@ -83,7 +83,7 @@ export const SingleDatePicker = ({
 
             <Popover.Portal>
                 <Popover.Positioner align="center" sideOffset={10}>
-                    <Popover.Popup className="z-50 w-[540px] bg-white border-brutal shadow-brutal">
+                    <Popover.Popup className="z-50 w-[min(540px,calc(100vw-1rem))] bg-white border-brutal shadow-brutal">
                         <DPMonth
                             mode="single"
                             value={current}
@@ -91,8 +91,8 @@ export const SingleDatePicker = ({
                             onPick={handlePick}
                             minDate={minDate}
                         />
-                        <div className="flex items-center gap-3 p-4 border-t border-ink">
-                            <div className="flex-1 flex items-center gap-2 font-mono text-[12px]">
+                        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-3 p-4 border-t border-ink">
+                            <div className="flex-1 flex items-center gap-2 font-mono text-[12px] flex-wrap">
                                 {current ? (
                                     <>
                                         <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">

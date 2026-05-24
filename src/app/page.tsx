@@ -78,6 +78,7 @@ const HomePage = () => {
                                 month={month}
                                 rangeStart={monthStart}
                                 rangeEnd={monthEnd}
+                                cellAspectClassName="aspect-square lg:aspect-[140/100]"
                                 cellRenderer={(cell, inRange) => (
                                     <HeroCell
                                         cell={cell}
