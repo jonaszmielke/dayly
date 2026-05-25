@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     title: 'Dayly',
     description: 'Find the days that work for everyone',
     metadataBase: new URL(appUrl()),
+    openGraph: {
+        title: 'Dayly',
+        description: 'Find the days that work for everyone',
+        images: ['/og.png'],
+    },
 }
 
 const RootLayout = ({

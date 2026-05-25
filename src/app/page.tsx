@@ -26,7 +26,7 @@ const HomePage = () => {
 
                 {/* Hero */}
                 <section className="max-w-[1440px] mx-auto w-full px-4 lg:px-10 py-8 lg:py-14">
-                    <div className="grid gap-8 lg:gap-12 grid-cols-1 lg:[grid-template-columns:minmax(0,1fr)_420px] items-start">
+                    <div className="grid gap-8 lg:gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] items-start">
                         {/* On mobile: copy block first, calendar second */}
                         {/* Right: copy */}
                         <div className="flex flex-col gap-5 lg:gap-6 lg:pt-2 order-1 lg:order-2">
@@ -93,7 +93,10 @@ const HomePage = () => {
                 </section>
 
                 {/* Features */}
-                <section id="features" className="max-w-[1440px] mx-auto w-full px-4 lg:px-10 pb-10 lg:pb-16">
+                <section
+                    id="features"
+                    className="max-w-[1440px] mx-auto w-full px-4 lg:px-10 pb-10 lg:pb-16"
+                >
                     <div className="bg-white border-2 border-ink shadow-brutal">
                         <div className="grid grid-cols-1 lg:grid-cols-3 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-ink">
                             {[
