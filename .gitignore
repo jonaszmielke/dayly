@@ -9,6 +9,7 @@ AGENTS.md
 graphify-out
 
 /src/generated
+/deploy
 
 # dependencies
 /node_modules
