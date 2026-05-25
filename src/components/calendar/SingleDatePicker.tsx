@@ -1,9 +1,9 @@
 'use client'
 
 import { DPMonth } from './DPMonth'
+import { ResponsivePopover } from './ResponsivePopover'
 import { daysBetweenInclusive, DOW_ABBREVIATIONS, formatDate, parseISO, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import { Popover } from '@base-ui/react/popover'
 import { useState } from 'react'
 
 type SingleDatePickerProps = {
@@ -55,14 +55,16 @@ export const SingleDatePicker = ({
     const subtext = value ? `${daysBetweenInclusive(today, value)} DAYS FROM TODAY` : 'SINGLE DATE'
 
     return (
-        <Popover.Root open={open} onOpenChange={handleOpenChange}>
-            <Popover.Trigger
-                className={cn(
-                    'w-full text-left border-brutal shadow-brutal bg-white transition-all',
-                    open && 'bg-paper shadow-brutal-mocha'
-                )}
-                style={{ padding: '18px 48px 18px 16px' }}
-            >
+        <ResponsivePopover
+            open={open}
+            onOpenChange={handleOpenChange}
+            triggerClassName={cn(
+                'w-full text-left border-brutal shadow-brutal bg-white transition-all',
+                open && 'bg-paper shadow-brutal-mocha'
+            )}
+            triggerStyle={{ padding: '18px 48px 18px 16px' }}
+            subtext={subtext}
+            trigger={
                 <div className="relative">
                     <span
                         className={cn(
@@ -76,57 +78,44 @@ export const SingleDatePicker = ({
                         ▾
                     </span>
                 </div>
-            </Popover.Trigger>
-            <div className="mt-1 pl-2 font-mono text-[11px] text-ink/55 uppercase tracking-[0.08em]">
-                {subtext}
+            }
+        >
+            <DPMonth
+                mode="single"
+                value={current}
+                rangeValue={{ start: null, end: null }}
+                onPick={handlePick}
+                minDate={minDate}
+            />
+            <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-3 p-4 border-t border-ink">
+                <div className="flex-1 flex items-center gap-2 font-mono text-[12px] flex-wrap">
+                    {current ? (
+                        <>
+                            <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">
+                                {label}
+                            </span>
+                            <span className="font-bold text-ink">{formatDateWithDow(current)}</span>
+                        </>
+                    ) : (
+                        <span className="text-ink/50 uppercase tracking-[0.08em]">Pick a date</span>
+                    )}
+                </div>
+                <button
+                    type="button"
+                    onClick={handleReset}
+                    className="px-3 py-1.5 border-thin font-mono text-[11px] uppercase tracking-[0.08em] hover:bg-paper transition-colors"
+                >
+                    Reset
+                </button>
+                <button
+                    type="button"
+                    onClick={handleApply}
+                    disabled={!pending}
+                    className="px-4 py-1.5 bg-mocha text-paper-2 border-brutal shadow-brutal-sm font-mono text-[11px] uppercase tracking-[0.08em] disabled:opacity-40 hover:bg-mocha-dark transition-colors press-effect"
+                >
+                    Apply
+                </button>
             </div>
-
-            <Popover.Portal>
-                <Popover.Positioner align="center" sideOffset={10}>
-                    <Popover.Popup className="z-50 w-[min(540px,calc(100vw-1rem))] bg-white border-brutal shadow-brutal">
-                        <DPMonth
-                            mode="single"
-                            value={current}
-                            rangeValue={{ start: null, end: null }}
-                            onPick={handlePick}
-                            minDate={minDate}
-                        />
-                        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-3 p-4 border-t border-ink">
-                            <div className="flex-1 flex items-center gap-2 font-mono text-[12px] flex-wrap">
-                                {current ? (
-                                    <>
-                                        <span className="bg-ink text-paper-2 font-mono text-[11px] px-1.5 py-0.5 uppercase tracking-widest">
-                                            {label}
-                                        </span>
-                                        <span className="font-bold text-ink">
-                                            {formatDateWithDow(current)}
-                                        </span>
-                                    </>
-                                ) : (
-                                    <span className="text-ink/50 uppercase tracking-[0.08em]">
-                                        Pick a date
-                                    </span>
-                                )}
-                            </div>
-                            <button
-                                type="button"
-                                onClick={handleReset}
-                                className="px-3 py-1.5 border-thin font-mono text-[11px] uppercase tracking-[0.08em] hover:bg-paper transition-colors"
-                            >
-                                Reset
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleApply}
-                                disabled={!pending}
-                                className="px-4 py-1.5 bg-mocha text-paper-2 border-brutal shadow-brutal-sm font-mono text-[11px] uppercase tracking-[0.08em] disabled:opacity-40 hover:bg-mocha-dark transition-colors press-effect"
-                            >
-                                Apply
-                            </button>
-                        </div>
-                    </Popover.Popup>
-                </Popover.Positioner>
-            </Popover.Portal>
-        </Popover.Root>
+        </ResponsivePopover>
     )
 }
