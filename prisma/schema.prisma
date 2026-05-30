@@ -23,6 +23,11 @@ model Meeting {
     endDate   DateTime @db.Date
     deadline  DateTime @db.Date
 
+    // hour mode only
+    startHour Int? // 0–23
+    endHour   Int? // 1–24, 24 = midnight
+    timezone  String?
+
     responses Response[]
 
     createdAt DateTime @default(now())
@@ -30,9 +35,11 @@ model Meeting {
 }
 
 model Response {
-    id       Int        @id @default(autoincrement())
+    id       Int    @id @default(autoincrement())
     userName String
-    days     DateTime[] @db.Date
+
+    days  DateTime[] @db.Date
+    hours DateTime[] @db.Timestamptz
 
     meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
     meetingId Int
