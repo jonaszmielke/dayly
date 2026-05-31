@@ -2,16 +2,17 @@
 
 import { createMeeting, CreateMeetingProps } from '../_actions/createMeeting'
 import { CreateSection } from './CreateSection'
+import { HourSelect } from './HourSelect'
 import { ModeCard } from './ModeCard'
 import { DateRangePicker } from '@/components/calendar/DateRangePicker'
 import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
-import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
+import { daysBetweenInclusive, formatDate, formatHour, timezones, ymd } from '@/lib/dates'
 import { appShortUrl, cn } from '@/lib/utils'
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const today = ymd(new Date())
@@ -25,7 +26,21 @@ const CreatePageClient = () => {
         end: null,
     })
     const [deadline, setDeadline] = useState<string | null>(null)
+    const [startHour, setStartHour] = useState(8)
+    const [endHour, setEndHour] = useState(16)
+    const [timezone, setTimezone] = useState<string>('UTC')
+    const [detectedTimeZone, setDetectedTimeZone] = useState<string>('UTC')
     const router = useRouter()
+
+    const sortedTimezones = useMemo(() => [...timezones].sort(), [])
+
+    useEffect(() => {
+        const detected = Intl.DateTimeFormat().resolvedOptions().timeZone
+        if (timezones.has(detected)) {
+            setTimezone(detected)
+            setDetectedTimeZone(detected)
+        }
+    }, [])
 
     const createMeetingMutation = useMutation({
         mutationFn: (props: CreateMeetingProps) => createMeeting(props),
@@ -34,16 +49,34 @@ const CreatePageClient = () => {
         },
     })
 
-    const canSubmit = Boolean(name.trim() && dateRange.start && dateRange.end && deadline)
+    const hoursValid = endHour > startHour
+    const canSubmit = Boolean(
+        name.trim() &&
+        dateRange.start &&
+        dateRange.end &&
+        deadline &&
+        (mode === MeetingMode.DAYS || hoursValid)
+    )
 
     const handleSubmit = () => {
         if (!name.trim() || !dateRange.start || !dateRange.end || !deadline) return
-        createMeetingMutation.mutate({
-            name,
-            dateRange: { start: dateRange.start, end: dateRange.end },
-            deadline,
-            mode: MeetingMode.DAYS, //TODO: update after implementing frontend hours mode
-        })
+        const base = { name, dateRange: { start: dateRange.start, end: dateRange.end }, deadline }
+        if (mode === MeetingMode.HOURS) {
+            createMeetingMutation.mutate({
+                ...base,
+                mode: MeetingMode.HOURS,
+                startHour,
+                endHour,
+                timezone,
+            })
+        } else {
+            createMeetingMutation.mutate({ ...base, mode: MeetingMode.DAYS })
+        }
+    }
+
+    const handleStartHourChange = (v: number) => {
+        setStartHour(v)
+        if (endHour <= v) setEndHour(Math.min(v + 1, 24))
     }
 
     const statRows = [
@@ -56,8 +89,21 @@ const CreatePageClient = () => {
                     ? `${daysBetweenInclusive(dateRange.start, dateRange.end)} days`
                     : '—',
         },
+        ...(mode === MeetingMode.HOURS
+            ? [
+                  {
+                      label: 'Hours',
+                      value: hoursValid
+                          ? `${formatHour(startHour)} → ${formatHour(endHour)} · ${endHour - startHour} hrs/day`
+                          : '—',
+                  },
+                  { label: 'Timezone', value: timezone },
+              ]
+            : []),
         { label: 'Deadline', value: deadline ? formatDate(deadline) : '—' },
     ]
+
+    const deadlineSectionNumber = mode === MeetingMode.HOURS ? '06' : '04'
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -108,7 +154,7 @@ const CreatePageClient = () => {
                     </CreateSection>
 
                     {/* Section 2: Mode */}
-                    <CreateSection number="02" title="Meeting Mode" hint="BY HOUR coming soon">
+                    <CreateSection number="02" title="Meeting Mode" hint="HOW DO WE PICK?">
                         <div className="grid grid-cols-2 gap-4">
                             <ModeCard
                                 active={mode === MeetingMode.DAYS}
@@ -123,9 +169,7 @@ const CreatePageClient = () => {
                                                 className="w-[6px] h-[6px]"
                                                 style={{
                                                     backgroundColor: [2, 5, 7, 8, 9, 12].includes(i)
-                                                        ? mode === MeetingMode.DAYS
-                                                            ? '#7E6038'
-                                                            : '#7E6038'
+                                                        ? '#7E6038'
                                                         : mode === MeetingMode.DAYS
                                                           ? 'rgba(236,226,203,0.4)'
                                                           : 'rgba(22,21,20,0.2)',
@@ -136,13 +180,27 @@ const CreatePageClient = () => {
                                 }
                             />
                             <ModeCard
-                                active={false}
-                                disabled
-                                onClick={() => {}}
+                                active={mode === MeetingMode.HOURS}
+                                onClick={() => setMode(MeetingMode.HOURS)}
                                 title="By Hour"
                                 desc="Pick specific time slots"
-                                badge="SOON"
-                                glyph={null}
+                                glyph={
+                                    <div className="grid grid-cols-7 gap-0.5">
+                                        {Array.from({ length: 14 }).map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="w-[6px] h-[6px]"
+                                                style={{
+                                                    backgroundColor: [3, 4, 5, 10, 11].includes(i)
+                                                        ? '#7E6038'
+                                                        : mode === MeetingMode.HOURS
+                                                          ? 'rgba(236,226,203,0.4)'
+                                                          : 'rgba(22,21,20,0.2)',
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                }
                             />
                         </div>
                     </CreateSection>
@@ -160,9 +218,73 @@ const CreatePageClient = () => {
                         />
                     </CreateSection>
 
-                    {/* Section 4: Deadline */}
+                    {/* Section 4: Suitable Hours (HOURS mode only) */}
+                    {mode === MeetingMode.HOURS && (
+                        <CreateSection
+                            number="04"
+                            title="Suitable Hours"
+                            hint="Which part of the day?"
+                        >
+                            <div className="flex flex-col gap-4">
+                                <div className="flex gap-6">
+                                    <HourSelect
+                                        label="FROM"
+                                        value={startHour}
+                                        onChange={handleStartHourChange}
+                                    />
+
+                                    <HourSelect
+                                        label="TO"
+                                        value={endHour}
+                                        onChange={(value) => setEndHour(value)}
+                                        fromHour={startHour}
+                                    />
+                                </div>
+
+                                <div
+                                    className={cn(
+                                        'font-mono text-[11px] tracking-widest uppercase ',
+                                        hoursValid ? 'text-ink/50' : 'text-red-600'
+                                    )}
+                                >
+                                    {hoursValid
+                                        ? `${endHour - startHour} HOURS / DAY`
+                                        : 'END MUST BE AFTER START'}
+                                </div>
+                            </div>
+                        </CreateSection>
+                    )}
+
+                    {/* Section 5: Timezone (HOURS mode only) */}
+                    {mode === MeetingMode.HOURS && (
+                        <CreateSection
+                            number="05"
+                            title="Timezone"
+                            hint={timezone === detectedTimeZone ? 'AUTO-DETECTED' : 'CUSTOM'}
+                        >
+                            <div className="relative border-brutal shadow-brutal bg-white transition-all">
+                                <select
+                                    value={timezone}
+                                    onChange={(e) => setTimezone(e.target.value)}
+                                    className="w-full appearance-none bg-transparent font-sans font-bold text-[22px] uppercase text-ink outline-none cursor-pointer"
+                                    style={{ padding: '18px 48px 18px 16px' }}
+                                >
+                                    {sortedTimezones.map((tz) => (
+                                        <option key={tz} value={tz}>
+                                            {tz}
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none font-mono text-ink/50">
+                                    ▾
+                                </span>
+                            </div>
+                        </CreateSection>
+                    )}
+
+                    {/* Section 4/6: Deadline */}
                     <CreateSection
-                        number="04"
+                        number={deadlineSectionNumber}
                         title="Response Deadline"
                         hint="By when should people respond?"
                     >

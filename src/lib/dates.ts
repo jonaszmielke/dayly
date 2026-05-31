@@ -20,6 +20,8 @@ export const isValidTimezone = (tz: string): boolean => {
     return timezones.has(tz)
 }
 
+export const formatHour = (h: number) => `${String(h).padStart(2, '0')}:00`
+
 export const dateRange = (startISO: string, endISO: string): string[] => {
     const out: string[] = []
     const d = new Date(startISO + 'T00:00:00')
