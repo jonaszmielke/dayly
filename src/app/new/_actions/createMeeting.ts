@@ -1,27 +1,47 @@
 'use server'
 
-import { generateMeetingId } from '@/lib/code'
-import { convertToUtc } from '@/lib/dates'
-import { prisma } from '@/lib/prisma'
 import { MeetingMode } from '@/generated/prisma/client'
+import { generateMeetingId } from '@/lib/code'
+import { convertToUtc, isValidTimezone } from '@/lib/dates'
+import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
 const MAX_NAME = 48
 const YMD = /^\d{4}-\d{2}-\d{2}$/
 
+const baseSchema = z.object({
+    name: z.string().trim().min(1).max(MAX_NAME),
+    dateRange: z.object({
+        start: z.string().regex(YMD),
+        end: z.string().regex(YMD),
+    }),
+    deadline: z.string().regex(YMD).optional(),
+})
+
 const createMeetingSchema = z
-    .object({
-        name: z.string().trim().min(1).max(MAX_NAME),
-        mode: z.enum(MeetingMode),
-        dateRange: z.object({
-            start: z.string().regex(YMD),
-            end: z.string().regex(YMD),
+    .discriminatedUnion('mode', [
+        baseSchema.extend({ mode: z.literal(MeetingMode.DAYS) }),
+        baseSchema.extend({
+            mode: z.literal(MeetingMode.HOURS),
+            startHour: z.number().int().min(0).max(23),
+            endHour: z.number().int().min(1).max(24),
+            timezone: z
+                .string()
+                .refine((tz) => isValidTimezone(tz), { message: 'Invalid timezone' }),
         }),
-        deadline: z.string().regex(YMD),
-    })
+    ])
     .refine((d) => d.dateRange.start <= d.dateRange.end, {
         message: 'dateRange.start must be <= dateRange.end',
         path: ['dateRange', 'end'],
+    })
+    .superRefine((d, ctx) => {
+        if (d.mode === MeetingMode.HOURS && d.startHour >= d.endHour) {
+            ctx.addIssue({
+                code: 'custom',
+                message: 'startHour must be < endHour',
+                path: ['endHour'],
+            })
+        }
     })
 
 export type CreateMeetingProps = z.infer<typeof createMeetingSchema>
@@ -50,7 +70,7 @@ export const createMeeting = async (
         }
     }
 
-    const { name, dateRange, deadline } = parsed.data
+    const { name, mode, dateRange, deadline } = parsed.data
     const meetingId = generateMeetingId()
 
     try {
@@ -58,12 +78,15 @@ export const createMeeting = async (
             data: {
                 shortId: meetingId,
                 name,
-                // For now we only support DAYS mode
-                // TODO: change when implemented HOURLY mode
-                mode: MeetingMode.DAYS,
+                mode,
                 startDate: convertToUtc(dateRange.start),
                 endDate: convertToUtc(dateRange.end),
-                deadline: convertToUtc(deadline),
+                deadline: deadline ? convertToUtc(deadline) : undefined,
+                ...(mode === MeetingMode.HOURS && {
+                    startHour: parsed.data.startHour,
+                    endHour: parsed.data.endHour,
+                    timezone: parsed.data.timezone,
+                }),
             },
         })
     } catch (error) {

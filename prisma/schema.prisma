@@ -19,9 +19,9 @@ model Meeting {
 
     name String
 
-    startDate DateTime @db.Date
-    endDate   DateTime @db.Date
-    deadline  DateTime @db.Date
+    startDate DateTime  @db.Date
+    endDate   DateTime  @db.Date
+    deadline  DateTime? @db.Date
 
     // hour mode only
     startHour Int? // 0–23

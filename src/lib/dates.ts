@@ -14,6 +14,12 @@ export const convertToUtc = (date: Date | string): Date => {
     return new Date(Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()))
 }
 
+export const timezones = new Set<string>(Intl.supportedValuesOf('timeZone'))
+
+export const isValidTimezone = (tz: string): boolean => {
+    return timezones.has(tz)
+}
+
 export const dateRange = (startISO: string, endISO: string): string[] => {
     const out: string[] = []
     const d = new Date(startISO + 'T00:00:00')
