@@ -2,6 +2,7 @@
 
 import { saveResponse } from '../_actions/saveResponse'
 import MeetingHeader from '../../_components/MeetingHeader'
+import { MeetingClean } from '../../types'
 import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
@@ -11,12 +12,11 @@ import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
 import { formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import type { Meeting } from '@/generated/prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
+export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const router = useRouter()
 
     const rangeStart = ymd(meeting.startDate)
@@ -132,7 +132,9 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
     const statRows = [
         { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },
         { label: 'Mode', value: meeting.mode },
-        { label: 'Respond by', value: formatDate(ymd(meeting.deadline)) ?? '—' },
+        ...(meeting.deadline
+            ? [{ label: 'Respond by', value: formatDate(ymd(meeting.deadline)) }]
+            : []),
     ]
 
     const saveState = saveMutation.isPending
@@ -263,75 +265,75 @@ export const RespondPageClient = ({ meeting }: { meeting: Meeting }) => {
                     <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
                         {/* Sidebar */}
                         <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                    {namePanel}
-                    {quickPicks}
-                    <StatCard rows={statRows} />
+                            {namePanel}
+                            {quickPicks}
+                            <StatCard rows={statRows} />
 
-                    {/* Counter */}
-                    <div className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4">
-                        <span
-                            className="font-sans font-extrabold leading-none tracking-tighter"
-                            style={{ fontSize: '56px' }}
-                        >
-                            {String(selected.size).padStart(2, '0')}
-                        </span>
-                        <div>
-                            <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
-                                DAYS
+                            {/* Counter */}
+                            <div className="bg-ink text-paper-2 border-brutal shadow-brutal-mocha grid grid-cols-[auto_1fr] items-center gap-4 px-5 py-4">
+                                <span
+                                    className="font-sans font-extrabold leading-none tracking-tighter"
+                                    style={{ fontSize: '56px' }}
+                                >
+                                    {String(selected.size).padStart(2, '0')}
+                                </span>
+                                <div>
+                                    <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
+                                        DAYS
+                                    </div>
+                                    <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
+                                        SELECTED
+                                    </div>
+                                </div>
                             </div>
-                            <div className="font-sans text-[13px] font-bold uppercase tracking-[0.12em] text-paper/70">
-                                SELECTED
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Actions */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <button
-                            onClick={handleSave}
-                            disabled={!name.trim() || !saveMutation.isIdle}
-                            className={cn(
-                                'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
-                                saveMutation.isSuccess
-                                    ? 'bg-mocha-dark text-paper-2 shadow-brutal'
-                                    : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
-                            )}
-                        >
-                            {saveLabel}
-                        </button>
-                        <button
-                            onClick={handleReset}
-                            className="py-3 bg-white border-brutal shadow-brutal-sm font-sans text-[13px] font-bold uppercase tracking-[0.08em] hover:bg-paper transition-colors press-effect"
-                        >
-                            Reset
-                        </button>
-                    </div>
-
-                    <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
-                        <div>CLICK to toggle a day</div>
-                        <div>DRAG to select multiple</div>
-                        <div>⇧ CLICK for range</div>
-                    </div>
-                </aside>
-
-                {/* Main */}
-                <main className="flex flex-col gap-6">
-                    <div className="bg-white border-brutal shadow-brutal flex items-center gap-4 px-5 py-4">
-                        <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em]">
-                            PICK
-                        </div>
-                        <div className="flex-1">
-                            <div className="font-sans text-[22px] font-bold leading-tight">
-                                When are you free?
+                            {/* Actions */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={handleSave}
+                                    disabled={!name.trim() || !saveMutation.isIdle}
+                                    className={cn(
+                                        'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
+                                        saveMutation.isSuccess
+                                            ? 'bg-mocha-dark text-paper-2 shadow-brutal'
+                                            : 'bg-mocha text-paper-2 shadow-brutal disabled:opacity-40 disabled:cursor-not-allowed'
+                                    )}
+                                >
+                                    {saveLabel}
+                                </button>
+                                <button
+                                    onClick={handleReset}
+                                    className="py-3 bg-white border-brutal shadow-brutal-sm font-sans text-[13px] font-bold uppercase tracking-[0.08em] hover:bg-paper transition-colors press-effect"
+                                >
+                                    Reset
+                                </button>
                             </div>
-                            <div className="font-mono text-[11px] text-ink/55 mt-0.5">
-                                Click or drag days in the calendar below
+
+                            <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
+                                <div>CLICK to toggle a day</div>
+                                <div>DRAG to select multiple</div>
+                                <div>⇧ CLICK for range</div>
                             </div>
-                        </div>
-                        <span className="font-mono text-[20px] text-ink/30">↗</span>
-                    </div>
-                    {monthGrids}
-                </main>
+                        </aside>
+
+                        {/* Main */}
+                        <main className="flex flex-col gap-6">
+                            <div className="bg-white border-brutal shadow-brutal flex items-center gap-4 px-5 py-4">
+                                <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em]">
+                                    PICK
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-sans text-[22px] font-bold leading-tight">
+                                        When are you free?
+                                    </div>
+                                    <div className="font-mono text-[11px] text-ink/55 mt-0.5">
+                                        Click or drag days in the calendar below
+                                    </div>
+                                </div>
+                                <span className="font-mono text-[20px] text-ink/30">↗</span>
+                            </div>
+                            {monthGrids}
+                        </main>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,11 @@
 'use client'
 
+import { MeetingClean } from '../types'
 import { CopyButton } from '@/components/CopyButton'
 import { TopBar } from '@/components/TopBar'
+import { MeetingMode } from '@/generated/prisma/enums'
 import { MONTH_ABBREVIATIONS } from '@/lib/dates'
 import { appShortUrl, appUrl } from '@/lib/utils'
-import type { Meeting } from '@/generated/prisma/client'
-import { MeetingMode } from '@/generated/prisma/enums'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 
@@ -14,7 +14,7 @@ const fmtDate = (d: Date): string => {
 }
 
 type MeetingHeaderProps = {
-    meeting: Meeting
+    meeting: MeetingClean
     mobileRight?: ReactNode
     showMobileAddResponseButton?: boolean
 }

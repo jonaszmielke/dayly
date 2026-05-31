@@ -2,6 +2,7 @@
 
 import { useResponses } from '../_hooks/useResponses'
 import MeetingHeader from '../../_components/MeetingHeader'
+import { MeetingClean } from '../../types'
 import { BestDayBanner } from './BestDayBanner'
 import { DayDetailSheet } from './DayDetailSheet'
 import { SummaryMobileDrawer } from './SummaryMobileDrawer'
@@ -10,10 +11,9 @@ import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { StatCard } from '@/components/StatCard'
+import { MeetingMode } from '@/generated/prisma/enums'
 import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
-import type { Meeting } from '@/generated/prisma/client'
-import { MeetingMode } from '@/generated/prisma/enums'
 import { useCallback, useMemo, useState } from 'react'
 
 const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {
@@ -29,7 +29,7 @@ const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeE
     return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
 }
 
-export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
+export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const { responses, isLoading } = useResponses(meeting.shortId)
     const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null)
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
@@ -63,7 +63,9 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     const statRows = [
         { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },
         { label: 'Mode', value: meeting.mode },
-        { label: 'Deadline', value: formatDate(ymd(meeting.deadline)) ?? '—' },
+        ...(meeting.deadline
+            ? [{ label: 'Deadline', value: formatDate(ymd(meeting.deadline)) }]
+            : []),
         { label: 'Responses', value: String(responses.length) },
     ]
 

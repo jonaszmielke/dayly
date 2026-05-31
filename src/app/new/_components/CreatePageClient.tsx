@@ -7,9 +7,9 @@ import { DateRangePicker } from '@/components/calendar/DateRangePicker'
 import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
+import { MeetingMode } from '@/generated/prisma/enums'
 import { daysBetweenInclusive, formatDate, ymd } from '@/lib/dates'
 import { appShortUrl, cn } from '@/lib/utils'
-import { MeetingMode } from '@/generated/prisma/enums'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -42,7 +42,7 @@ const CreatePageClient = () => {
             name,
             dateRange: { start: dateRange.start, end: dateRange.end },
             deadline,
-            mode,
+            mode: MeetingMode.DAYS, //TODO: update after implementing frontend hours mode
         })
     }
 
