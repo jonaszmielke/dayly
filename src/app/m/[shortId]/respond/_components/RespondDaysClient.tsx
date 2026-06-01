@@ -2,7 +2,7 @@
 
 import { saveResponse } from '../_actions/saveResponse'
 import MeetingHeader from '../../_components/MeetingHeader'
-import { MeetingClean } from '../../types'
+import { MeetingCleanDays } from '../../types'
 import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
@@ -16,7 +16,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
+export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) => {
     const router = useRouter()
 
     const rangeStart = ymd(meeting.startDate)
@@ -32,6 +32,8 @@ export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
         name: editOriginalName,
     })
 
+    const responseDays = userResponse && 'days' in userResponse ? userResponse.days : undefined
+
     const {
         selected,
         setSelected,
@@ -44,18 +46,18 @@ export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     } = useCalendarSelectLogic({
         rangeStart,
         rangeEnd,
-        initialSelected: userResponse?.days,
+        initialSelected: responseDays,
         edit: !!editOriginalName,
     })
 
     const [editInitialized, setEditInitialized] = useState(false)
 
     useEffect(() => {
-        if (!editOriginalName || isUserResponseLoading || !userResponse) return
+        if (!editOriginalName || isUserResponseLoading || !responseDays) return
         setName(editOriginalName)
-        setSelected(new Set(userResponse.days.map((d) => ymd(d))))
+        setSelected(new Set(responseDays.map((d) => ymd(d))))
         setEditInitialized(true)
-    }, [userResponse, editOriginalName, isUserResponseLoading])
+    }, [responseDays, editOriginalName, isUserResponseLoading])
 
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
     const updateResponsesCache = useUpdateResponsesCache()
@@ -65,7 +67,7 @@ export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             saveResponse({
                 meetingShortId: meeting.shortId,
                 name,
-                dates: Array.from(selected),
+                selection: Array.from(selected),
                 edit: !!editOriginalName,
                 newName: !!editOriginalName && name !== editOriginalName ? name : undefined,
             }),
@@ -89,8 +91,8 @@ export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const isDirty = useMemo(() => {
         if (saveMutation.isSuccess || saveMutation.isPending) return false
         if (editOriginalName) {
-            if (!editInitialized || !userResponse) return false
-            const original = new Set(userResponse.days.map((d) => ymd(d)))
+            if (!editInitialized || !responseDays) return false
+            const original = new Set(responseDays.map((d) => ymd(d)))
             if (name !== editOriginalName) return true
             if (original.size !== selected.size) return true
             for (const d of selected) if (!original.has(d)) return true
@@ -101,7 +103,7 @@ export const RespondPageClient = ({ meeting }: { meeting: MeetingClean }) => {
         name,
         selected,
         editOriginalName,
-        userResponse,
+        responseDays,
         editInitialized,
         saveMutation.isSuccess,
         saveMutation.isPending,

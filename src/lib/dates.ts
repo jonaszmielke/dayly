@@ -22,6 +22,18 @@ export const isValidTimezone = (tz: string): boolean => {
 
 export const formatHour = (h: number) => `${String(h).padStart(2, '0')}:00`
 
+export const slotKey = (date: string, hour: number): string =>
+    `${date}T${String(hour).padStart(2, '0')}`
+
+// Rebuild a slotKey from a stored hour Date. Slots are persisted tz-naive as UTC
+// instants (see saveHoursResponse), so read them back with UTC getters.
+export const slotKeyFromUtc = (d: Date): string => {
+    const date = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(
+        d.getUTCDate()
+    ).padStart(2, '0')}`
+    return slotKey(date, d.getUTCHours())
+}
+
 export const dateRange = (startISO: string, endISO: string): string[] => {
     const out: string[] = []
     const d = new Date(startISO + 'T00:00:00')
@@ -196,4 +208,37 @@ export const isWeekend = (iso: string): boolean => {
     const d = new Date(iso + 'T00:00:00')
     const dow = d.getDay()
     return dow === 0 || dow === 6
+}
+
+export type WeekCell = {
+    date: string
+    inRange: boolean
+    dom: number
+    dow: string
+}
+
+// Mon-aligned weeks spanning [startISO, endISO]. Days outside the range are still
+// emitted (as columns) with inRange=false — analogous to monthGrid's out-of-month padding.
+export const getDisplayWeeks = (startISO: string, endISO: string): WeekCell[][] => {
+    const start = parseISO(startISO)
+    const monOffset = (start.getDay() + 6) % 7 // Mon-first
+    const cursor = new Date(start)
+    cursor.setDate(cursor.getDate() - monOffset)
+
+    const weeks: WeekCell[][] = []
+    while (ymd(cursor) <= endISO) {
+        const week: WeekCell[] = []
+        for (let i = 0; i < 7; i++) {
+            const date = ymd(cursor)
+            week.push({
+                date,
+                inRange: date >= startISO && date <= endISO,
+                dom: cursor.getDate(),
+                dow: DOW_ABBREVIATIONS[i],
+            })
+            cursor.setDate(cursor.getDate() + 1)
+        }
+        weeks.push(week)
+    }
+    return weeks
 }

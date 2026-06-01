@@ -1,5 +1,7 @@
 import { getMeeting } from '../_actions/getMeeting'
-import { RespondPageClient } from './_components/RespondPageClient'
+import { RespondDaysClient } from './_components/RespondDaysClient'
+import { RespondHoursClient } from './_components/RespondHoursClient'
+import { MeetingMode } from '@/generated/prisma/enums'
 import { Metadata } from 'next'
 
 export const generateMetadata = async ({
@@ -19,7 +21,11 @@ const RespondPage = async ({ params }: { params: Promise<{ shortId: string }> })
 
     const meeting = await getMeeting(shortId)
 
-    return <RespondPageClient meeting={meeting} />
+    return meeting.mode === MeetingMode.HOURS ? (
+        <RespondHoursClient meeting={meeting} />
+    ) : (
+        <RespondDaysClient meeting={meeting} />
+    )
 }
 
 export default RespondPage

@@ -1,7 +1,10 @@
 'use server'
 
+import type { SaveResponseResult } from '../../types'
+import { saveDaysResponse } from './saveDaysResponse'
+import { saveHoursResponse } from './saveHoursResponse'
+import { MeetingMode } from '@/generated/prisma/client'
 import { validateMeetingShortId } from '@/lib/code'
-import { convertToUtc } from '@/lib/dates'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
@@ -9,13 +12,13 @@ const saveResponseSchema = z.object({
     meetingShortId: z.string().refine(validateMeetingShortId, 'Invalid meeting code'),
     name: z.string().trim().min(3).max(32),
     newName: z.string().trim().min(3).max(32).optional(),
-    dates: z.array(z.string()),
+    selection: z.array(z.string()),
     edit: z.boolean().optional().default(false),
 })
 
 export type SaveResponseProps = z.input<typeof saveResponseSchema>
 
-export const saveResponse = async (props: SaveResponseProps) => {
+export const saveResponse = async (props: SaveResponseProps): Promise<SaveResponseResult> => {
     const parsed = saveResponseSchema.safeParse(props)
     if (!parsed.success) {
         const first = parsed.error.issues[0]
@@ -27,20 +30,21 @@ export const saveResponse = async (props: SaveResponseProps) => {
         }
     }
 
-    const { meetingShortId, name, newName, dates, edit } = parsed.data
+    const { meetingShortId, name, newName, selection, edit } = parsed.data
 
     try {
         const meeting = await prisma.meeting.findUnique({
             where: { shortId: meetingShortId },
             select: {
                 id: true,
+                mode: true,
                 startDate: true,
                 endDate: true,
+                startHour: true,
+                endHour: true,
                 responses: {
-                    where: {
-                        userName: name,
-                    },
-                    select: { id: true, userName: true },
+                    where: { userName: name },
+                    select: { userName: true },
                 },
             },
         })
@@ -49,35 +53,12 @@ export const saveResponse = async (props: SaveResponseProps) => {
         if (!edit && meeting.responses.length > 0)
             return { success: false, message: 'Response already exists' }
 
-        const formattedDates = dates.map((date) => convertToUtc(new Date(date)))
-        const areDatesOutOfRange = formattedDates.some(
-            (date) => date < meeting.startDate || date > meeting.endDate
-        )
-
-        if (areDatesOutOfRange) return { success: false, message: 'Dates are out of meeting range' }
-
-        await prisma.response.upsert({
-            where: {
-                meetingId_userName: {
-                    meetingId: meeting.id,
-                    userName: name,
-                },
-            },
-            update: {
-                ...(newName && newName !== meeting.responses[0].userName && { userName: newName }),
-                days: formattedDates,
-            },
-            create: {
-                userName: name,
-                days: formattedDates,
-                meetingId: meeting.id,
-            },
-            select: { id: true },
-        })
-
-        return { success: true }
+        const args = { meeting, name, newName, selection }
+        return meeting.mode === MeetingMode.HOURS
+            ? saveHoursResponse(args)
+            : saveDaysResponse(args)
     } catch (error) {
-        console.error('Failed to fetch responses', { error })
-        return { success: false, message: 'Failed to fetch responses, please try again later' }
+        console.error('Failed to save response', { error })
+        return { success: false, message: 'Failed to save response, please try again later' }
     }
 }
