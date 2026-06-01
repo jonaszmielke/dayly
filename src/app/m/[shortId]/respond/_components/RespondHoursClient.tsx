@@ -305,7 +305,8 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
                                         Which hours work for you?
                                     </div>
                                     <div className="font-mono text-[11px] text-ink/55 mt-0.5">
-                                        Click or drag slots · click a day or hour label to paint a line
+                                        Click or drag slots · click a day or hour label to paint a
+                                        line
                                     </div>
                                 </div>
                                 <span className="font-mono text-[20px] text-ink/30">↗</span>

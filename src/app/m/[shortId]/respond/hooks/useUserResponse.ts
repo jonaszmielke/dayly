@@ -12,7 +12,17 @@ type UseUserResponseProps = {
 export const useUserResponse = ({ meetingShortId, name }: UseUserResponseProps) => {
     const { data, isLoading, isError } = useQuery({
         queryKey: [queryKeys.userSingleResponse, meetingShortId, name],
-        queryFn: () => getUserResponse({ meetingShortId, name: name! }),
+        queryFn: async () => {
+            const response = await getUserResponse({ meetingShortId, name: name! })
+
+            if (!response.success) {
+                const url = new URL(window.location.href)
+                url.searchParams.delete('edit')
+                window.history.replaceState(null, '', url.toString())
+            }
+
+            return response
+        },
         staleTime: 5 * 60 * 1000,
         enabled: !!name,
     })
