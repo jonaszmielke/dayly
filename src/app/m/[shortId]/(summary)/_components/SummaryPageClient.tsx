@@ -16,6 +16,7 @@ import { SummaryHourCell } from '@/components/calendar/SummaryHourCell'
 import { StatCard } from '@/components/StatCard'
 import { MeetingMode } from '@/generated/prisma/enums'
 import {
+    calcDaysInRange,
     computeBest,
     computeBestHours,
     dateRange,
@@ -30,19 +31,6 @@ import {
 } from '@/lib/dates'
 import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
 import { useCallback, useMemo, useState } from 'react'
-
-const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {
-    const monthStart = new Date(year, month, 1)
-    const monthEnd = new Date(year, month + 1, 0)
-    const clampStart = new Date(
-        Math.max(monthStart.getTime(), new Date(rangeStart + 'T00:00:00').getTime())
-    )
-    const clampEnd = new Date(
-        Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
-    )
-    if (clampStart > clampEnd) return 0
-    return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
-}
 
 export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const { responses, isLoading } = useResponses(meeting.shortId)
@@ -86,7 +74,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const inRangeDays = useMemo(() => dateRange(rangeStart, rangeEnd), [rangeStart, rangeEnd])
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
 
-    const best = useMemo(
+    const bestDays = useMemo(
         () => (isHours ? null : computeBest(people.map((p) => Array.from(p.availSet)))),
         [isHours, people]
     )
@@ -214,7 +202,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             meetingShortId={meeting.shortId}
             responsesLength={responses.length}
             selectedPerson={selectedPerson}
-            best={best}
+            best={bestDays}
         />
     )
 

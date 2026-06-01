@@ -146,6 +146,24 @@ export const daysBetweenInclusive = (
     return Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / 86400000) + 1
 }
 
+export const calcDaysInRange = (
+    year: number,
+    month: number,
+    rangeStart: string,
+    rangeEnd: string
+) => {
+    const monthStart = new Date(year, month, 1)
+    const monthEnd = new Date(year, month + 1, 0)
+    const clampStart = new Date(
+        Math.max(monthStart.getTime(), new Date(rangeStart + 'T00:00:00').getTime())
+    )
+    const clampEnd = new Date(
+        Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
+    )
+    if (clampStart > clampEnd) return 0
+    return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
+}
+
 export type BestResult = {
     max: number
     range: [string, string] | null
