@@ -6,7 +6,7 @@ import type { Response } from '@/generated/prisma/client'
 
 type GetResponsesResponseSuccess = {
     success: true
-    data: Pick<Response, 'id' | 'userName' | 'days'>[]
+    data: Pick<Response, 'id' | 'userName' | 'days' | 'hours'>[]
 }
 
 type GetResponsesResponseError = {
@@ -28,7 +28,7 @@ export const getResponses = async (meetingShortId: string): Promise<GetResponses
                 },
             },
             orderBy: { createdAt: 'asc' },
-            select: { id: true, userName: true, days: true },
+            select: { id: true, userName: true, days: true, hours: true },
         })
 
         return { success: true, data: responses }

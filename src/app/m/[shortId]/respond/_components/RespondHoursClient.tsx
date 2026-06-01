@@ -8,8 +8,9 @@ import { useUpdateHoursResponseCache } from '../hooks/useUpdateHoursResponseCach
 import { useUserResponse } from '../hooks/useUserResponse'
 import { MobileActionBar } from './MobileActionBar'
 import { HourGrid } from '@/components/calendar/HourGrid'
+import { RespondHourCell } from '@/components/calendar/RespondHourCell'
 import { StatCard } from '@/components/StatCard'
-import { formatDate, formatHour, getDisplayWeeks, slotKeyFromUtc, ymd } from '@/lib/dates'
+import { formatDate, formatHour, getDisplayWeeks, slotKey, slotKeyFromUtc, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
@@ -195,13 +196,20 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
             key={week[0].date}
             week={week}
             hours={hours}
-            selected={selected}
-            hoveredSlot={hoveredSlot}
-            onPointerDown={handlePointerDown}
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
             onToggleDay={handleToggleDay}
             onToggleHour={handleToggleHour}
+            cellRenderer={(date, hour, inRange) => (
+                <RespondHourCell
+                    date={date}
+                    hour={hour}
+                    inRange={inRange}
+                    selected={selected.has(slotKey(date, hour))}
+                    hovered={hoveredSlot === slotKey(date, hour)}
+                    onPointerDown={handlePointerDown}
+                    onPointerEnter={handlePointerEnter}
+                    onPointerLeave={handlePointerLeave}
+                />
+            )}
         />
     ))
 

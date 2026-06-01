@@ -8,6 +8,7 @@ type WhosInPanelProps = {
     selectedPersonId: number | null
     onPersonClick: (id: number) => void
     onClearSelection: () => void
+    countUnit?: string
 }
 
 export const WhosInPanel = ({
@@ -16,6 +17,7 @@ export const WhosInPanel = ({
     selectedPersonId,
     onPersonClick,
     onClearSelection,
+    countUnit = 'd',
 }: WhosInPanelProps) => {
     return (
         <div className="bg-white border-brutal shadow-brutal">
@@ -55,7 +57,7 @@ export const WhosInPanel = ({
                         <span className="flex-1 font-sans text-[14px] font-semibold">{p.name}</span>
                         <span className="font-mono text-[11px]">
                             {p.daysCount}
-                            <span className="text-ink/40">d</span>
+                            <span className="text-ink/40">{countUnit}</span>
                         </span>
                     </button>
                 ))}

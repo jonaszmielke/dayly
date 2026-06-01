@@ -30,7 +30,7 @@ export const useUpdateResponsesCache = () => {
             queryClient.setQueryData<GetResponsesResponse>(
                 [queryKeys.responses, meetingShortId],
                 (old) => {
-                    const entry = { id, userName: name, days }
+                    const entry = { id, userName: name, days, hours: [] }
                     if (!old || !old.success) return { success: true, data: [entry] }
                     const idx = old.data.findIndex((r) => r.userName === removeName)
                     if (idx === -1) return { success: true, data: [...old.data, entry] }

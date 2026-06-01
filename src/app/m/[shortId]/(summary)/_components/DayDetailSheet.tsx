@@ -12,9 +12,10 @@ type DayDetailSheetProps = {
     iso: string | null
     people: DayDetailPerson[]
     onClose: () => void
+    heading?: string
 }
 
-export const DayDetailSheet = ({ iso, people, onClose }: DayDetailSheetProps) => {
+export const DayDetailSheet = ({ iso, people, onClose, heading }: DayDetailSheetProps) => {
     if (!iso) return null
 
     const freeCount = people.filter((p) => p.available).length
@@ -32,7 +33,7 @@ export const DayDetailSheet = ({ iso, people, onClose }: DayDetailSheetProps) =>
             <div className="flex items-start justify-between pb-2 border-b-[1.5px] border-ink mb-2.5">
                 <div>
                     <div className="font-sans text-[18px] font-extrabold leading-none tracking-[-0.01em]">
-                        {formatDateMedium(iso)}
+                        {heading ?? formatDateMedium(iso)}
                     </div>
                     <div className="font-mono text-[11px] text-mocha font-semibold tracking-[0.06em] mt-1">
                         {freeCount}/{total} FREE

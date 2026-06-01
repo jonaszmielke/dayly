@@ -184,6 +184,53 @@ export const computeBest = (availableSets: string[][]): BestResult => {
     return { max, range: [bestStart, bestEnd], allDays: days }
 }
 
+export type BestHoursResult = {
+    max: number
+    day: string
+    startHour: number
+    endHour: number // exclusive
+}
+
+// Longest run of consecutive hours, on a single day, where the max number of people
+// are all free. Ties resolve to the earliest day, then the earliest hour.
+export const computeBestHours = (
+    people: { availSet: Set<string> }[],
+    days: string[],
+    hours: number[]
+): BestHoursResult | null => {
+    const free = (day: string, hour: number) =>
+        people.reduce((n, p) => (p.availSet.has(slotKey(day, hour)) ? n + 1 : n), 0)
+
+    let max = 0
+    for (const day of days) {
+        for (const hour of hours) {
+            const f = free(day, hour)
+            if (f > max) max = f
+        }
+    }
+    if (max === 0) return null
+
+    let best: BestHoursResult | null = null
+    for (const day of days) {
+        let runStart: number | null = null
+        for (let i = 0; i < hours.length; i++) {
+            const hour = hours[i]
+            const isPeak = free(day, hour) === max
+            if (isPeak && runStart === null) runStart = hour
+            const runEnds = !isPeak || i === hours.length - 1
+            if (runStart !== null && runEnds) {
+                const lastHour = isPeak ? hour : hours[i - 1]
+                const length = lastHour - runStart + 1
+                if (!best || length > best.endHour - best.startHour) {
+                    best = { max, day, startHour: runStart, endHour: lastHour + 1 }
+                }
+                runStart = null
+            }
+        }
+    }
+    return best
+}
+
 export const getDisplayMonths = (
     startISO: string,
     endISO: string

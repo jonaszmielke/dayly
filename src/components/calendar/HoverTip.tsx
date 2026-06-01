@@ -16,6 +16,7 @@ type HoverTipProps = {
     anchorEl: HTMLElement | null
     initialMouseX: number
     initialMouseY: number
+    heading?: string
 }
 
 const calcPos = (mouseX: number, mouseY: number, el: HTMLElement | null) => {
@@ -37,6 +38,7 @@ export const HoverTip = ({
     totalCount,
     initialMouseX,
     initialMouseY,
+    heading,
 }: HoverTipProps) => {
     const ref = useRef<HTMLDivElement>(null)
     const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
@@ -69,7 +71,7 @@ export const HoverTip = ({
                     className="font-mono font-bold uppercase tracking-[0.08em]"
                     style={{ fontSize: '0.65vw' }}
                 >
-                    {formatDateLong(iso)}
+                    {heading ?? formatDateLong(iso)}
                 </div>
                 <div className="font-mono text-ink/55 mt-0.5" style={{ fontSize: '0.6vw' }}>
                     {freeCount}/{totalCount} FREE
