@@ -8,6 +8,7 @@ import { useUpdateHoursResponseCache } from '../hooks/useUpdateHoursResponseCach
 import { useUserResponse } from '../hooks/useUserResponse'
 import { MobileActionBar } from './MobileActionBar'
 import { HourGrid } from '@/components/calendar/HourGrid'
+import { HourGridSkeleton } from '@/components/calendar/HourGridSkeleton'
 import { RespondHourCell } from '@/components/calendar/RespondHourCell'
 import { StatCard } from '@/components/StatCard'
 import { formatDate, formatHour, getDisplayWeeks, slotKey, slotKeyFromUtc, ymd } from '@/lib/dates'
@@ -212,6 +213,21 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
             )}
         />
     ))
+
+    if (editOriginalName && isUserResponseLoading) {
+        return (
+            <>
+                <MeetingHeader meeting={meeting} />
+                <div className="flex flex-col gap-4 px-4 py-6 lg:py-8">
+                    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+                        {weeks.map((week) => (
+                            <HourGridSkeleton key={week[0].date} week={week} hours={hours} />
+                        ))}
+                    </div>
+                </div>
+            </>
+        )
+    }
 
     return (
         <>

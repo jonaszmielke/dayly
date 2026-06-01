@@ -10,7 +10,9 @@ import { SummaryMobileDrawer } from './SummaryMobileDrawer'
 import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
 import { HourGrid } from '@/components/calendar/HourGrid'
+import { HourGridSkeleton } from '@/components/calendar/HourGridSkeleton'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
+import { MonthGridSkeleton } from '@/components/calendar/MonthGridSkeleton'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { SummaryHourCell } from '@/components/calendar/SummaryHourCell'
 import { StatCard } from '@/components/StatCard'
@@ -214,8 +216,23 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
                     mobileRight={burgerButton}
                     showMobileAddResponseButton
                 />
-                <div className="px-4 py-8 font-mono text-[12px] text-ink/55 uppercase tracking-widest">
-                    Loading…
+                <div className="flex flex-col gap-4 px-4 py-6 lg:py-8">
+                    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+                        {isHours
+                            ? weeks.map((week) => (
+                                  <HourGridSkeleton key={week[0].date} week={week} hours={hours} />
+                              ))
+                            : displayMonths.map(({ year, month }) => (
+                                  <MonthGridSkeleton
+                                      key={`${year}-${month}`}
+                                      year={year}
+                                      month={month}
+                                      rangeStart={rangeStart}
+                                      rangeEnd={rangeEnd}
+                                      cellAspectClassName="aspect-square lg:aspect-[140/100]"
+                                  />
+                              ))}
+                    </div>
                 </div>
             </>
         )

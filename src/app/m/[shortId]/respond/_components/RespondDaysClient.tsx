@@ -8,6 +8,7 @@ import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
 import { MobileActionBar } from './MobileActionBar'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
+import { MonthGridSkeleton } from '@/components/calendar/MonthGridSkeleton'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
 import { formatDate, getDisplayMonths, ymd } from '@/lib/dates'
@@ -226,6 +227,28 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
             )}
         />
     ))
+
+    if (editOriginalName && isUserResponseLoading) {
+        return (
+            <>
+                <MeetingHeader meeting={meeting} />
+                <div className="flex flex-col gap-4 px-4 py-6 lg:py-8">
+                    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+                        {displayMonths.map(({ year, month }) => (
+                            <MonthGridSkeleton
+                                key={`${year}-${month}`}
+                                year={year}
+                                month={month}
+                                rangeStart={rangeStart}
+                                rangeEnd={rangeEnd}
+                                cellAspectClassName="aspect-square lg:aspect-[140/100]"
+                            />
+                        ))}
+                    </div>
+                </div>
+            </>
+        )
+    }
 
     return (
         <>
