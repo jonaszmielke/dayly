@@ -54,13 +54,16 @@ const CreatePageClient = () => {
         name.trim() &&
         dateRange.start &&
         dateRange.end &&
-        deadline &&
         (mode === MeetingMode.DAYS || hoursValid)
     )
 
     const handleSubmit = () => {
-        if (!name.trim() || !dateRange.start || !dateRange.end || !deadline) return
-        const base = { name, dateRange: { start: dateRange.start, end: dateRange.end }, deadline }
+        if (!name.trim() || !dateRange.start || !dateRange.end) return
+        const base = {
+            name,
+            dateRange: { start: dateRange.start, end: dateRange.end },
+            deadline: deadline ?? undefined,
+        }
         if (mode === MeetingMode.HOURS) {
             createMeetingMutation.mutate({
                 ...base,
@@ -286,7 +289,7 @@ const CreatePageClient = () => {
                     <CreateSection
                         number={deadlineSectionNumber}
                         title="Response Deadline"
-                        hint="By when should people respond?"
+                        hint="OPTIONAL · BY WHEN SHOULD PEOPLE RESPOND?"
                     >
                         <SingleDatePicker
                             value={deadline}

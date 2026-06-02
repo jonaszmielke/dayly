@@ -42,6 +42,7 @@ export const saveResponse = async (props: SaveResponseProps): Promise<SaveRespon
                 endDate: true,
                 startHour: true,
                 endHour: true,
+                deadline: true,
                 responses: {
                     where: { userName: name },
                     select: { userName: true },
@@ -53,10 +54,15 @@ export const saveResponse = async (props: SaveResponseProps): Promise<SaveRespon
         if (!edit && meeting.responses.length > 0)
             return { success: false, message: 'Response already exists' }
 
+        if (meeting.deadline) {
+            // allow responses up to the last minute of that day
+            const expiresAt = meeting.deadline.getTime() + 24 * 60 * 60 * 1000
+            if (Date.now() >= expiresAt)
+                return { success: false, message: 'The response deadline has passed' }
+        }
+
         const args = { meeting, name, newName, selection }
-        return meeting.mode === MeetingMode.HOURS
-            ? saveHoursResponse(args)
-            : saveDaysResponse(args)
+        return meeting.mode === MeetingMode.HOURS ? saveHoursResponse(args) : saveDaysResponse(args)
     } catch (error) {
         console.error('Failed to save response', { error })
         return { success: false, message: 'Failed to save response, please try again later' }
