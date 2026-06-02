@@ -21,8 +21,8 @@ export const HourSelect = ({ label, value, onChange, fromHour }: HourSelectProps
                 <select
                     value={value}
                     onChange={(e) => onChange(Number(e.target.value))}
-                    className={`w-full h-full appearance-none bg-white px-4 pr-10 font-sans font-bold text-[22px] uppercase text-ink outline-none cursor-pointer ${isMobile ? 'text-center' : ''}`}
-                    style={{ padding: isMobile ? '18px 40px' : '18px 40px 18px 16px' }}
+                    className={`w-full h-full appearance-none bg-white px-4 pr-10 font-sans font-bold ${isMobile ? 'text-[16px]' : 'text-[22px]'} uppercase text-ink outline-none cursor-pointer`}
+                    style={{ padding: isMobile ? '18px 28px 18px 16px' : '18px 40px 18px 16px' }}
                 >
                     {Array.from({ length: hourArrayLength }).map((_, i) => {
                         const hour = fromHour ? i + fromHour + 1 : i
