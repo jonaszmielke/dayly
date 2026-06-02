@@ -3,8 +3,8 @@
 import { useResponses } from '../_hooks/useResponses'
 import MeetingHeader from '../../_components/MeetingHeader'
 import { MeetingClean } from '../../types'
-import { BestDayBanner } from './BestDayBanner'
-import { BestHoursBanner } from './BestHoursBanner'
+import { BestDayBanner } from './BestBanner/BestDayBanner'
+import { BestHoursBanner } from './BestBanner/BestHoursBanner'
 import { DayDetailSheet } from './DayDetailSheet'
 import { SummaryMobileDrawer } from './SummaryMobileDrawer'
 import { WhosInPanel } from './WhosInPanel'
@@ -189,8 +189,31 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             />
         ))
 
-    const renderCalendar = (mobile: boolean) =>
-        isHours ? renderHourWeeks(mobile) : renderMonths(mobile)
+    const renderCalendar = ({
+        mobile,
+        isLoading = false,
+    }: {
+        mobile: boolean
+        isLoading?: boolean
+    }) => {
+        if (isLoading)
+            return isHours
+                ? weeks.map((week) => (
+                      <HourGridSkeleton key={week[0].date} week={week} hours={hours} />
+                  ))
+                : displayMonths.map(({ year, month }) => (
+                      <MonthGridSkeleton
+                          key={`${year}-${month}`}
+                          year={year}
+                          month={month}
+                          rangeStart={rangeStart}
+                          rangeEnd={rangeEnd}
+                          cellAspectClassName="aspect-square lg:aspect-[140/100]"
+                      />
+                  ))
+
+        return isHours ? renderHourWeeks(mobile) : renderMonths(mobile)
+    }
 
     const bestBanner = isHours ? (
         <BestHoursBanner
@@ -198,6 +221,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             responsesLength={responses.length}
             selectedPerson={selectedPerson}
             best={bestHours}
+            isLoading={isLoading}
         />
     ) : (
         <BestDayBanner
@@ -205,38 +229,9 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             responsesLength={responses.length}
             selectedPerson={selectedPerson}
             best={bestDays}
+            isLoading={isLoading}
         />
     )
-
-    if (isLoading) {
-        return (
-            <>
-                <MeetingHeader
-                    meeting={meeting}
-                    mobileRight={burgerButton}
-                    showMobileAddResponseButton
-                />
-                <div className="flex flex-col gap-4 px-4 py-6 lg:py-8">
-                    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
-                        {isHours
-                            ? weeks.map((week) => (
-                                  <HourGridSkeleton key={week[0].date} week={week} hours={hours} />
-                              ))
-                            : displayMonths.map(({ year, month }) => (
-                                  <MonthGridSkeleton
-                                      key={`${year}-${month}`}
-                                      year={year}
-                                      month={month}
-                                      rangeStart={rangeStart}
-                                      rangeEnd={rangeEnd}
-                                      cellAspectClassName="aspect-square lg:aspect-[140/100]"
-                                  />
-                              ))}
-                    </div>
-                </div>
-            </>
-        )
-    }
 
     return (
         <>
@@ -249,7 +244,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
             {/* ── Mobile layout (default, hidden lg) ── */}
             <div className="flex flex-col gap-4 px-4 py-6 lg:hidden">
                 {bestBanner}
-                {renderCalendar(true)}
+                {renderCalendar({ mobile: true, isLoading })}
                 <HeatLegend total={responses.length} />
                 <StatCard rows={statRows} />
             </div>
@@ -273,7 +268,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
 
                         <main className="flex flex-col gap-6">
                             {bestBanner}
-                            {renderCalendar(false)}
+                            {renderCalendar({ mobile: false, isLoading })}
                         </main>
                     </div>
                 </div>
@@ -298,6 +293,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
                 countUnit={isHours ? 'h' : 'd'}
                 onPersonClick={handlePersonClick}
                 onClearSelection={() => setSelectedPersonId(null)}
+                isLoading={isLoading}
             />
         </>
     )

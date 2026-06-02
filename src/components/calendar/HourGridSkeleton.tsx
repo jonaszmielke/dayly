@@ -15,8 +15,8 @@ const weekLabel = (week: WeekCell[]): string => {
     const firstMon = monthAbbr(first.date)
     const lastMon = monthAbbr(last.date)
     return firstMon === lastMon
-        ? `${pad(first.dom)}–${pad(last.dom)} ${firstMon}`
-        : `${pad(first.dom)} ${firstMon} – ${pad(last.dom)} ${lastMon}`
+        ? `${pad(first.dom)}-${pad(last.dom)} ${firstMon}`
+        : `${pad(first.dom)} ${firstMon} - ${pad(last.dom)} ${lastMon}`
 }
 
 export const HourGridSkeleton = ({ week, hours }: HourGridSkeletonProps) => {
@@ -90,7 +90,7 @@ export const HourGridSkeleton = ({ week, hours }: HourGridSkeletonProps) => {
                                     >
                                         {c.inRange && (
                                             <div className="flex h-full items-center justify-center p-1.5">
-                                                <div className="h-full w-full bg-mocha-light/60 animate-pulse" />
+                                                <div className="h-full w-full bg-ink/10 animate-pulse" />
                                             </div>
                                         )}
                                     </div>

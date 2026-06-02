@@ -9,6 +9,7 @@ type WhosInPanelProps = {
     onPersonClick: (id: number) => void
     onClearSelection: () => void
     countUnit?: string
+    isLoading?: boolean
 }
 
 export const WhosInPanel = ({
@@ -18,6 +19,7 @@ export const WhosInPanel = ({
     onPersonClick,
     onClearSelection,
     countUnit = 'd',
+    isLoading = false,
 }: WhosInPanelProps) => {
     return (
         <div className="bg-white border-brutal shadow-brutal">
@@ -36,33 +38,22 @@ export const WhosInPanel = ({
                 {selectedPersonId !== null ? 'CLICK SAME NAME TO CLEAR' : 'CLICK A NAME TO ISOLATE'}
             </div>
             <div>
-                {people.map((p, i) => (
-                    <button
-                        key={p.id}
-                        onClick={() => onPersonClick(p.id)}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
-                            i > 0 && 'border-t border-ink/10',
-                            selectedPersonId === p.id ? 'bg-ink text-paper-2' : 'hover:bg-paper-3'
-                        )}
-                    >
-                        <span
-                            className={cn(
-                                'text-[16px]',
-                                selectedPersonId === p.id ? 'text-mocha-pale' : 'text-ink/40'
-                            )}
-                        >
-                            {selectedPersonId === p.id ? '●' : '○'}
-                        </span>
-                        <span className="flex-1 font-sans text-[14px] font-semibold">{p.name}</span>
-                        <span className="font-mono text-[11px]">
-                            {p.daysCount}
-                            <span className="text-ink/40">{countUnit}</span>
-                        </span>
-                    </button>
-                ))}
+                {!isLoading ? (
+                    people.map((person, i) => (
+                        <PersonOption
+                            key={person.id}
+                            index={i}
+                            person={person}
+                            onPersonClick={onPersonClick}
+                            selectedPersonId={selectedPersonId}
+                            countUnit={countUnit}
+                        />
+                    ))
+                ) : (
+                    <PersonOptionSkeleton />
+                )}
             </div>
-            {selectedPersonId !== null && (
+            {!isLoading && selectedPersonId !== null && (
                 <div className="p-3 border-t border-ink/20 flex flex-col gap-2">
                     {(() => {
                         const selectedName = people.find((p) => p.id === selectedPersonId)?.name
@@ -89,3 +80,55 @@ export const WhosInPanel = ({
         </div>
     )
 }
+
+type PersonOptionProps = {
+    index: number
+    person: Person
+    onPersonClick: (id: number) => void
+    selectedPersonId: number | null
+    countUnit: string
+}
+
+const PersonOption = ({
+    index,
+    person,
+    onPersonClick,
+    selectedPersonId,
+    countUnit,
+}: PersonOptionProps) => {
+    return (
+        <button
+            onClick={() => onPersonClick(person.id)}
+            className={cn(
+                'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
+                index > 0 && 'border-t border-ink/10',
+                selectedPersonId === person.id ? 'bg-ink text-paper-2' : 'hover:bg-paper-3'
+            )}
+        >
+            <span
+                className={cn(
+                    'text-[16px]',
+                    selectedPersonId === person.id ? 'text-mocha-pale' : 'text-ink/40'
+                )}
+            >
+                {selectedPersonId === person.id ? '●' : '○'}
+            </span>
+            <span className="flex-1 font-sans text-[14px] font-semibold">{person.name}</span>
+            <span className="font-mono text-[11px]">
+                {person.daysCount}
+                <span className="text-ink/40">{countUnit}</span>
+            </span>
+        </button>
+    )
+}
+
+const PersonOptionSkeleton = () => (
+    <button
+        key="person-skeleton"
+        className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors"
+        disabled
+    >
+        <span className="text-[16px]">○</span>
+        <span className="flex-1 h-[14px] rounded bg-ink/10 animate-pulse" />
+    </button>
+)

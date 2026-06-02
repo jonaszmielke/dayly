@@ -1,20 +1,25 @@
-import { Person } from '../../types'
-import { BestDayBannerNoResponses } from './BestDayBanner'
-import { BestHoursResult, formatDateMedium, formatHour } from '@/lib/dates'
+import { Person } from '../../../types'
+import { BestBannerLoading } from './BestBannerLoading'
+import { BestBannerNoResponses } from './BestBannerNoResponses'
+import { BestResult, daysBetweenInclusive, formatDateMedium } from '@/lib/dates'
 
-type BestHoursBannerProps = {
+type BestDayBannerProps = {
     meetingShortId: string
     responsesLength: number
     selectedPerson: Person | null
-    best: BestHoursResult | null
+    best: BestResult | null
+    isLoading?: boolean
 }
 
-export const BestHoursBanner = ({
+export const BestDayBanner = ({
     meetingShortId,
     responsesLength,
     selectedPerson,
     best,
-}: BestHoursBannerProps) => {
+    isLoading = false,
+}: BestDayBannerProps) => {
+    if (isLoading) return <BestBannerLoading />
+
     const hasResponses = responsesLength > 0 && !!best
 
     return (
@@ -23,13 +28,13 @@ export const BestHoursBanner = ({
             style={{ boxShadow: 'var(--b-shadow-sm) #C5AC6A' }}
         >
             {hasResponses ? (
-                <BestHoursBannerWithResponses
+                <BestDayBannerWithResponses
                     responsesLength={responsesLength}
                     selectedPerson={selectedPerson}
                     best={best}
                 />
             ) : (
-                <BestDayBannerNoResponses meetingShortId={meetingShortId} />
+                <BestBannerNoResponses meetingShortId={meetingShortId} />
             )}
         </div>
     )
@@ -38,16 +43,14 @@ export const BestHoursBanner = ({
 type WithResponsesProps = {
     responsesLength: number
     selectedPerson: Person | null
-    best: BestHoursResult
+    best: BestResult
 }
 
-const BestHoursBannerWithResponses = ({
+const BestDayBannerWithResponses = ({
     responsesLength,
     selectedPerson,
     best,
 }: WithResponsesProps) => {
-    const length = best.endHour - best.startHour
-
     return (
         <>
             <div className="bg-ink text-paper-2 px-2 py-1.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.12em] shrink-0">
@@ -60,17 +63,17 @@ const BestHoursBannerWithResponses = ({
                             {selectedPerson.name} is available
                         </div>
                         <div className="font-mono text-[10px] lg:text-[11px] text-ink/60 mt-0.5 uppercase tracking-[0.08em]">
-                            {selectedPerson.daysCount} SLOTS SELECTED
+                            {selectedPerson.daysCount} DAYS SELECTED
                         </div>
                     </>
                 ) : (
                     <>
                         <div className="font-sans text-[17px] lg:text-[22px] font-bold leading-tight">
-                            {formatDateMedium(best.day)} · {formatHour(best.startHour)}–
-                            {formatHour(best.endHour)}
+                            {formatDateMedium(best.range![0])} — {formatDateMedium(best.range![1])}
                         </div>
                         <div className="font-mono text-[10px] lg:text-[11px] text-ink/60 mt-0.5">
-                            ALL {best.max}/{responsesLength} FREE · {length} HRS
+                            ALL {best.max}/{responsesLength} FREE ·{' '}
+                            {daysBetweenInclusive(best.range![0], best.range![1])} DAYS
                         </div>
                     </>
                 )}

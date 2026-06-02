@@ -4,9 +4,10 @@ import { cn } from '@/lib/utils'
 type HeatLegendProps = {
     total: number
     className?: string
+    isLoading?: boolean
 }
 
-export const HeatLegend = ({ total, className }: HeatLegendProps) => {
+export const HeatLegend = ({ total, className, isLoading = false }: HeatLegendProps) => {
     return (
         <div className={cn('bg-white border-brutal shadow-brutal-sm px-4 pt-3.5 pb-3', className)}>
             <div className="font-sans text-[12px] font-bold tracking-[0.06em] pb-2 mb-2.5 border-b-[1.5px] border-ink">
@@ -26,7 +27,12 @@ export const HeatLegend = ({ total, className }: HeatLegendProps) => {
             <div className="flex justify-between mt-1.5">
                 <span className="font-mono text-[9.5px] tracking-[0.06em] text-ink/55">0 FREE</span>
                 <span className="font-mono text-[9.5px] tracking-[0.06em] text-ink/55">
-                    {total} FREE
+                    {isLoading ? (
+                        <span className="inline-block h-[8px] w-4 rounded-sm bg-ink/10 animate-pulse align-middle" />
+                    ) : (
+                        total
+                    )}{' '}
+                    FREE
                 </span>
             </div>
         </div>

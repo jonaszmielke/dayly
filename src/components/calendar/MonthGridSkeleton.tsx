@@ -22,10 +22,7 @@ export const MonthGridSkeleton = ({
     const daysInRange = calcDaysInRange(year, month, rangeStart, rangeEnd)
 
     return (
-        <div
-            className={cn('bg-white border-brutal shadow-brutal', className)}
-            aria-hidden="true"
-        >
+        <div className={cn('bg-white border-brutal shadow-brutal', className)} aria-hidden="true">
             {/* Month head */}
             <div className="flex items-baseline justify-between px-3 py-3 lg:px-5 lg:py-4 border-b-2 border-ink">
                 <div className="flex items-baseline gap-2">
@@ -74,7 +71,7 @@ export const MonthGridSkeleton = ({
                                     <span className="font-mono text-[12px] text-ink/30">
                                         {cell.dom}
                                     </span>
-                                    <div className="h-3 w-6 self-end bg-mocha-light animate-pulse" />
+                                    <div className="h-3 w-6 self-end bg-ink/10 animate-pulse" />
                                 </div>
                             ) : (
                                 <div className="relative h-full bg-hatch opacity-40 p-1">
