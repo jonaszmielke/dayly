@@ -1,8 +1,9 @@
 'use server'
 
+import type { ResponseCleanDays, ResponseCleanHours } from '../../types'
+import { MeetingMode } from '@/generated/prisma/client'
 import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
-import type { Response } from '@/generated/prisma/client'
 import { z } from 'zod'
 
 const getUserResponseSchema = z.object({
@@ -14,7 +15,7 @@ export type GetUserResponseProps = z.infer<typeof getUserResponseSchema>
 
 type GetUserResponseSuccess = {
     success: true
-    data: Pick<Response, 'id' | 'days'>
+    data: ResponseCleanDays | ResponseCleanHours
 }
 
 type GetUserResponseError = {
@@ -46,6 +47,7 @@ export const getUserResponse = async (
                 shortId: meetingShortId,
             },
             select: {
+                mode: true,
                 responses: {
                     where: {
                         userName: name,
@@ -53,6 +55,7 @@ export const getUserResponse = async (
                     select: {
                         id: true,
                         days: true,
+                        hours: true,
                     },
                 },
             },
@@ -61,7 +64,11 @@ export const getUserResponse = async (
         if (!meeting) return { success: false, message: 'Meeting not found' }
         if (meeting.responses.length === 0) return { success: false, message: 'Response not found' }
 
-        return { success: true, data: meeting.responses[0] }
+        const { id, days, hours } = meeting.responses[0]
+        const data =
+            meeting.mode === MeetingMode.HOURS ? { id, hours } : { id, days }
+
+        return { success: true, data }
     } catch (error) {
         console.error('Failed to fetch user response', { error })
         return { success: false, message: 'Failed to fetch user response, please try again later' }

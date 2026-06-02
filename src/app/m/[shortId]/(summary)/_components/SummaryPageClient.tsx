@@ -2,34 +2,39 @@
 
 import { useResponses } from '../_hooks/useResponses'
 import MeetingHeader from '../../_components/MeetingHeader'
-import { BestDayBanner } from './BestDayBanner'
+import { MeetingClean } from '../../types'
+import { BestDayBanner } from './BestBanner/BestDayBanner'
+import { BestHoursBanner } from './BestBanner/BestHoursBanner'
 import { DayDetailSheet } from './DayDetailSheet'
 import { SummaryMobileDrawer } from './SummaryMobileDrawer'
 import { WhosInPanel } from './WhosInPanel'
 import { HeatLegend } from '@/components/calendar/HeatLegend'
+import { HourGrid } from '@/components/calendar/HourGrid'
+import { HourGridSkeleton } from '@/components/calendar/HourGridSkeleton'
 import { MonthGrid } from '@/components/calendar/MonthGrid'
+import { MonthGridSkeleton } from '@/components/calendar/MonthGridSkeleton'
 import { SummaryCell } from '@/components/calendar/SummaryCell'
+import { SummaryHourCell } from '@/components/calendar/SummaryHourCell'
 import { StatCard } from '@/components/StatCard'
-import { computeBest, formatDate, getDisplayMonths, ymd } from '@/lib/dates'
-import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
-import type { Meeting } from '@/generated/prisma/client'
 import { MeetingMode } from '@/generated/prisma/enums'
+import {
+    calcDaysInRange,
+    computeBest,
+    computeBestHours,
+    dateRange,
+    formatDate,
+    formatDateMedium,
+    formatHour,
+    getDisplayMonths,
+    getDisplayWeeks,
+    slotKey,
+    slotKeyFromUtc,
+    ymd,
+} from '@/lib/dates'
+import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
 import { useCallback, useMemo, useState } from 'react'
 
-const calcDaysInRange = (year: number, month: number, rangeStart: string, rangeEnd: string) => {
-    const monthStart = new Date(year, month, 1)
-    const monthEnd = new Date(year, month + 1, 0)
-    const clampStart = new Date(
-        Math.max(monthStart.getTime(), new Date(rangeStart + 'T00:00:00').getTime())
-    )
-    const clampEnd = new Date(
-        Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
-    )
-    if (clampStart > clampEnd) return 0
-    return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
-}
-
-export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
+export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const { responses, isLoading } = useResponses(meeting.shortId)
     const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null)
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
@@ -37,38 +42,60 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
     const [burgerOpen, setBurgerOpen] = useState(false)
     const isTouch = useIsTouchDevice()
 
+    const hoursMeta = meeting.mode === MeetingMode.HOURS ? meeting : null
+    const isHours = hoursMeta !== null
+
     const rangeStart = ymd(meeting.startDate)
     const rangeEnd = ymd(meeting.endDate)
 
-    const handleCellEnter = useCallback((iso: string) => setHoveredDate(iso), [])
+    const startHour = hoursMeta?.startHour ?? 0
+    const endHour = hoursMeta?.endHour ?? 24
+
+    const handleCellEnter = useCallback((key: string) => setHoveredDate(key), [])
     const handleCellLeave = useCallback(() => setHoveredDate(null), [])
-    const handleCellTap = useCallback((iso: string) => {
-        setSelectedDate((prev) => (prev === iso ? null : iso))
+    const handleCellTap = useCallback((key: string) => {
+        setSelectedDate((prev) => (prev === key ? null : key))
     }, [])
 
     const people = useMemo(
         () =>
-            responses.map((r) => ({
-                id: r.id,
-                name: r.userName,
-                availSet: new Set(r.days.map((d) => ymd(d))),
-                daysCount: r.days.length,
-            })),
-        [responses]
+            responses.map((r) => {
+                const availSet = new Set(
+                    isHours ? r.hours.map(slotKeyFromUtc) : r.days.map((d) => ymd(d))
+                )
+                return { id: r.id, name: r.userName, availSet, daysCount: availSet.size }
+            }),
+        [responses, isHours]
     )
 
-    const best = useMemo(() => computeBest(people.map((p) => Array.from(p.availSet))), [people])
+    const hours = useMemo(
+        () => (isHours ? Array.from({ length: endHour - startHour }, (_, i) => startHour + i) : []),
+        [isHours, startHour, endHour]
+    )
+    const weeks = useMemo(() => getDisplayWeeks(rangeStart, rangeEnd), [rangeStart, rangeEnd])
+    const inRangeDays = useMemo(() => dateRange(rangeStart, rangeEnd), [rangeStart, rangeEnd])
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
+
+    const bestDays = useMemo(
+        () => (isHours ? null : computeBest(people.map((p) => Array.from(p.availSet)))),
+        [isHours, people]
+    )
+    const bestHours = useMemo(
+        () => (isHours ? computeBestHours(people, inRangeDays, hours) : null),
+        [isHours, people, inRangeDays, hours]
+    )
 
     const statRows = [
         { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },
         { label: 'Mode', value: meeting.mode },
-        { label: 'Deadline', value: formatDate(ymd(meeting.deadline)) ?? '—' },
+        ...(meeting.deadline
+            ? [{ label: 'Deadline', value: formatDate(ymd(meeting.deadline)) }]
+            : []),
         { label: 'Responses', value: String(responses.length) },
     ]
 
     const drawerMeta = `${formatDate(rangeStart)} — ${formatDate(rangeEnd)} • ${
-        meeting.mode === MeetingMode.DAYS ? 'DAY MODE' : 'HOUR MODE'
+        isHours ? 'HOUR MODE' : 'DAY MODE'
     }`
 
     const handlePersonClick = (id: number) => {
@@ -87,6 +114,13 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                 : [],
         [selectedDate, people]
     )
+
+    const detailHeading =
+        isHours && selectedDate
+            ? `${formatDateMedium(selectedDate.slice(0, 10))} · ${formatHour(
+                  Number(selectedDate.slice(11, 13))
+              )}`
+            : undefined
 
     const burgerButton = (
         <button
@@ -127,20 +161,77 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
             />
         ))
 
-    if (isLoading) {
-        return (
-            <>
-                <MeetingHeader
-                    meeting={meeting}
-                    mobileRight={burgerButton}
-                    showMobileAddResponseButton
-                />
-                <div className="px-4 py-8 font-mono text-[12px] text-ink/55 uppercase tracking-widest">
-                    Loading…
-                </div>
-            </>
-        )
+    const renderHourWeeks = (mobile: boolean) =>
+        weeks.map((week) => (
+            <HourGrid
+                key={week[0].date}
+                week={week}
+                hours={hours}
+                cellRenderer={(date, hour, inRange) => {
+                    const key = slotKey(date, hour)
+                    return (
+                        <SummaryHourCell
+                            date={date}
+                            hour={hour}
+                            inRange={inRange}
+                            people={people}
+                            selectedPersonId={selectedPersonId}
+                            isHovered={mobile ? false : hoveredDate === key}
+                            isSelected={selectedDate === key}
+                            hideTotal={mobile}
+                            isTouch={isTouch}
+                            onMouseEnter={handleCellEnter}
+                            onMouseLeave={handleCellLeave}
+                            onTap={handleCellTap}
+                        />
+                    )
+                }}
+            />
+        ))
+
+    const renderCalendar = ({
+        mobile,
+        isLoading = false,
+    }: {
+        mobile: boolean
+        isLoading?: boolean
+    }) => {
+        if (isLoading)
+            return isHours
+                ? weeks.map((week) => (
+                      <HourGridSkeleton key={week[0].date} week={week} hours={hours} />
+                  ))
+                : displayMonths.map(({ year, month }) => (
+                      <MonthGridSkeleton
+                          key={`${year}-${month}`}
+                          year={year}
+                          month={month}
+                          rangeStart={rangeStart}
+                          rangeEnd={rangeEnd}
+                          cellAspectClassName="aspect-square lg:aspect-[140/100]"
+                      />
+                  ))
+
+        return isHours ? renderHourWeeks(mobile) : renderMonths(mobile)
     }
+
+    const bestBanner = isHours ? (
+        <BestHoursBanner
+            meetingShortId={meeting.shortId}
+            responsesLength={responses.length}
+            selectedPerson={selectedPerson}
+            best={bestHours}
+            isLoading={isLoading}
+        />
+    ) : (
+        <BestDayBanner
+            meetingShortId={meeting.shortId}
+            responsesLength={responses.length}
+            selectedPerson={selectedPerson}
+            best={bestDays}
+            isLoading={isLoading}
+        />
+    )
 
     return (
         <>
@@ -152,13 +243,8 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
 
             {/* ── Mobile layout (default, hidden lg) ── */}
             <div className="flex flex-col gap-4 px-4 py-6 lg:hidden">
-                <BestDayBanner
-                    meetingShortId={meeting.shortId}
-                    responsesLength={responses.length}
-                    selectedPerson={selectedPerson}
-                    best={best}
-                />
-                {renderMonths(true)}
+                {bestBanner}
+                {renderCalendar({ mobile: true, isLoading })}
                 <HeatLegend total={responses.length} />
                 <StatCard rows={statRows} />
             </div>
@@ -172,6 +258,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                                 meetingShortId={meeting.shortId}
                                 people={people}
                                 selectedPersonId={selectedPersonId}
+                                countUnit={isHours ? 'h' : 'd'}
                                 onPersonClick={handlePersonClick}
                                 onClearSelection={() => setSelectedPersonId(null)}
                             />
@@ -180,13 +267,8 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                         </aside>
 
                         <main className="flex flex-col gap-6">
-                            <BestDayBanner
-                                meetingShortId={meeting.shortId}
-                                responsesLength={responses.length}
-                                selectedPerson={selectedPerson}
-                                best={best}
-                            />
-                            {renderMonths(false)}
+                            {bestBanner}
+                            {renderCalendar({ mobile: false, isLoading })}
                         </main>
                     </div>
                 </div>
@@ -195,6 +277,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
             {/* Mobile: sticky day detail sheet */}
             <DayDetailSheet
                 iso={selectedDate}
+                heading={detailHeading}
                 people={dayDetailPeople}
                 onClose={() => setSelectedDate(null)}
             />
@@ -207,8 +290,10 @@ export const SummaryPageClient = ({ meeting }: { meeting: Meeting }) => {
                 meta={drawerMeta}
                 people={people}
                 selectedPersonId={selectedPersonId}
+                countUnit={isHours ? 'h' : 'd'}
                 onPersonClick={handlePersonClick}
                 onClearSelection={() => setSelectedPersonId(null)}
+                isLoading={isLoading}
             />
         </>
     )

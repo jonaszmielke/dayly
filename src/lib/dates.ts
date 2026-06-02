@@ -9,9 +9,35 @@ export const parseISO = (iso: string): Date => {
     return new Date(iso + 'T00:00:00')
 }
 
+export const addDays = (iso: string, n: number): string => {
+    const d = parseISO(iso)
+    d.setDate(d.getDate() + n)
+    return ymd(d)
+}
+
 export const convertToUtc = (date: Date | string): Date => {
     const parsedDate = typeof date === 'string' ? parseISO(date) : date
     return new Date(Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()))
+}
+
+export const timezones = new Set<string>(Intl.supportedValuesOf('timeZone'))
+
+export const isValidTimezone = (tz: string): boolean => {
+    return timezones.has(tz)
+}
+
+export const formatHour = (h: number) => `${String(h).padStart(2, '0')}:00`
+
+export const slotKey = (date: string, hour: number): string =>
+    `${date}T${String(hour).padStart(2, '0')}`
+
+// Rebuild a slotKey from a stored hour Date. Slots are persisted tz-naive as UTC
+// instants (see saveHoursResponse), so read them back with UTC getters.
+export const slotKeyFromUtc = (d: Date): string => {
+    const date = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(
+        d.getUTCDate()
+    ).padStart(2, '0')}`
+    return slotKey(date, d.getUTCHours())
 }
 
 export const dateRange = (startISO: string, endISO: string): string[] => {
@@ -126,6 +152,24 @@ export const daysBetweenInclusive = (
     return Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / 86400000) + 1
 }
 
+export const calcDaysInRange = (
+    year: number,
+    month: number,
+    rangeStart: string,
+    rangeEnd: string
+) => {
+    const monthStart = new Date(year, month, 1)
+    const monthEnd = new Date(year, month + 1, 0)
+    const clampStart = new Date(
+        Math.max(monthStart.getTime(), new Date(rangeStart + 'T00:00:00').getTime())
+    )
+    const clampEnd = new Date(
+        Math.min(monthEnd.getTime(), new Date(rangeEnd + 'T00:00:00').getTime())
+    )
+    if (clampStart > clampEnd) return 0
+    return Math.round((clampEnd.getTime() - clampStart.getTime()) / 86400000) + 1
+}
+
 export type BestResult = {
     max: number
     range: [string, string] | null
@@ -164,6 +208,53 @@ export const computeBest = (availableSets: string[][]): BestResult => {
     return { max, range: [bestStart, bestEnd], allDays: days }
 }
 
+export type BestHoursResult = {
+    max: number
+    day: string
+    startHour: number
+    endHour: number // exclusive
+}
+
+// Longest run of consecutive hours, on a single day, where the max number of people
+// are all free. Ties resolve to the earliest day, then the earliest hour.
+export const computeBestHours = (
+    people: { availSet: Set<string> }[],
+    days: string[],
+    hours: number[]
+): BestHoursResult | null => {
+    const free = (day: string, hour: number) =>
+        people.reduce((n, p) => (p.availSet.has(slotKey(day, hour)) ? n + 1 : n), 0)
+
+    let max = 0
+    for (const day of days) {
+        for (const hour of hours) {
+            const f = free(day, hour)
+            if (f > max) max = f
+        }
+    }
+    if (max === 0) return null
+
+    let best: BestHoursResult | null = null
+    for (const day of days) {
+        let runStart: number | null = null
+        for (let i = 0; i < hours.length; i++) {
+            const hour = hours[i]
+            const isPeak = free(day, hour) === max
+            if (isPeak && runStart === null) runStart = hour
+            const runEnds = !isPeak || i === hours.length - 1
+            if (runStart !== null && runEnds) {
+                const lastHour = isPeak ? hour : hours[i - 1]
+                const length = lastHour - runStart + 1
+                if (!best || length > best.endHour - best.startHour) {
+                    best = { max, day, startHour: runStart, endHour: lastHour + 1 }
+                }
+                runStart = null
+            }
+        }
+    }
+    return best
+}
+
 export const getDisplayMonths = (
     startISO: string,
     endISO: string
@@ -188,4 +279,37 @@ export const isWeekend = (iso: string): boolean => {
     const d = new Date(iso + 'T00:00:00')
     const dow = d.getDay()
     return dow === 0 || dow === 6
+}
+
+export type WeekCell = {
+    date: string
+    inRange: boolean
+    dom: number
+    dow: string
+}
+
+// Mon-aligned weeks spanning [startISO, endISO]. Days outside the range are still
+// emitted (as columns) with inRange=false — analogous to monthGrid's out-of-month padding.
+export const getDisplayWeeks = (startISO: string, endISO: string): WeekCell[][] => {
+    const start = parseISO(startISO)
+    const monOffset = (start.getDay() + 6) % 7 // Mon-first
+    const cursor = new Date(start)
+    cursor.setDate(cursor.getDate() - monOffset)
+
+    const weeks: WeekCell[][] = []
+    while (ymd(cursor) <= endISO) {
+        const week: WeekCell[] = []
+        for (let i = 0; i < 7; i++) {
+            const date = ymd(cursor)
+            week.push({
+                date,
+                inRange: date >= startISO && date <= endISO,
+                dom: cursor.getDate(),
+                dow: DOW_ABBREVIATIONS[i],
+            })
+            cursor.setDate(cursor.getDate() + 1)
+        }
+        weeks.push(week)
+    }
+    return weeks
 }

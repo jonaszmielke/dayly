@@ -22,6 +22,8 @@ type SummaryMobileDrawerProps = {
     selectedPersonId: number | null
     onPersonClick: (id: number) => void
     onClearSelection: () => void
+    countUnit?: string
+    isLoading?: boolean
 }
 
 export const SummaryMobileDrawer = ({
@@ -33,6 +35,8 @@ export const SummaryMobileDrawer = ({
     selectedPersonId,
     onPersonClick,
     onClearSelection,
+    countUnit,
+    isLoading = false,
 }: SummaryMobileDrawerProps) => {
     return (
         <Drawer
@@ -94,6 +98,7 @@ export const SummaryMobileDrawer = ({
                         meetingShortId={meetingShortId}
                         people={people}
                         selectedPersonId={selectedPersonId}
+                        countUnit={countUnit}
                         onPersonClick={(id) => {
                             onPersonClick(id)
                             onClose()
@@ -102,6 +107,7 @@ export const SummaryMobileDrawer = ({
                             onClearSelection()
                             onClose()
                         }}
+                        isLoading={isLoading}
                     />
                 </div>
             </DrawerContent>

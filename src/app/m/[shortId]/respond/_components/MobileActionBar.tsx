@@ -10,6 +10,7 @@ type MobileActionBarProps = {
     canReset: boolean
     canSave: boolean
     saveState: 'idle' | 'pending' | 'success'
+    countLabel?: string
 }
 
 export const MobileActionBar = ({
@@ -20,6 +21,7 @@ export const MobileActionBar = ({
     canReset,
     canSave,
     saveState,
+    countLabel = 'DAYS PICKED',
 }: MobileActionBarProps) => {
     return (
         <div
@@ -35,7 +37,7 @@ export const MobileActionBar = ({
                     {String(count).padStart(2, '0')}
                 </span>
                 <span className="font-sans text-[11px] font-bold uppercase tracking-widest text-paper/70 leading-tight">
-                    DAYS PICKED
+                    {countLabel}
                 </span>
             </div>
 
