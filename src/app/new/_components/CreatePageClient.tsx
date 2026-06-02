@@ -157,7 +157,7 @@ const CreatePageClient = () => {
                                 maxLength={MAX_NAME}
                                 className={cn(
                                     'w-full bg-white border-brutal shadow-brutal px-4 py-[18px] pr-20',
-                                    'font-sans text-[28px] font-bold uppercase',
+                                    'font-sans text-[18px] sm:text-[28px] font-bold uppercase',
                                     'placeholder:text-ink/30 text-ink',
                                     'outline-none focus:shadow-brutal-mocha',
                                     'transition-shadow'
