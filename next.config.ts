@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
     },
 }
 
-module.exports = {
-    allowedDevOrigins: [process.env.LOCAL_IP_ADDRESS],
-}
+// module.exports = {
+//     allowedDevOrigins: [process.env.LOCAL_IP_ADDRESS],
+// }
 
 export default nextConfig
