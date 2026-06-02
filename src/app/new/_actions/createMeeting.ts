@@ -2,7 +2,8 @@
 
 import { MeetingMode } from '@/generated/prisma/client'
 import { generateMeetingId } from '@/lib/code'
-import { convertToUtc, isValidTimezone } from '@/lib/dates'
+import { MAX_DAY_MODE_LENGTH_DAYS, MAX_HOUR_MODE_LENGTH_DAYS } from '@/lib/config'
+import { convertToUtc, daysBetweenInclusive, isValidTimezone } from '@/lib/dates'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
@@ -40,6 +41,17 @@ const createMeetingSchema = z
                 code: 'custom',
                 message: 'startHour must be < endHour',
                 path: ['endHour'],
+            })
+        }
+
+        const lengthDays = daysBetweenInclusive(d.dateRange.start, d.dateRange.end)
+        const maxDays =
+            d.mode === MeetingMode.HOURS ? MAX_HOUR_MODE_LENGTH_DAYS : MAX_DAY_MODE_LENGTH_DAYS
+        if (lengthDays > maxDays) {
+            ctx.addIssue({
+                code: 'custom',
+                message: `Date range must be at most ${maxDays} days for ${d.mode} mode`,
+                path: ['dateRange', 'end'],
             })
         }
     })

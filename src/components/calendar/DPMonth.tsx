@@ -10,6 +10,7 @@ type DPMonthProps = {
     rangeValue: { start: string | null; end: string | null }
     onPick: (iso: string) => void
     minDate?: string
+    maxDate?: string
     hoverIso?: string | null
     onHoverIso?: (iso: string | null) => void
     initialMonth?: { year: number; month: number }
@@ -21,6 +22,7 @@ export const DPMonth = ({
     rangeValue,
     onPick,
     minDate,
+    maxDate,
     hoverIso,
     onHoverIso,
     initialMonth,
@@ -57,6 +59,7 @@ export const DPMonth = ({
 
     const isDisabled = (iso: string): boolean => {
         if (minDate && iso < minDate) return true
+        if (maxDate && iso > maxDate) return true
         return false
     }
 

@@ -9,6 +9,12 @@ export const parseISO = (iso: string): Date => {
     return new Date(iso + 'T00:00:00')
 }
 
+export const addDays = (iso: string, n: number): string => {
+    const d = parseISO(iso)
+    d.setDate(d.getDate() + n)
+    return ymd(d)
+}
+
 export const convertToUtc = (date: Date | string): Date => {
     const parsedDate = typeof date === 'string' ? parseISO(date) : date
     return new Date(Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()))

@@ -2,7 +2,7 @@
 
 import { DPMonth } from './DPMonth'
 import { ResponsivePopover } from './ResponsivePopover'
-import { daysBetweenInclusive, formatDate } from '@/lib/dates'
+import { addDays, daysBetweenInclusive, formatDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -16,6 +16,7 @@ type DateRangePickerProps = {
     onChange: (v: DateRangeValue) => void
     placeholder?: string
     minDate?: string
+    maxDays?: number
 }
 
 export const DateRangePicker = ({
@@ -23,12 +24,27 @@ export const DateRangePicker = ({
     onChange,
     placeholder = 'SELECT DATE RANGE',
     minDate,
+    maxDays,
 }: DateRangePickerProps) => {
     const [open, setOpen] = useState(false)
     const [pending, setPending] = useState<DateRangeValue>({ start: null, end: null })
     const [hoverIso, setHoverIso] = useState<string | null>(null)
 
     const current = open ? pending : value
+
+    // Mid-selection (start picked, end pending): clamp the calendar to a window
+    // of maxDays around the start so an over-long range can't be built.
+    const inSelection = Boolean(current.start && !current.end && maxDays)
+    const windowMax =
+        inSelection && current.start ? addDays(current.start, maxDays! - 1) : undefined
+    const windowMinRaw =
+        inSelection && current.start ? addDays(current.start, -(maxDays! - 1)) : undefined
+    const effectiveMin =
+        windowMinRaw && minDate
+            ? windowMinRaw > minDate
+                ? windowMinRaw
+                : minDate
+            : (windowMinRaw ?? minDate)
 
     const handlePick = (iso: string) => {
         if (!pending.start || (pending.start && pending.end)) {
@@ -52,6 +68,13 @@ export const DateRangePicker = ({
         onChange({ start: null, end: null })
     }
 
+    // Sync pending from the committed value on open so external resets
+    // (e.g. parent clearing the range on mode change) take effect.
+    const handleOpenChange = (next: boolean) => {
+        if (next) setPending(value)
+        setOpen(next)
+    }
+
     const displayText =
         value.start && value.end ? `${formatDate(value.start)} — ${formatDate(value.end)}` : null
 
@@ -63,7 +86,7 @@ export const DateRangePicker = ({
     return (
         <ResponsivePopover
             open={open}
-            onOpenChange={setOpen}
+            onOpenChange={handleOpenChange}
             triggerClassName={cn(
                 'w-full text-left border-brutal shadow-brutal bg-white transition-all',
                 open && 'bg-paper shadow-brutal-mocha'
@@ -91,7 +114,8 @@ export const DateRangePicker = ({
                 value={null}
                 rangeValue={current}
                 onPick={handlePick}
-                minDate={minDate}
+                minDate={effectiveMin}
+                maxDate={windowMax}
                 hoverIso={hoverIso}
                 onHoverIso={setHoverIso}
             />

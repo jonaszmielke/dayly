@@ -9,10 +9,11 @@ import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
+import { MAX_DAY_MODE_LENGTH_DAYS, MAX_HOUR_MODE_LENGTH_DAYS } from '@/lib/config'
 import { daysBetweenInclusive, formatDate, formatHour, timezones, ymd } from '@/lib/dates'
 import { appShortUrl, cn } from '@/lib/utils'
 import { useMutation } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const today = ymd(new Date())
@@ -51,10 +52,7 @@ const CreatePageClient = () => {
 
     const hoursValid = endHour > startHour
     const canSubmit = Boolean(
-        name.trim() &&
-        dateRange.start &&
-        dateRange.end &&
-        (mode === MeetingMode.DAYS || hoursValid)
+        name.trim() && dateRange.start && dateRange.end && (mode === MeetingMode.DAYS || hoursValid)
     )
 
     const handleSubmit = () => {
@@ -107,6 +105,21 @@ const CreatePageClient = () => {
     ]
 
     const deadlineSectionNumber = mode === MeetingMode.HOURS ? '06' : '04'
+
+    const handleModeChange = useCallback(
+        (newMode: MeetingMode) => {
+            if (mode === newMode) return
+            const maxDays =
+                newMode === MeetingMode.HOURS
+                    ? MAX_HOUR_MODE_LENGTH_DAYS
+                    : MAX_DAY_MODE_LENGTH_DAYS
+            if (daysBetweenInclusive(dateRange.start, dateRange.end) > maxDays) {
+                setDateRange({ start: null, end: null })
+            }
+            setMode(newMode)
+        },
+        [mode, dateRange]
+    )
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -161,7 +174,7 @@ const CreatePageClient = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <ModeCard
                                 active={mode === MeetingMode.DAYS}
-                                onClick={() => setMode(MeetingMode.DAYS)}
+                                onClick={() => handleModeChange(MeetingMode.DAYS)}
                                 title="Day-only"
                                 desc="Pick full days you're free"
                                 glyph={
@@ -184,7 +197,7 @@ const CreatePageClient = () => {
                             />
                             <ModeCard
                                 active={mode === MeetingMode.HOURS}
-                                onClick={() => setMode(MeetingMode.HOURS)}
+                                onClick={() => handleModeChange(MeetingMode.HOURS)}
                                 title="By Hour"
                                 desc="Pick specific time slots"
                                 glyph={
@@ -218,6 +231,11 @@ const CreatePageClient = () => {
                             value={dateRange}
                             onChange={setDateRange}
                             minDate={today}
+                            maxDays={
+                                mode === MeetingMode.HOURS
+                                    ? MAX_HOUR_MODE_LENGTH_DAYS
+                                    : MAX_DAY_MODE_LENGTH_DAYS
+                            }
                         />
                     </CreateSection>
 
