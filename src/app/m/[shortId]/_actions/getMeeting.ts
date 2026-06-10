@@ -7,21 +7,25 @@ import { notFound } from 'next/navigation'
 export const getMeeting = cache(async (shortId: string): Promise<MeetingClean> => {
     if (!validateMeetingShortId(shortId)) notFound()
 
-    const meeting = await prisma.meeting.findUnique({
-        where: { shortId },
-        select: {
-            shortId: true,
-            name: true,
-            mode: true,
-            startDate: true,
-            endDate: true,
-            deadline: true,
-            startHour: true,
-            endHour: true,
-            timezone: true,
-        },
-    })
+    try {
+        const meeting = await prisma.meeting.findUnique({
+            where: { shortId },
+            select: {
+                shortId: true,
+                name: true,
+                mode: true,
+                startDate: true,
+                endDate: true,
+                deadline: true,
+                startHour: true,
+                endHour: true,
+                timezone: true,
+            },
+        })
 
-    if (!meeting) notFound()
-    return meeting
+        if (!meeting) notFound()
+        return meeting
+    } catch {
+        notFound() // TODO: add proper error display, not generic not found
+    }
 })

@@ -1,15 +1,14 @@
 'use client'
 
 import { getResponses } from '../_actions/getResponses'
-import { useQuery } from '@tanstack/react-query'
+import { useActionQuery } from '@/hooks/useActionQuery'
+import { queryKeys } from '@/lib/queryKeys'
 
 export const useResponses = (meetingShortId: string) => {
-    const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ['responses', meetingShortId],
+    const { data, isLoading, isError, refetch } = useActionQuery({
+        queryKey: [queryKeys.responses, meetingShortId],
         queryFn: () => getResponses(meetingShortId),
     })
 
-    const responses = data?.success ? data.data : []
-
-    return { responses, isLoading, isError, refetch }
+    return { responses: data?.data ?? [], isLoading, isError, refetch }
 }

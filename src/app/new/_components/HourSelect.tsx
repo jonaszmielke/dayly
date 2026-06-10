@@ -1,5 +1,5 @@
+import { useIsMobile } from '@/hooks/useIsMobile'
 import { formatHour } from '@/lib/dates'
-import { useIsMobile } from '@/lib/useIsMobile'
 
 type HourSelectProps = {
     label: string
