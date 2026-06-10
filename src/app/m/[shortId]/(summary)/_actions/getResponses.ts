@@ -1,8 +1,8 @@
 'use server'
 
+import type { Response } from '@/generated/prisma/client'
 import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
-import type { Response } from '@/generated/prisma/client'
 
 type GetResponsesResponseSuccess = {
     success: true

@@ -9,10 +9,10 @@ import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
+import { useActionMutation } from '@/hooks/useActionMutation'
 import { MAX_DAY_MODE_LENGTH_DAYS, MAX_HOUR_MODE_LENGTH_DAYS } from '@/lib/config'
 import { daysBetweenInclusive, formatDate, formatHour, timezones, ymd } from '@/lib/dates'
 import { appShortUrl, cn } from '@/lib/utils'
-import { useMutation } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -43,11 +43,9 @@ const CreatePageClient = () => {
         }
     }, [])
 
-    const createMeetingMutation = useMutation({
+    const createMeetingMutation = useActionMutation({
         mutationFn: (props: CreateMeetingProps) => createMeeting(props),
-        onSuccess: (response) => {
-            if (response.success) router.push(`/m/${response.shortId}`)
-        },
+        onSuccess: (response) => router.push(`/m/${response.shortId}`),
     })
 
     const hoursValid = endHour > startHour

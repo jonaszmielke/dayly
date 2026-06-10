@@ -11,9 +11,9 @@ import { MonthGrid } from '@/components/calendar/MonthGrid'
 import { MonthGridSkeleton } from '@/components/calendar/MonthGridSkeleton'
 import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
+import { useActionMutation } from '@/hooks/useActionMutation'
 import { formatDate, getDisplayMonths, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import { useMutation } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -63,7 +63,7 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
     const displayMonths = getDisplayMonths(rangeStart, rangeEnd)
     const updateResponsesCache = useUpdateResponsesCache()
 
-    const saveMutation = useMutation({
+    const saveMutation = useActionMutation({
         mutationFn: () =>
             saveResponse({
                 meetingShortId: meeting.shortId,
@@ -85,7 +85,7 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
     })
 
     const handleSave = async () => {
-        if (!name.trim() || !saveMutation.isIdle) return
+        if (!name.trim() || saveMutation.isPending || saveMutation.isSuccess) return
         saveMutation.mutate()
     }
 
@@ -316,7 +316,11 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     onClick={handleSave}
-                                    disabled={!name.trim() || !saveMutation.isIdle}
+                                    disabled={
+                                        !name.trim() ||
+                                        saveMutation.isPending ||
+                                        saveMutation.isSuccess
+                                    }
                                     className={cn(
                                         'py-3 border-brutal font-sans text-[13px] font-bold uppercase tracking-[0.08em] transition-all press-effect',
                                         saveMutation.isSuccess

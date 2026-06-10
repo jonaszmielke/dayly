@@ -17,6 +17,7 @@ import { SummaryCell } from '@/components/calendar/SummaryCell'
 import { SummaryHourCell } from '@/components/calendar/SummaryHourCell'
 import { StatCard } from '@/components/StatCard'
 import { MeetingMode } from '@/generated/prisma/enums'
+import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
 import {
     calcDaysInRange,
     computeBest,
@@ -31,7 +32,6 @@ import {
     slotKeyFromUtc,
     ymd,
 } from '@/lib/dates'
-import { useIsTouchDevice } from '@/lib/useIsTouchDevice'
 import { useCallback, useMemo, useState } from 'react'
 
 export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
