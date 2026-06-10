@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import QueryProvider from '@/components/QueryProvider'
+import { ToastProvider } from '@/components/Toast'
 import { appUrl } from '@/lib/utils'
 
 const spaceGrotesk = Space_Grotesk({
@@ -38,7 +39,9 @@ const RootLayout = ({
             className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
         >
             <QueryProvider>
-                <body className="min-h-full flex flex-col">{children}</body>
+                <body className="min-h-full flex flex-col">
+                    <ToastProvider>{children}</ToastProvider>
+                </body>
             </QueryProvider>
         </html>
     )

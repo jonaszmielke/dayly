@@ -151,4 +151,17 @@ body {
         transform: translate(4px, 4px);
         box-shadow: none;
     }
+    @keyframes toast-in {
+        from {
+            transform: translateX(12px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    .animate-toast-in {
+        animation: toast-in 140ms ease-out;
+    }
 }
