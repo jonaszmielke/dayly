@@ -34,9 +34,12 @@ export const useUpdateHoursResponseCache = () => {
             const hours = slots.map(slotToUtc)
             const id = -Date.now()
 
+            // Typed const instead of an inline literal: react-query >=5.105's NoInfer'd
+            // updater param rejects inline union literals under TS 5.9.
+            const userResponse: GetUserResponseResponse = { success: true, data: { id, hours } }
             queryClient.setQueryData<GetUserResponseResponse>(
                 [queryKeys.userSingleResponse, meetingShortId, name],
-                { success: true, data: { id, hours } }
+                userResponse
             )
 
             if (edit && originalName && originalName !== name) {

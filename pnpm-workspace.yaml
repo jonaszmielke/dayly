@@ -4,6 +4,10 @@ allowBuilds:
   prisma: true
   sharp: true
   unrs-resolver: true
+  workerd: set this to true or false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# Only install versions published at least 1 day ago (minutes)
+minimumReleaseAge: 1440
