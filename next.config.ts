@@ -5,10 +5,10 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     outputFileTracingIncludes: {
         '*': ['./src/generated/prisma/**/*'],
-  },
-  experimental: {
-      useTypeScriptCli: true,
-  },
+    },
+    experimental: {
+        useTypeScriptCli: true,
+    },
 }
 
 // module.exports = {

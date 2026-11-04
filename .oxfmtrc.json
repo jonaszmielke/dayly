@@ -1,0 +1,38 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "printWidth": 100,
+    "tabWidth": 4,
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "es5",
+    "sortPackageJson": false,
+    "sortImports": {
+        "newlinesBetween": false,
+        "customGroups": [
+            { "groupName": "react", "elementNamePattern": ["react"] },
+            { "groupName": "next", "elementNamePattern": ["next"] },
+            { "groupName": "next-sub", "elementNamePattern": ["next/**"] },
+            { "groupName": "css", "elementNamePattern": ["**/*.css", "*.css"] }
+        ],
+        "groups": [
+            [
+                "type",
+                "side_effect",
+                "builtin",
+                "external",
+                "internal",
+                "parent",
+                "sibling",
+                "index",
+                "subpath",
+                "import",
+                "unknown"
+            ],
+            "react",
+            "next",
+            "next-sub",
+            "css"
+        ]
+    },
+    "ignorePatterns": [".next", "next-env.d.ts", "**/*.prisma", "pnpm-lock.yaml"]
+}

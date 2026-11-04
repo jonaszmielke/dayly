@@ -1,12 +1,12 @@
 allowBuilds:
-  '@prisma/engines': true
-  esbuild: true
-  prisma: true
-  sharp: true
-  unrs-resolver: true
+    '@prisma/engines': true
+    esbuild: true
+    prisma: true
+    sharp: true
+    unrs-resolver: true
 ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+    - sharp
+    - unrs-resolver
 
 # Only install versions published at least 1 day ago (minutes)
 minimumReleaseAge: 1440

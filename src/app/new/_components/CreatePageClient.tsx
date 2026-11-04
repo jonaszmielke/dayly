@@ -108,9 +108,7 @@ const CreatePageClient = () => {
         (newMode: MeetingMode) => {
             if (mode === newMode) return
             const maxDays =
-                newMode === MeetingMode.HOURS
-                    ? MAX_HOUR_MODE_LENGTH_DAYS
-                    : MAX_DAY_MODE_LENGTH_DAYS
+                newMode === MeetingMode.HOURS ? MAX_HOUR_MODE_LENGTH_DAYS : MAX_DAY_MODE_LENGTH_DAYS
             if (daysBetweenInclusive(dateRange.start, dateRange.end) > maxDays) {
                 setDateRange({ start: null, end: null })
             }

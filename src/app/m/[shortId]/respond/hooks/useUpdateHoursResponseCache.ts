@@ -50,7 +50,7 @@ export const useUpdateHoursResponseCache = () => {
 
             // Summary (responses) cache is days-shaped and owned by the later hours-summary
             // task — just invalidate so it refetches once that view exists.
-            queryClient.invalidateQueries({ queryKey: [queryKeys.responses, meetingShortId] })
+            void queryClient.invalidateQueries({ queryKey: [queryKeys.responses, meetingShortId] })
         },
         [queryClient]
     )

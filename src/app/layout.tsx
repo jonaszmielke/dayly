@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
-import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
-import './globals.css'
 import QueryProvider from '@/components/QueryProvider'
 import { ToastProvider } from '@/components/Toast'
 import { appUrl } from '@/lib/utils'
+import type { Metadata } from 'next'
+import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
+import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
     variable: '--font-sans',

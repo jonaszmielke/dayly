@@ -12,7 +12,7 @@ export const CopyButton = ({ text, className }: CopyButtonProps) => {
     const [copied, setCopied] = useState<boolean>(false)
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(text).then(() => {
+        void navigator.clipboard.writeText(text).then(() => {
             setCopied(true)
             setTimeout(() => setCopied(false), 1600)
         })

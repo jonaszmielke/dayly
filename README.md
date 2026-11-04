@@ -10,12 +10,12 @@ Group availability scheduling. Share link → everyone picks free days → heatm
 
 ## Routes
 
-| Path | Description |
-|------|-------------|
-| `/` | Landing page |
-| `/new` | Create meeting survey |
-| `/m/[shortId]` | Summary / heatmap |
-| `/m/[shortId]/respond` | Fill in availability |
+| Path                   | Description           |
+| ---------------------- | --------------------- |
+| `/`                    | Landing page          |
+| `/new`                 | Create meeting survey |
+| `/m/[shortId]`         | Summary / heatmap     |
+| `/m/[shortId]/respond` | Fill in availability  |
 
 ## Dev
 

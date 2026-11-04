@@ -1,6 +1,7 @@
 import { LegalSection } from '../_components/LegalSection'
 import { LegalTitle } from '../_components/LegalTitle'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
     title: 'Terms of Use · Dayly',
@@ -35,9 +36,9 @@ const TermsPage = () => (
             <LegalSection title="Data">
                 <p>
                     See our{' '}
-                    <a href="/privacy" className="text-mocha underline underline-offset-2">
+                    <Link href="/privacy" className="text-mocha underline underline-offset-2">
                         Privacy Policy
-                    </a>{' '}
+                    </Link>{' '}
                     for details on what we collect and how to request deletion.
                 </p>
             </LegalSection>

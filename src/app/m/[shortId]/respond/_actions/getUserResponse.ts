@@ -65,8 +65,7 @@ export const getUserResponse = async (
         if (meeting.responses.length === 0) return { success: false, message: 'Response not found' }
 
         const { id, days, hours } = meeting.responses[0]
-        const data =
-            meeting.mode === MeetingMode.HOURS ? { id, hours } : { id, days }
+        const data = meeting.mode === MeetingMode.HOURS ? { id, hours } : { id, days }
 
         return { success: true, data }
     } catch (error) {

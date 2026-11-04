@@ -33,7 +33,9 @@ export const MonthGrid = ({
                     <span className="font-sans text-[26px] lg:text-[36px] font-extrabold leading-none tracking-[-0.03em]">
                         {monthName(month)}
                     </span>
-                    <span className="font-mono text-[14px] lg:text-[18px] text-ink/55 leading-none">{year}</span>
+                    <span className="font-mono text-[14px] lg:text-[18px] text-ink/55 leading-none">
+                        {year}
+                    </span>
                 </div>
                 {daysInRange !== undefined && (
                     <span className="font-mono text-[10px] lg:text-[11px] uppercase tracking-widest text-ink/55">

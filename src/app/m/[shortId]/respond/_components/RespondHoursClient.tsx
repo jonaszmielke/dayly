@@ -1,8 +1,8 @@
 'use client'
 
-import { saveResponse } from '../_actions/saveResponse'
 import MeetingHeader from '../../_components/MeetingHeader'
 import { MeetingCleanHours } from '../../types'
+import { saveResponse } from '../_actions/saveResponse'
 import { useHourSelectLogic } from '../hooks/useHourSelectLogic'
 import { useUpdateHoursResponseCache } from '../hooks/useUpdateHoursResponseCache'
 import { useUserResponse } from '../hooks/useUserResponse'
@@ -161,7 +161,7 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
         <div className="bg-white border-brutal shadow-brutal">
             <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
                 <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
-                    {!!editOriginalName
+                    {editOriginalName
                         ? name === editOriginalName
                             ? 'Keeping the same name'
                             : 'Changing name'
@@ -238,11 +238,11 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
                 {/* Banner */}
                 <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 px-3 py-3">
                     <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] shrink-0">
-                        {!!editOriginalName ? 'EDIT' : 'PICK'}
+                        {editOriginalName ? 'EDIT' : 'PICK'}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="font-sans text-[17px] font-bold leading-tight">
-                            {!!editOriginalName
+                            {editOriginalName
                                 ? `Editing ${editOriginalName}'s response`
                                 : 'Which hours work for you?'}
                         </div>

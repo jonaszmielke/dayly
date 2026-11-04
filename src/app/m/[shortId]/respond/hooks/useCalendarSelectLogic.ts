@@ -63,7 +63,10 @@ export const useCalendarSelectLogic = ({
             if (iso < rangeStart || iso > rangeEnd) return
             dragRef.current.lastIso = iso
             const { mode } = dragRef.current
-            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
+            apply((s) => {
+                if (mode === 'add') s.add(iso)
+                else s.delete(iso)
+            })
             if (e.cancelable) e.preventDefault()
         }
         window.addEventListener('touchmove', onTouchMove, { passive: false })
@@ -79,7 +82,10 @@ export const useCalendarSelectLogic = ({
                 const anchorSelected = selected.has(anchor)
                 const mode = anchorSelected ? 'add' : 'remove'
                 apply((s) => {
-                    range.forEach((d) => { if (mode === 'add') s.add(d); else s.delete(d) })
+                    range.forEach((d) => {
+                        if (mode === 'add') s.add(d)
+                        else s.delete(d)
+                    })
                 })
                 dragRef.current.anchor = iso
                 return
@@ -87,7 +93,10 @@ export const useCalendarSelectLogic = ({
             const isOn = selected.has(iso)
             const mode = isOn ? 'remove' : 'add'
             dragRef.current = { active: true, mode, lastIso: iso, anchor: iso }
-            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
+            apply((s) => {
+                if (mode === 'add') s.add(iso)
+                else s.delete(iso)
+            })
         },
         [selected, apply, rangeStart, rangeEnd]
     )
@@ -99,7 +108,10 @@ export const useCalendarSelectLogic = ({
             if (iso === dragRef.current.lastIso) return
             dragRef.current.lastIso = iso
             const { mode } = dragRef.current
-            apply((s) => { if (mode === 'add') s.add(iso); else s.delete(iso) })
+            apply((s) => {
+                if (mode === 'add') s.add(iso)
+                else s.delete(iso)
+            })
         },
         [apply]
     )
@@ -121,7 +133,9 @@ export const useCalendarSelectLogic = ({
                 const isWeekend = dow === 0 || dow === 6
                 return type === 'weekends' ? isWeekend : !isWeekend
             })
-            apply((s) => { filtered.forEach((iso) => s.add(iso)) })
+            apply((s) => {
+                filtered.forEach((iso) => s.add(iso))
+            })
         },
         [rangeStart, rangeEnd, apply]
     )

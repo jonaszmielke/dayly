@@ -5,9 +5,8 @@ import { redirect } from 'next/navigation'
 
 const findRoom = async (formData: FormData) => {
     'use server'
-    const code = String(formData.get('code') ?? '')
-        .trim()
-        .toLowerCase()
+    const raw = formData.get('code')
+    const code = typeof raw === 'string' ? raw.trim().toLowerCase() : ''
     if (code) redirect(`/m/${code}`)
 }
 
@@ -28,17 +27,14 @@ const MeetingNotFoundPage = () => {
                     <span className="text-danger">404 · NOT FOUND</span>
                 </div>
 
-                <div
-                    className="grid gap-10 lg:gap-24 grid-cols-1 lg:[grid-template-columns:minmax(0,560px)_minmax(0,1fr)]"
-                >
+                <div className="grid gap-10 lg:gap-24 grid-cols-1 lg:[grid-template-columns:minmax(0,560px)_minmax(0,1fr)]">
                     {/* Left copy */}
                     <div className="flex flex-col gap-6">
                         <h1
                             className="font-sans font-extrabold leading-[0.86] tracking-[-0.045em] mb-2"
                             style={{ fontSize: 'clamp(40px, 12vw, 88px)' }}
                         >
-                            Nothing on the{' '}
-                            <em className="not-italic text-danger">calendar</em>{' '}
+                            Nothing on the <em className="not-italic text-danger">calendar</em>{' '}
                             here.
                         </h1>
 

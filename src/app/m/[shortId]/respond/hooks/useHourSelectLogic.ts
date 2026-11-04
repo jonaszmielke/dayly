@@ -59,7 +59,10 @@ export const useHourSelectLogic = ({
             if (!key || key === dragRef.current.lastKey) return
             dragRef.current.lastKey = key
             const { mode } = dragRef.current
-            apply((s) => { if (mode === 'add') s.add(key); else s.delete(key) })
+            apply((s) => {
+                if (mode === 'add') s.add(key)
+                else s.delete(key)
+            })
             if (e.cancelable) e.preventDefault()
         }
         window.addEventListener('touchmove', onTouchMove, { passive: false })
@@ -71,7 +74,10 @@ export const useHourSelectLogic = ({
             const isOn = selected.has(key)
             const mode = isOn ? 'remove' : 'add'
             dragRef.current = { active: true, mode, lastKey: key }
-            apply((s) => { if (mode === 'add') s.add(key); else s.delete(key) })
+            apply((s) => {
+                if (mode === 'add') s.add(key)
+                else s.delete(key)
+            })
         },
         [selected, apply]
     )
@@ -83,7 +89,10 @@ export const useHourSelectLogic = ({
             if (key === dragRef.current.lastKey) return
             dragRef.current.lastKey = key
             const { mode } = dragRef.current
-            apply((s) => { if (mode === 'add') s.add(key); else s.delete(key) })
+            apply((s) => {
+                if (mode === 'add') s.add(key)
+                else s.delete(key)
+            })
         },
         [apply]
     )
