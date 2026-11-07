@@ -1,24 +1,9 @@
-import { HeroCell } from '@/components/calendar/HeroCell'
-import { MonthGrid } from '@/components/calendar/MonthGrid'
+import { HeroGrid } from './_components/HeroGrid'
 import { Footer } from '@/components/Footer'
 import { SmallHeader } from '@/components/ui/SmallHeader'
-import { ymd } from '@/lib/dates'
 import Link from 'next/link'
 
-const HERO_TOTAL = 5
-
-const heroFreeCount = (dom: number): number => {
-    const n = (dom * 9301 + 49297) % 233280
-    return Math.floor((n / 233280) * (HERO_TOTAL + 1))
-}
-
 const HomePage = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth()
-    const monthStart = ymd(new Date(year, month, 1))
-    const monthEnd = ymd(new Date(year, month + 1, 0))
-
     return (
         <div className="min-h-screen flex flex-col justify-between">
             <div className="flex flex-col">
@@ -73,21 +58,7 @@ const HomePage = () => {
 
                         {/* Left: mini calendar */}
                         <div className="w-full order-2 lg:order-1">
-                            <MonthGrid
-                                year={year}
-                                month={month}
-                                rangeStart={monthStart}
-                                rangeEnd={monthEnd}
-                                cellAspectClassName="aspect-square lg:aspect-[140/100]"
-                                cellRenderer={(cell, inRange) => (
-                                    <HeroCell
-                                        cell={cell}
-                                        inRange={inRange}
-                                        freeCount={heroFreeCount(cell.dom)}
-                                        totalCount={HERO_TOTAL}
-                                    />
-                                )}
-                            />
+                            <HeroGrid />
                         </div>
                     </div>
                 </section>

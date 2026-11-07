@@ -1,8 +1,9 @@
 'use client'
 
-import { DPMonth } from './DPMonth'
+import { MonthPicker } from './MonthPicker'
 import { ResponsivePopover } from './ResponsivePopover'
-import { daysBetweenInclusive, DOW_ABBREVIATIONS, formatDate, parseISO, ymd } from '@/lib/dates'
+import { useToday } from '@/hooks/useToday'
+import { daysBetweenInclusive, DOW_ABBREVIATIONS, formatDate, parseISO } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -51,7 +52,7 @@ export const SingleDatePicker = ({
         setOpen(next)
     }
 
-    const today = ymd(new Date())
+    const today = useToday()
     const subtext = value ? `${daysBetweenInclusive(today, value)} DAYS FROM TODAY` : 'SINGLE DATE'
 
     return (
@@ -80,7 +81,7 @@ export const SingleDatePicker = ({
                 </div>
             }
         >
-            <DPMonth
+            <MonthPicker
                 mode="single"
                 value={current}
                 rangeValue={{ start: null, end: null }}

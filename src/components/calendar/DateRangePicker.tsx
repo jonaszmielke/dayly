@@ -1,6 +1,6 @@
 'use client'
 
-import { DPMonth } from './DPMonth'
+import { MonthPicker } from './MonthPicker'
 import { ResponsivePopover } from './ResponsivePopover'
 import { addDays, daysBetweenInclusive, formatDate } from '@/lib/dates'
 import { cn } from '@/lib/utils'
@@ -109,7 +109,7 @@ export const DateRangePicker = ({
                 </div>
             }
         >
-            <DPMonth
+            <MonthPicker
                 mode="range"
                 value={null}
                 rangeValue={current}

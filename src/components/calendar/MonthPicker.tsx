@@ -1,6 +1,7 @@
 'use client'
 
-import { addMonths, DOW_ABBREVIATIONS, monthGrid, monthName, ymd } from '@/lib/dates'
+import { useToday } from '@/hooks/useToday'
+import { addMonths, DOW_ABBREVIATIONS, monthGrid, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -16,7 +17,7 @@ type DPMonthProps = {
     initialMonth?: { year: number; month: number }
 }
 
-export const DPMonth = ({
+export const MonthPicker = ({
     mode,
     value,
     rangeValue,
@@ -27,10 +28,10 @@ export const DPMonth = ({
     onHoverIso,
     initialMonth,
 }: DPMonthProps) => {
-    const today = new Date()
+    const today = useToday()
     const [{ year, month }, setYM] = useState(() => {
         if (initialMonth) return initialMonth
-        const seed = mode === 'single' ? value || ymd(today) : rangeValue.start || ymd(today)
+        const seed = mode === 'single' ? value || today : rangeValue.start || today
         const d = new Date(seed + 'T00:00:00')
         return { year: d.getFullYear(), month: d.getMonth() }
     })
