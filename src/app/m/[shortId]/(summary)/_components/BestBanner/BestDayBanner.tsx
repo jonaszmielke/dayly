@@ -1,7 +1,7 @@
-import { Person } from '../../../types'
+import { type Person } from '../../../types'
 import { BestBannerLoading } from './BestBannerLoading'
 import { BestBannerNoResponses } from './BestBannerNoResponses'
-import { BestResult, daysBetweenInclusive, formatDateMedium } from '@/lib/dates'
+import { type BestResult, daysBetweenInclusive, formatDateMedium } from '@/lib/dates'
 
 type BestDayBannerProps = {
     meetingShortId: string

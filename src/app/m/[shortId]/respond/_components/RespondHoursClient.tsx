@@ -1,7 +1,7 @@
 'use client'
 
 import MeetingHeader from '../../_components/MeetingHeader'
-import { MeetingCleanHours } from '../../types'
+import { type MeetingCleanHours } from '../../types'
 import { saveResponse } from '../_actions/saveResponse'
 import { useHourSelectLogic } from '../hooks/useHourSelectLogic'
 import { useUpdateHoursResponseCache } from '../hooks/useUpdateHoursResponseCache'

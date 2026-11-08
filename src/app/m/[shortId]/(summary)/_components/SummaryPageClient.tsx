@@ -1,7 +1,7 @@
 'use client'
 
 import MeetingHeader from '../../_components/MeetingHeader'
-import { MeetingClean } from '../../types'
+import { type MeetingClean } from '../../types'
 import { useResponses } from '../_hooks/useResponses'
 import { BestDayBanner } from './BestBanner/BestDayBanner'
 import { BestHoursBanner } from './BestBanner/BestHoursBanner'

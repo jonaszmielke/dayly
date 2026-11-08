@@ -1,4 +1,4 @@
-import { formatHour, MONTH_ABBREVIATIONS, WeekCell } from '@/lib/dates'
+import { formatHour, MONTH_ABBREVIATIONS, type WeekCell } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 
 type HourGridSkeletonProps = {

@@ -1,5 +1,5 @@
 import CreatePageClient from './_components/CreatePageClient'
-import { Metadata } from 'next'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'New meeting · Dayly',

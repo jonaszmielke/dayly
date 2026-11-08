@@ -1,6 +1,6 @@
 'use client'
 
-import { createMeeting, CreateMeetingProps } from '../_actions/createMeeting'
+import { createMeeting, type CreateMeetingProps } from '../_actions/createMeeting'
 import { CreateSection } from './CreateSection'
 import { HourSelect } from './HourSelect'
 import { ModeCard } from './ModeCard'

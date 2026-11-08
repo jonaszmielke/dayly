@@ -1,6 +1,6 @@
 import { getMeeting } from '../_actions/getMeeting'
 import { SummaryPageClient } from './_components/SummaryPageClient'
-import { Metadata } from 'next'
+import { type Metadata } from 'next'
 
 export const generateMetadata = async ({
     params,

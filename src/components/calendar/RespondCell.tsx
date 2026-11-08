@@ -1,6 +1,6 @@
 'use client'
 
-import { GridCell } from '@/lib/dates'
+import { type GridCell } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 
 type RespondCellProps = {

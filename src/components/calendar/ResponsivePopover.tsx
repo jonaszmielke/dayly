@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { cn } from '@/lib/utils'
 import { Popover } from '@base-ui/react/popover'
-import { CSSProperties, ReactNode } from 'react'
+import { type CSSProperties, type ReactNode } from 'react'
 
 type ResponsivePopoverProps = {
     open: boolean

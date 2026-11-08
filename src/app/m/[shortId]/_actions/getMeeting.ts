@@ -1,4 +1,4 @@
-import { MeetingClean } from '../types'
+import { type MeetingClean } from '../types'
 import { validateMeetingShortId } from '@/lib/code'
 import { prisma } from '@/lib/prisma'
 import { cache } from 'react'

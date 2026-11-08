@@ -1,4 +1,4 @@
-import { GridCell } from '@/lib/dates'
+import { type GridCell } from '@/lib/dates'
 import { pickFg, pickHeat } from '@/lib/heat'
 import { cn } from '@/lib/utils'
 

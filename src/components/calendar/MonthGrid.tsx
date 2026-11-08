@@ -1,6 +1,6 @@
-import { DOW_ABBREVIATIONS, GridCell, monthGrid, monthName } from '@/lib/dates'
+import { DOW_ABBREVIATIONS, type GridCell, monthGrid, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 type MonthGridProps = {
     year: number

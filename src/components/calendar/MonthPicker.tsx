@@ -5,7 +5,7 @@ import {
     addMonths,
     DOW_ABBREVIATIONS,
     formatDateLong,
-    GridCell,
+    type GridCell,
     monthGrid,
     monthName,
 } from '@/lib/dates'

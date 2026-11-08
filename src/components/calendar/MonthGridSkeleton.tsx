@@ -1,4 +1,4 @@
-import { calcDaysInRange, DOW_ABBREVIATIONS, GridCell, monthGrid, monthName } from '@/lib/dates'
+import { calcDaysInRange, DOW_ABBREVIATIONS, type GridCell, monthGrid, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 
 // Every month fits in at most 6 week rows, so without a date the skeleton renders the full 6×7.

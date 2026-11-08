@@ -1,6 +1,6 @@
 'use client'
 
-import { Person } from '../../types'
+import { type Person } from '../../types'
 import { WhosInPanel } from './WhosInPanel'
 import { CopyButton } from '@/components/CopyButton'
 import {

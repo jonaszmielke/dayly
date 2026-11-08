@@ -2,7 +2,7 @@ import { getMeeting } from '../_actions/getMeeting'
 import { RespondDaysClient } from './_components/RespondDaysClient'
 import { RespondHoursClient } from './_components/RespondHoursClient'
 import { MeetingMode } from '@/generated/prisma/enums'
-import { Metadata } from 'next'
+import { type Metadata } from 'next'
 
 export const generateMetadata = async ({
     params,

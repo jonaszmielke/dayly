@@ -1,12 +1,12 @@
 'use client'
 
-import { MeetingClean } from '../types'
+import { type MeetingClean } from '../types'
 import { CopyButton } from '@/components/CopyButton'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
 import { MONTH_ABBREVIATIONS } from '@/lib/dates'
 import { appShortUrl, appUrl } from '@/lib/utils'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import Link from 'next/link'
 
 const fmtDate = (d: Date): string => {

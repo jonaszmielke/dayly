@@ -1,8 +1,8 @@
 'use client'
 
-import { MONTH_ABBREVIATIONS, WeekCell, formatHour } from '@/lib/dates'
+import { MONTH_ABBREVIATIONS, type WeekCell, formatHour } from '@/lib/dates'
 import { cn } from '@/lib/utils'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 type HourGridProps = {
     week: WeekCell[]
