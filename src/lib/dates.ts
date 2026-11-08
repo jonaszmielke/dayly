@@ -144,12 +144,17 @@ export const formatDateLong = (iso: string): string => {
     return `${dow} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
 }
 
+/** Calendar days from `a` to `b` (tomorrow is 1, today is 0). */
+export const daysBetween = (a: string, b: string): number =>
+    Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / 86400000)
+
+/** Days in the range `a`..`b`, counting both ends (a single day is 1). */
 export const daysBetweenInclusive = (
     a: string | null | undefined,
     b: string | null | undefined
 ): number => {
     if (!a || !b) return 0
-    return Math.round((parseISO(b).getTime() - parseISO(a).getTime()) / 86400000) + 1
+    return daysBetween(a, b) + 1
 }
 
 export const calcDaysInRange = (

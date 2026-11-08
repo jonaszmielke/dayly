@@ -22,13 +22,6 @@
         "react/rules-of-hooks": "error",
         "react/exhaustive-deps": "off",
         "react/set-state-in-effect": "off",
-        // New vs. the old ESLint setup; warn until the existing violations are addressed
-        "react/purity": "warn",
-
-        // jsx-a11y rules eslint-config-next didn't enable; warn until addressed
-        "jsx-a11y/click-events-have-key-events": "warn",
-        "jsx-a11y/no-static-element-interactions": "warn",
-        "jsx-a11y/no-autofocus": "warn",
 
         // TypeScript (was typescript-eslint recommended)
         "typescript/ban-ts-comment": "error",

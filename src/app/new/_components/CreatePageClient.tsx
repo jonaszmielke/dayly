@@ -4,22 +4,28 @@ import { createMeeting, type CreateMeetingProps } from '../_actions/createMeetin
 import { CreateSection } from './CreateSection'
 import { HourSelect } from './HourSelect'
 import { ModeCard } from './ModeCard'
-import { DateRangePicker } from '@/components/calendar/DateRangePicker'
-import { SingleDatePicker } from '@/components/calendar/SingleDatePicker'
+import { DateRangePicker } from '@/components/calendar/pickers/DateRangePicker'
+import { SingleDatePicker } from '@/components/calendar/pickers/SingleDatePicker'
 import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
 import { useActionMutation } from '@/hooks/useActionMutation'
+import { useToday } from '@/hooks/useToday'
 import { MAX_DAY_MODE_LENGTH_DAYS, MAX_HOUR_MODE_LENGTH_DAYS } from '@/lib/config'
-import { daysBetweenInclusive, formatDate, formatHour, timezones, ymd } from '@/lib/dates'
+import { daysBetweenInclusive, formatDate, formatHour, timezones } from '@/lib/dates'
 import { appShortUrl, cn } from '@/lib/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const today = ymd(new Date())
+// Highlighted squares in each mode card's 7×2 preview glyph.
+const DAYS_GLYPH_CELLS = [2, 5, 7, 8, 9, 12]
+const HOURS_GLYPH_CELLS = [3, 4, 5, 10, 11]
+
 const MAX_NAME = 48
 
 const CreatePageClient = () => {
+    // null until hydration; the pickers can't be opened before that anyway.
+    const today = useToday()
     const [name, setName] = useState<string>('')
     const [mode, setMode] = useState<MeetingMode>(MeetingMode.DAYS)
     const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({
@@ -173,46 +179,14 @@ const CreatePageClient = () => {
                                 onClick={() => handleModeChange(MeetingMode.DAYS)}
                                 title="Day-only"
                                 desc="Pick full days you're free"
-                                glyph={
-                                    <div className="grid grid-cols-7 gap-0.5">
-                                        {Array.from({ length: 14 }).map((_, i) => (
-                                            <div
-                                                key={i}
-                                                className="w-[6px] h-[6px]"
-                                                style={{
-                                                    backgroundColor: [2, 5, 7, 8, 9, 12].includes(i)
-                                                        ? '#7E6038'
-                                                        : mode === MeetingMode.DAYS
-                                                          ? 'rgba(236,226,203,0.4)'
-                                                          : 'rgba(22,21,20,0.2)',
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                }
+                                glyphCells={DAYS_GLYPH_CELLS}
                             />
                             <ModeCard
                                 active={mode === MeetingMode.HOURS}
                                 onClick={() => handleModeChange(MeetingMode.HOURS)}
                                 title="By Hour"
                                 desc="Pick specific time slots"
-                                glyph={
-                                    <div className="grid grid-cols-7 gap-0.5">
-                                        {Array.from({ length: 14 }).map((_, i) => (
-                                            <div
-                                                key={i}
-                                                className="w-[6px] h-[6px]"
-                                                style={{
-                                                    backgroundColor: [3, 4, 5, 10, 11].includes(i)
-                                                        ? '#7E6038'
-                                                        : mode === MeetingMode.HOURS
-                                                          ? 'rgba(236,226,203,0.4)'
-                                                          : 'rgba(22,21,20,0.2)',
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                }
+                                glyphCells={HOURS_GLYPH_CELLS}
                             />
                         </div>
                     </CreateSection>
@@ -226,7 +200,7 @@ const CreatePageClient = () => {
                         <DateRangePicker
                             value={dateRange}
                             onChange={setDateRange}
-                            minDate={today}
+                            minDate={today ?? undefined}
                             maxDays={
                                 mode === MeetingMode.HOURS
                                     ? MAX_HOUR_MODE_LENGTH_DAYS
@@ -309,7 +283,7 @@ const CreatePageClient = () => {
                             value={deadline}
                             onChange={setDeadline}
                             placeholder="SELECT DEADLINE"
-                            minDate={today}
+                            minDate={today ?? undefined}
                             label="DEADLINE"
                         />
                     </CreateSection>

@@ -1,5 +1,6 @@
 'use client'
 
+import { DesktopSidebarLayout } from '../../_components/DesktopSidebarLayout'
 import MeetingHeader from '../../_components/MeetingHeader'
 import { type MeetingClean } from '../../types'
 import { type RespondForm } from '../hooks/useRespondForm'
@@ -79,29 +80,25 @@ export const RespondLayout = ({
             </div>
 
             {/* ── Desktop layout ── */}
-            <div className="hidden lg:block py-8">
-                <div className="mx-auto w-full max-w-[1600px] px-6 xl:px-10">
-                    <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
-                        <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                            <NamePanel
-                                name={form.name}
-                                onNameChange={form.setName}
-                                editOriginalName={editOriginalName}
-                            />
-                            {sidebarExtra}
-                            <StatCard rows={statRows} />
-                            <SelectionCounter count={selectedCount} label={copy.counterLabel} />
-                            <DesktopActions form={form} onReset={onReset} />
-                            <HelpLines lines={copy.desktopHelp} />
-                        </aside>
-
-                        <main className="flex flex-col gap-6">
-                            <DesktopBanner title={copy.title} subtitle={copy.desktopSubtitle} />
-                            {grids}
-                        </main>
-                    </div>
-                </div>
-            </div>
+            <DesktopSidebarLayout
+                sidebar={
+                    <>
+                        <NamePanel
+                            name={form.name}
+                            onNameChange={form.setName}
+                            editOriginalName={editOriginalName}
+                        />
+                        {sidebarExtra}
+                        <StatCard rows={statRows} />
+                        <SelectionCounter count={selectedCount} label={copy.counterLabel} />
+                        <DesktopActions form={form} onReset={onReset} />
+                        <HelpLines lines={copy.desktopHelp} />
+                    </>
+                }
+            >
+                <DesktopBanner title={copy.title} subtitle={copy.desktopSubtitle} />
+                {grids}
+            </DesktopSidebarLayout>
 
             <MobileActionBar
                 count={selectedCount}

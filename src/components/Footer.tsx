@@ -1,4 +1,5 @@
-import { appVersion } from '@/lib/utils'
+import { appVersion, cn } from '@/lib/utils'
+import { type CSSProperties } from 'react'
 import Link from 'next/link'
 
 const NAV_LINKS = [
@@ -7,24 +8,14 @@ const NAV_LINKS = [
     { label: 'GitHub', href: 'https://github.com/jonaszmielke/dayly' },
 ]
 
+const SMALL_CAPS = 'font-mono text-[11px] uppercase tracking-[0.08em]'
+
 export const Footer = () => (
     <footer className="mt-8 border-t border-ink/30">
         {/* Mobile */}
         <div className="lg:hidden max-w-[1440px] mx-auto px-4 py-4 flex items-center justify-between">
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55">
-                DAYLY · {appVersion()}
-            </span>
-            <nav className="flex items-center gap-3">
-                {NAV_LINKS.map((l) => (
-                    <Link
-                        key={l.href}
-                        href={l.href}
-                        className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40 hover:text-ink"
-                    >
-                        {l.label}
-                    </Link>
-                ))}
-            </nav>
+            <span className={cn(SMALL_CAPS, 'text-ink/55')}>DAYLY · {appVersion()}</span>
+            <FooterNav className="gap-3" />
         </div>
 
         {/* Desktop — 3 column grid */}
@@ -32,28 +23,26 @@ export const Footer = () => (
             className="hidden lg:grid max-w-[1380px] mx-auto px-6 py-4 items-center"
             style={{ gridTemplateColumns: '1fr auto 1fr' }}
         >
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/55 text-right">
-                DAYLY
-            </span>
-
-            <nav
-                className="flex items-center gap-6 justify-center"
+            <span className={cn(SMALL_CAPS, 'text-ink/55 text-right')}>DAYLY</span>
+            <FooterNav
+                className="gap-6 justify-center"
                 style={{ width: 'clamp(200px, 50vw, 1400px)' }}
-            >
-                {NAV_LINKS.map((l) => (
-                    <Link
-                        key={l.href}
-                        href={l.href}
-                        className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40 hover:text-ink"
-                    >
-                        {l.label}
-                    </Link>
-                ))}
-            </nav>
-
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-ink/40">
-                {appVersion()}
-            </span>
+            />
+            <span className={cn(SMALL_CAPS, 'text-ink/40')}>{appVersion()}</span>
         </div>
     </footer>
+)
+
+const FooterNav = ({ className, style }: { className?: string; style?: CSSProperties }) => (
+    <nav className={cn('flex items-center', className)} style={style}>
+        {NAV_LINKS.map((l) => (
+            <Link
+                key={l.href}
+                href={l.href}
+                className={cn(SMALL_CAPS, 'text-ink/40 hover:text-ink')}
+            >
+                {l.label}
+            </Link>
+        ))}
+    </nav>
 )
