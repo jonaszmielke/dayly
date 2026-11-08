@@ -1,4 +1,5 @@
-import { DOW_ABBREVIATIONS, type GridCell, monthGrid, monthName } from '@/lib/dates'
+import { type GridCell, monthGrid } from '@/lib/calendar'
+import { DOW_ABBREVIATIONS, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { type ReactNode } from 'react'
 

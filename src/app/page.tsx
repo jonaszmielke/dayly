@@ -1,6 +1,6 @@
-import { HeroGrid } from './_components/HeroGrid'
+import { HeroGrid } from './components/HeroGrid'
 import { Footer } from '@/components/Footer'
-import { SmallHeader } from '@/components/ui/SmallHeader'
+import { SmallHeader } from '@/components/SmallHeader'
 import Link from 'next/link'
 
 const HomePage = () => {

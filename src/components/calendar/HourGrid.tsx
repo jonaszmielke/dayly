@@ -1,6 +1,8 @@
 'use client'
 
-import { MONTH_ABBREVIATIONS, type WeekCell, formatHour } from '@/lib/dates'
+import { type WeekCell } from '@/lib/calendar'
+import { MONTH_ABBREVIATIONS } from '@/lib/dates'
+import { formatHour } from '@/lib/slots'
 import { cn } from '@/lib/utils'
 import { type ReactNode } from 'react'
 

@@ -1,5 +1,5 @@
 import { HourGrid } from './HourGrid'
-import { type WeekCell } from '@/lib/dates'
+import { type WeekCell } from '@/lib/calendar'
 
 type HourGridSkeletonProps = {
     week: WeekCell[]

@@ -1,4 +1,4 @@
-import CreatePageClient from './_components/CreatePageClient'
+import CreatePageClient from './components/CreatePageClient'
 import { type Metadata } from 'next'
 
 export const metadata: Metadata = {

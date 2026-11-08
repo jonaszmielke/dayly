@@ -1,5 +1,5 @@
 import { Footer } from '@/components/Footer'
-import { SmallHeader } from '@/components/ui/SmallHeader'
+import { SmallHeader } from '@/components/SmallHeader'
 
 const LegalLayout = ({ children }: { children: React.ReactNode }) => {
     return (

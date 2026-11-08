@@ -1,6 +1,6 @@
 'use client'
 
-import { getUserResponse } from '../_actions/getUserResponse'
+import { getUserResponse } from '../actions/getUserResponse'
 import { queryKeys } from '@/lib/queryKeys'
 import { useQuery } from '@tanstack/react-query'
 

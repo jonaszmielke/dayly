@@ -1,5 +1,5 @@
 import { Footer } from '@/components/Footer'
-import { SmallHeader } from '@/components/ui/SmallHeader'
+import { SmallHeader } from '@/components/SmallHeader'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 

@@ -1,6 +1,6 @@
-import { getMeeting } from '../_actions/getMeeting'
-import { RespondDaysClient } from './_components/RespondDaysClient'
-import { RespondHoursClient } from './_components/RespondHoursClient'
+import { getMeeting } from '../actions/getMeeting'
+import { RespondDaysClient } from './components/RespondDaysClient'
+import { RespondHoursClient } from './components/RespondHoursClient'
 import { MeetingMode } from '@/generated/prisma/enums'
 import { type Metadata } from 'next'
 

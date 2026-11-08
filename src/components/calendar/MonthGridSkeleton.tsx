@@ -1,5 +1,5 @@
 import { MonthGrid, MonthGridCell, type MonthGridDay, MonthGridFrame } from './MonthGrid'
-import { calcDaysInRange } from '@/lib/dates'
+import { calcDaysInRange } from '@/lib/calendar'
 import { cn } from '@/lib/utils'
 
 // Every month fits in at most 6 week rows, so without a date the skeleton renders the full 6×7.

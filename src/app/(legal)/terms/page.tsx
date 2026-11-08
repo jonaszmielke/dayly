@@ -1,5 +1,5 @@
-import { LegalSection } from '../_components/LegalSection'
-import { LegalTitle } from '../_components/LegalTitle'
+import { LegalSection } from '../components/LegalSection'
+import { LegalTitle } from '../components/LegalTitle'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 

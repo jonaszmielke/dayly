@@ -1,7 +1,7 @@
 'use client'
 
 import { usePaintSelection } from './usePaintSelection'
-import { slotKey } from '@/lib/dates'
+import { slotKey } from '@/lib/slots'
 import { useCallback } from 'react'
 
 type UseHourSelectLogicProps = {

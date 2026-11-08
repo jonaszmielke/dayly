@@ -1,5 +1,5 @@
-import { type GetResponsesResponse } from '../../(summary)/_actions/getResponses'
-import { type GetUserResponseResponse } from '../_actions/getUserResponse'
+import { type GetResponsesResponse } from '../../(summary)/actions/getResponses'
+import { type GetUserResponseResponse } from '../actions/getUserResponse'
 import { queryKeys } from '@/lib/queryKeys'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'

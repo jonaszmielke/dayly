@@ -1,14 +1,8 @@
 'use client'
 
 import { useToday } from '@/hooks/useToday'
-import {
-    addMonths,
-    DOW_ABBREVIATIONS,
-    formatDateLong,
-    type GridCell,
-    monthGrid,
-    monthName,
-} from '@/lib/dates'
+import { type GridCell, monthGrid } from '@/lib/calendar'
+import { addMonths, DOW_ABBREVIATIONS, formatDateLong, monthName } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 

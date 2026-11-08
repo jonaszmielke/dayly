@@ -1,5 +1,5 @@
-import { getMeeting } from '../_actions/getMeeting'
-import { SummaryPageClient } from './_components/SummaryPageClient'
+import { getMeeting } from '../actions/getMeeting'
+import { SummaryPageClient } from './components/SummaryPageClient'
 import { type Metadata } from 'next'
 
 export const generateMetadata = async ({

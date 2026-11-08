@@ -1,7 +1,7 @@
 'use client'
 
-import { saveResponse } from '../_actions/saveResponse'
-import { getSaveState, SAVE_LABELS } from '../_components/saveState'
+import { saveResponse } from '../actions/saveResponse'
+import { getSaveState, SAVE_LABELS } from '../components/saveState'
 import { useActionMutation } from '@/hooks/useActionMutation'
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard'
 import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from 'react'
