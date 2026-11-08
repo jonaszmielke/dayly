@@ -7,12 +7,15 @@ import { useCalendarSelectLogic } from '../hooks/useCalendarSelectLogic'
 import { useUpdateResponsesCache } from '../hooks/useUpdateResponsesCache'
 import { useUserResponse } from '../hooks/useUserResponse'
 import { MobileActionBar } from './MobileActionBar'
-import { MonthGrid } from '@/components/calendar/MonthGrid'
+import { NamePanel } from './NamePanel'
+import { QuickPicks } from './QuickPicks'
+import { RespondMonthGrids } from './RespondMonthGrids'
+import { getSaveState, SAVE_LABELS } from './saveState'
+import { getDaysStatRows } from './statRows'
 import { MonthGridSkeleton } from '@/components/calendar/MonthGridSkeleton'
-import { RespondCell } from '@/components/calendar/RespondCell'
 import { StatCard } from '@/components/StatCard'
 import { useActionMutation } from '@/hooks/useActionMutation'
-import { formatDate, getDisplayMonths, ymd } from '@/lib/dates'
+import { getDisplayMonths, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -132,108 +135,27 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
         return () => window.removeEventListener('popstate', onPopState)
     }, [isDirty])
 
-    const statRows = [
-        { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },
-        { label: 'Mode', value: meeting.mode },
-        ...(meeting.deadline
-            ? [{ label: 'Respond by', value: formatDate(ymd(meeting.deadline)) }]
-            : []),
-    ]
+    const statRows = getDaysStatRows(meeting)
+    const saveState = getSaveState(saveMutation)
+    const saveLabel = SAVE_LABELS[saveState]
 
-    const saveState = saveMutation.isPending
-        ? 'pending'
-        : saveMutation.isSuccess
-          ? 'success'
-          : 'idle'
-
-    const saveLabel =
-        saveState === 'pending' ? 'SAVING…' : saveState === 'success' ? '✓ SAVED' : 'SAVE'
-
-    const namePanel = (
-        <div className="bg-white border-brutal shadow-brutal">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
-                <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
-                    {editOriginalName
-                        ? name === editOriginalName
-                            ? 'Keeping the same name'
-                            : 'Changing name'
-                        : 'Your Name'}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-mocha">
-                    Required
-                </span>
-            </div>
-            <div className="p-3">
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
-                    placeholder="YOUR NAME"
-                    autoFocus
-                    minLength={3}
-                    maxLength={32}
-                    className={cn(
-                        'w-full bg-paper border-thin px-3 py-3',
-                        'font-sans text-[22px] font-bold uppercase',
-                        'placeholder:text-ink/30 text-ink',
-                        'outline-none focus:bg-white'
-                    )}
-                    style={{ caretColor: '#7E6038' }}
-                />
-            </div>
-        </div>
-    )
-
-    const quickPicks = (
-        <div className="bg-white border-brutal shadow-brutal-sm p-3">
-            <div className="font-mono text-[11px] uppercase tracking-widest text-mocha/70 mb-2">
-                Quick Picks
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-                <button
-                    onClick={() => handleQuickPick('weekends')}
-                    className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
-                >
-                    Weekends
-                </button>
-                <button
-                    onClick={() => handleQuickPick('weekdays')}
-                    className="py-1.5 bg-paper border-thin font-mono text-[11px] uppercase tracking-[0.06em] hover:bg-mocha hover:text-paper-2 hover:border-mocha transition-colors"
-                >
-                    Weekdays
-                </button>
-            </div>
-        </div>
-    )
-
-    const monthGrids = displayMonths.map(({ year, month }) => (
-        <MonthGrid
-            key={`${year}-${month}`}
-            year={year}
-            month={month}
-            rangeStart={rangeStart}
-            rangeEnd={rangeEnd}
-            cellAspectClassName="aspect-square lg:aspect-[140/100]"
-            cellRenderer={(cell, inRange) => (
-                <RespondCell
-                    cell={cell}
-                    inRange={inRange}
-                    selected={selected.has(cell.date)}
-                    isHovered={hoveredDate === cell.date}
-                    onPointerDown={handlePointerDown}
-                    onPointerEnter={handlePointerEnter}
-                    onPointerLeave={handlePointerLeave}
-                />
-            )}
-        />
-    ))
+    const monthGridsProps = {
+        displayMonths,
+        rangeStart,
+        rangeEnd,
+        selected,
+        hoveredDate,
+        onPointerDown: handlePointerDown,
+        onPointerEnter: handlePointerEnter,
+        onPointerLeave: handlePointerLeave,
+    }
 
     if (editOriginalName && isUserResponseLoading) {
         return (
             <>
                 <MeetingHeader meeting={meeting} />
                 <div className="flex flex-col gap-4 px-4 py-6 lg:py-8">
-                    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+                    <div className="mx-auto flex w-full max-w-225 flex-col gap-4">
                         {displayMonths.map(({ year, month }) => (
                             <MonthGridSkeleton
                                 key={`${year}-${month}`}
@@ -255,7 +177,7 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
             <MeetingHeader meeting={meeting} />
 
             {/* ── Mobile layout ── */}
-            <div className="flex flex-col gap-4 px-4 py-6 pb-[130px] lg:hidden">
+            <div className="flex flex-col gap-4 px-4 py-6 pb-32.5 lg:hidden">
                 {/* Banner */}
                 <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 px-3 py-3">
                     <div className="bg-mocha text-paper-2 px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] shrink-0">
@@ -273,9 +195,9 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
                     </div>
                 </div>
 
-                {namePanel}
-                {quickPicks}
-                {monthGrids}
+                <NamePanel name={name} onNameChange={setName} editOriginalName={editOriginalName} />
+                <QuickPicks onPick={handleQuickPick} />
+                <RespondMonthGrids {...monthGridsProps} />
 
                 {/* Mobile help + stat */}
                 <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
@@ -290,8 +212,12 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
                     <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
                         {/* Sidebar */}
                         <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                            {namePanel}
-                            {quickPicks}
+                            <NamePanel
+                                name={name}
+                                onNameChange={setName}
+                                editOriginalName={editOriginalName}
+                            />
+                            <QuickPicks onPick={handleQuickPick} />
                             <StatCard rows={statRows} />
 
                             {/* Counter */}
@@ -361,7 +287,7 @@ export const RespondDaysClient = ({ meeting }: { meeting: MeetingCleanDays }) =>
                                 </div>
                                 <span className="font-mono text-[20px] text-ink/30">↗</span>
                             </div>
-                            {monthGrids}
+                            <RespondMonthGrids {...monthGridsProps} />
                         </main>
                     </div>
                 </div>

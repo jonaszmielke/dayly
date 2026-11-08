@@ -1,5 +1,6 @@
 'use client'
 
+import type { SaveState } from './saveState'
 import { cn } from '@/lib/utils'
 
 type MobileActionBarProps = {
@@ -9,7 +10,7 @@ type MobileActionBarProps = {
     saveLabel: string
     canReset: boolean
     canSave: boolean
-    saveState: 'idle' | 'pending' | 'success'
+    saveState: SaveState
     countLabel?: string
 }
 

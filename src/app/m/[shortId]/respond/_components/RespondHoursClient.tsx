@@ -7,12 +7,14 @@ import { useHourSelectLogic } from '../hooks/useHourSelectLogic'
 import { useUpdateHoursResponseCache } from '../hooks/useUpdateHoursResponseCache'
 import { useUserResponse } from '../hooks/useUserResponse'
 import { MobileActionBar } from './MobileActionBar'
-import { HourGrid } from '@/components/calendar/HourGrid'
+import { NamePanel } from './NamePanel'
+import { RespondHourGrids } from './RespondHourGrids'
+import { getSaveState, SAVE_LABELS } from './saveState'
+import { getHoursStatRows } from './statRows'
 import { HourGridSkeleton } from '@/components/calendar/HourGridSkeleton'
-import { RespondHourCell } from '@/components/calendar/RespondHourCell'
 import { StatCard } from '@/components/StatCard'
 import { useActionMutation } from '@/hooks/useActionMutation'
-import { formatDate, formatHour, getDisplayWeeks, slotKey, slotKeyFromUtc, ymd } from '@/lib/dates'
+import { getDisplayWeeks, slotKeyFromUtc, ymd } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -139,80 +141,21 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
         return () => window.removeEventListener('popstate', onPopState)
     }, [isDirty])
 
-    const statRows = [
-        { label: 'Range', value: `${formatDate(rangeStart)} — ${formatDate(rangeEnd)}` },
-        { label: 'Window', value: `${formatHour(startHour)} — ${formatHour(endHour)}` },
-        { label: 'Hours / day', value: String(hours.length) },
-        ...(meeting.deadline
-            ? [{ label: 'Respond by', value: formatDate(ymd(meeting.deadline)) }]
-            : []),
-    ]
+    const statRows = getHoursStatRows(meeting, startHour, endHour)
+    const saveState = getSaveState(saveMutation)
+    const saveLabel = SAVE_LABELS[saveState]
 
-    const saveState = saveMutation.isPending
-        ? 'pending'
-        : saveMutation.isSuccess
-          ? 'success'
-          : 'idle'
-
-    const saveLabel =
-        saveState === 'pending' ? 'SAVING…' : saveState === 'success' ? '✓ SAVED' : 'SAVE'
-
-    const namePanel = (
-        <div className="bg-white border-brutal shadow-brutal">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ink/20">
-                <span className="font-sans text-[13px] font-bold uppercase tracking-[0.08em]">
-                    {editOriginalName
-                        ? name === editOriginalName
-                            ? 'Keeping the same name'
-                            : 'Changing name'
-                        : 'Your Name'}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-mocha">
-                    Required
-                </span>
-            </div>
-            <div className="p-3">
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 32))}
-                    placeholder="YOUR NAME"
-                    autoFocus
-                    minLength={3}
-                    maxLength={32}
-                    className={cn(
-                        'w-full bg-paper border-thin px-3 py-3',
-                        'font-sans text-[22px] font-bold uppercase',
-                        'placeholder:text-ink/30 text-ink',
-                        'outline-none focus:bg-white'
-                    )}
-                    style={{ caretColor: '#7E6038' }}
-                />
-            </div>
-        </div>
-    )
-
-    const hourGrids = weeks.map((week) => (
-        <HourGrid
-            key={week[0].date}
-            week={week}
-            hours={hours}
-            onToggleDay={handleToggleDay}
-            onToggleHour={handleToggleHour}
-            cellRenderer={(date, hour, inRange) => (
-                <RespondHourCell
-                    date={date}
-                    hour={hour}
-                    inRange={inRange}
-                    selected={selected.has(slotKey(date, hour))}
-                    hovered={hoveredSlot === slotKey(date, hour)}
-                    onPointerDown={handlePointerDown}
-                    onPointerEnter={handlePointerEnter}
-                    onPointerLeave={handlePointerLeave}
-                />
-            )}
-        />
-    ))
+    const hourGridsProps = {
+        weeks,
+        hours,
+        selected,
+        hoveredSlot,
+        onToggleDay: handleToggleDay,
+        onToggleHour: handleToggleHour,
+        onPointerDown: handlePointerDown,
+        onPointerEnter: handlePointerEnter,
+        onPointerLeave: handlePointerLeave,
+    }
 
     if (editOriginalName && isUserResponseLoading) {
         return (
@@ -252,8 +195,8 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
                     </div>
                 </div>
 
-                {namePanel}
-                {hourGrids}
+                <NamePanel name={name} onNameChange={setName} editOriginalName={editOriginalName} />
+                <RespondHourGrids {...hourGridsProps} />
 
                 {/* Mobile help + stat */}
                 <div className="font-mono text-[10px] text-ink/45 space-y-0.5">
@@ -268,7 +211,11 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
                     <div className="grid grid-cols-[260px_minmax(0,1fr)] gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:gap-8">
                         {/* Sidebar */}
                         <aside className="flex flex-col gap-4 sticky top-6 self-start">
-                            {namePanel}
+                            <NamePanel
+                                name={name}
+                                onNameChange={setName}
+                                editOriginalName={editOriginalName}
+                            />
                             <StatCard rows={statRows} />
 
                             {/* Counter */}
@@ -339,7 +286,7 @@ export const RespondHoursClient = ({ meeting }: { meeting: MeetingCleanHours }) 
                                 </div>
                                 <span className="font-mono text-[20px] text-ink/30">↗</span>
                             </div>
-                            {hourGrids}
+                            <RespondHourGrids {...hourGridsProps} />
                         </main>
                     </div>
                 </div>

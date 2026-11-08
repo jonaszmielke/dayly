@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-type StatRow = {
+export type StatRow = {
     label: string
     value: string
 }
