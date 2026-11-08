@@ -71,7 +71,7 @@ const BestHoursBannerWithResponses = ({
                 ) : (
                     <>
                         <div className="font-sans text-[17px] lg:text-[22px] font-bold leading-tight">
-                            {formatDateMedium(best.day)} · {formatHour(best.startHour)}–
+                            {formatDateMedium(best.day)} · {formatHour(best.startHour)}-
                             {formatHour(best.endHour)}
                         </div>
                         <div className="font-mono text-[10px] lg:text-[11px] text-ink/60 mt-0.5">

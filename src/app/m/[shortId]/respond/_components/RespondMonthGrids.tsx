@@ -28,7 +28,7 @@ export const RespondMonthGrids = ({
             rangeStart={rangeStart}
             rangeEnd={rangeEnd}
             cellAspectClassName="aspect-square lg:aspect-[140/100]"
-            cellRenderer={(cell, inRange) => (
+            cellRenderer={({ cell, inRange }) => (
                 <RespondCell
                     cell={cell}
                     inRange={inRange}

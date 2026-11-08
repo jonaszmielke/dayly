@@ -31,7 +31,7 @@ export const HeroGrid = () => {
             rangeStart={monthStart}
             rangeEnd={monthEnd}
             cellAspectClassName="aspect-square lg:aspect-[140/100]"
-            cellRenderer={(cell, inRange) => (
+            cellRenderer={({ cell, inRange }) => (
                 <HeroCell
                     cell={cell}
                     inRange={inRange}

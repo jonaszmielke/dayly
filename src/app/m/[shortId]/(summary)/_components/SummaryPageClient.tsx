@@ -143,7 +143,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
                 rangeEnd={rangeEnd}
                 daysInRange={calcDaysInRange(year, month, rangeStart, rangeEnd)}
                 cellAspectClassName={mobile ? 'aspect-square' : 'aspect-[140/100]'}
-                cellRenderer={(cell, inRange) => (
+                cellRenderer={({ cell, inRange }) => (
                     <SummaryCell
                         cell={cell}
                         inRange={inRange}
@@ -167,7 +167,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
                 key={week[0].date}
                 week={week}
                 hours={hours}
-                cellRenderer={(date, hour, inRange) => {
+                cellRenderer={({ date, hour, inRange }) => {
                     const key = slotKey(date, hour)
                     return (
                         <SummaryHourCell

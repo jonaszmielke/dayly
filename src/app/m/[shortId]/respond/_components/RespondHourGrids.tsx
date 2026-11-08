@@ -32,7 +32,7 @@ export const RespondHourGrids = ({
             hours={hours}
             onToggleDay={onToggleDay}
             onToggleHour={onToggleHour}
-            cellRenderer={(date, hour, inRange) => (
+            cellRenderer={({ date, hour, inRange }) => (
                 <RespondHourCell
                     date={date}
                     hour={hour}

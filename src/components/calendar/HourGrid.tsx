@@ -4,12 +4,22 @@ import { MONTH_ABBREVIATIONS, type WeekCell, formatHour } from '@/lib/dates'
 import { cn } from '@/lib/utils'
 import { type ReactNode } from 'react'
 
+export type HourGridSlot = {
+    date: string
+    hour: number
+    inRange: boolean
+}
+
 type HourGridProps = {
     week: WeekCell[]
     hours: number[]
-    cellRenderer: (date: string, hour: number, inRange: boolean) => ReactNode
+    cellRenderer: (slot: HourGridSlot) => ReactNode
     onToggleDay?: (date: string) => void
     onToggleHour?: (hour: number, weekDates: string[]) => void
+    /** Greyed-out week label and day numbers, for loading skeletons. */
+    muted?: boolean
+    /** Hide from screen readers, e.g. for loading skeletons. */
+    ariaHidden?: boolean
 }
 
 const monthAbbr = (iso: string) => MONTH_ABBREVIATIONS[Number(iso.slice(5, 7)) - 1]
@@ -21,8 +31,8 @@ const weekLabel = (week: WeekCell[]): string => {
     const firstMon = monthAbbr(first.date)
     const lastMon = monthAbbr(last.date)
     return firstMon === lastMon
-        ? `${pad(first.dom)}–${pad(last.dom)} ${firstMon}`
-        : `${pad(first.dom)} ${firstMon} – ${pad(last.dom)} ${lastMon}`
+        ? `${pad(first.dom)}-${pad(last.dom)} ${firstMon}`
+        : `${pad(first.dom)} ${firstMon} - ${pad(last.dom)} ${lastMon}`
 }
 
 export const HourGrid = ({
@@ -31,15 +41,22 @@ export const HourGrid = ({
     cellRenderer,
     onToggleDay,
     onToggleHour,
+    muted,
+    ariaHidden,
 }: HourGridProps) => {
     const weekDates = week.filter((c) => c.inRange).map((c) => c.date)
     const gridTemplateColumns = '64px repeat(7, minmax(0, 1fr))'
 
     return (
-        <div className="bg-white border-brutal shadow-brutal">
+        <div className="bg-white border-brutal shadow-brutal" aria-hidden={ariaHidden}>
             {/* Week head */}
             <div className="flex items-baseline justify-between px-3 py-3 lg:px-5 lg:py-4 border-b-2 border-ink">
-                <span className="font-sans text-[20px] lg:text-[26px] font-extrabold leading-none tracking-[-0.03em]">
+                <span
+                    className={cn(
+                        'font-sans text-[20px] lg:text-[26px] font-extrabold leading-none tracking-[-0.03em]',
+                        muted && 'text-ink/30'
+                    )}
+                >
                     {weekLabel(week)}
                 </span>
                 <span className="font-mono text-[10px] lg:text-[11px] uppercase tracking-widest text-ink/55">
@@ -83,7 +100,12 @@ export const HourGrid = ({
                             <div className="font-mono text-[10px] lg:text-[11px] uppercase tracking-[0.04em] text-ink/55">
                                 {dowLabel}
                             </div>
-                            <div className="font-sans text-[12px] lg:text-[13px] font-bold text-ink">
+                            <div
+                                className={cn(
+                                    'font-sans text-[12px] lg:text-[13px] font-bold text-ink',
+                                    muted && 'text-ink/40'
+                                )}
+                            >
                                 {pad(c.dom)}
                             </div>
                         </>
@@ -95,6 +117,7 @@ export const HourGrid = ({
                     return onToggleDay ? (
                         <button
                             key={c.date}
+                            type="button"
                             onClick={() => onToggleDay(c.date)}
                             title={`Toggle all of ${c.dow}`}
                             className={cn(headClass, 'hover:bg-paper-3 transition-colors')}
@@ -119,6 +142,7 @@ export const HourGrid = ({
                         <div key={h} className="contents">
                             {onToggleHour ? (
                                 <button
+                                    type="button"
                                     onClick={() => onToggleHour(h, weekDates)}
                                     title={`Toggle ${formatHour(h)} across this week`}
                                     className={cn(labelClass, 'hover:bg-paper-3 transition-colors')}
@@ -139,7 +163,11 @@ export const HourGrid = ({
                                             !lastRow && 'border-b-[1.5px]'
                                         )}
                                     >
-                                        {cellRenderer(c.date, h, c.inRange)}
+                                        {cellRenderer({
+                                            date: c.date,
+                                            hour: h,
+                                            inRange: c.inRange,
+                                        })}
                                     </div>
                                 )
                             })}
