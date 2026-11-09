@@ -2,7 +2,7 @@
 
 import { type MeetingClean } from '../types'
 import { CopyButton } from '@/components/CopyButton'
-import { TopBar } from '@/components/TopBar'
+import { TopBar } from '@/components/topbar/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
 import { MONTH_ABBREVIATIONS } from '@/lib/dates'
 import { appShortUrl, appUrl } from '@/lib/utils'
