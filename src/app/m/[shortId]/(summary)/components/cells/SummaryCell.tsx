@@ -64,7 +64,7 @@ export const SummaryCell = ({
                 type="button"
                 aria-label={getSlotAriaLabel(formatDateLong(cell.date), stats)}
                 aria-pressed={isSelected}
-                className="relative flex flex-col justify-between p-1.5 w-full h-full text-left cursor-pointer transition-all"
+                className="relative flex flex-col justify-between p-1.5 w-full h-full text-left cursor-pointer transition-[background-color,color,box-shadow]"
                 style={{
                     backgroundColor: stats.heat,
                     color: stats.fg,

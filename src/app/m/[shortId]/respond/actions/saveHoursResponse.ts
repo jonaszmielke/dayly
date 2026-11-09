@@ -1,5 +1,3 @@
-'use server'
-
 import type { SaveResponseResult, SaveSubactionArgs } from '../../types'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'

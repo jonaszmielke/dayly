@@ -120,7 +120,7 @@ const getCellState = ({ disabled, endpoint, inRange, inMonth }: CellFlags): Cell
 }
 
 const CELL_BASE_CLASSES =
-    'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink transition-all'
+    'relative flex items-center justify-center h-14 font-mono text-[13px] cursor-pointer select-none border border-ink transition-[background-color,color,box-shadow]'
 
 const CELL_STATE_CLASSES: Record<CellState, string> = {
     disabled: 'bg-hatch-light cursor-not-allowed text-ink/30',

@@ -29,7 +29,7 @@ export const HeroCell = ({ cell, freeCount, totalCount }: HeroCellProps) => {
     return (
         <div
             className={cn(
-                'relative flex flex-col justify-between p-1.5 transition-all',
+                'relative flex flex-col justify-between p-1.5 transition-[background-color,color,box-shadow]',
                 'hover:shadow-[inset_0_0_0_3px_#161514]'
             )}
             style={{

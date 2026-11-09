@@ -14,7 +14,7 @@ export const SmallHeader = () => {
                 <div />
                 <Link
                     href="/new"
-                    className="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 bg-ink text-paper-2 border-2 border-ink font-sans text-[13px] font-extrabold uppercase tracking-[0.06em] press-effect transition-all"
+                    className="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 bg-ink text-paper-2 border-2 border-ink font-sans text-[13px] font-extrabold uppercase tracking-[0.06em] press-effect"
                     style={{ boxShadow: '3px 3px 0 #7e6038' }}
                 >
                     Start a survey →

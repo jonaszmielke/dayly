@@ -186,7 +186,7 @@ const DesktopActions = ({ form, onReset }: { form: RespondForm; onReset: () => v
                 type="button"
                 onClick={form.handleSave}
                 disabled={!form.canSave}
-                className={cn(ACTION_BUTTON_CLASSES, 'transition-all', saveStateClasses)}
+                className={cn(ACTION_BUTTON_CLASSES, saveStateClasses)}
             >
                 {form.saveLabel}
             </button>

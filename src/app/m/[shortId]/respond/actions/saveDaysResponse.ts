@@ -1,5 +1,3 @@
-'use server'
-
 import type { SaveResponseResult, SaveSubactionArgs } from '../../types'
 import { convertToUtc } from '@/lib/dates'
 import { prisma } from '@/lib/prisma'

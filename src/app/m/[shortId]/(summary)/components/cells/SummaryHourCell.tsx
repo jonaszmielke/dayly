@@ -64,7 +64,7 @@ export const SummaryHourCell = ({
                 type="button"
                 aria-label={getSlotAriaLabel(heading, stats)}
                 aria-pressed={isSelected}
-                className="relative flex items-center justify-center w-full h-full cursor-pointer transition-all"
+                className="relative flex items-center justify-center w-full h-full cursor-pointer transition-[background-color,color,box-shadow]"
                 style={{
                     backgroundColor: stats.heat,
                     color: stats.fg,

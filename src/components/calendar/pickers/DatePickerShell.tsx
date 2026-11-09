@@ -41,7 +41,7 @@ export const DatePickerShell = ({
         open={open}
         onOpenChange={onOpenChange}
         triggerClassName={cn(
-            'w-full text-left border-brutal shadow-brutal bg-white transition-all',
+            'w-full text-left border-brutal shadow-brutal bg-white transition-[background-color,box-shadow]',
             open && 'bg-paper shadow-brutal-mocha'
         )}
         triggerStyle={{ padding: '18px 48px 18px 16px' }}

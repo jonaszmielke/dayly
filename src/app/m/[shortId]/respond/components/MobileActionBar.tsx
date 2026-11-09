@@ -56,7 +56,7 @@ export const MobileActionBar = ({
                 onClick={onSave}
                 disabled={!canSave}
                 className={cn(
-                    'h-full px-7 md:px-10 md:text-[14px] border-brutal font-sans text-[12px] font-bold uppercase tracking-[0.06em] press-effect-mocha transition-all',
+                    'h-full px-7 md:px-10 md:text-[14px] border-brutal font-sans text-[12px] font-bold uppercase tracking-[0.06em] press-effect-mocha transition-[transform,box-shadow,background-color,opacity]',
                     saveState === 'success'
                         ? 'bg-mocha-dark text-paper-2 shadow-brutal-sm'
                         : 'bg-mocha text-paper-2 shadow-brutal-sm disabled:opacity-40 disabled:cursor-not-allowed'

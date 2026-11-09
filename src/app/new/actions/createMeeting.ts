@@ -69,6 +69,8 @@ type CreateMeetingResultError = {
     message: string
 }
 
+// Public by design: no accounts, anyone can create a survey.
+// eslint-disable-next-line react-doctor/server-auth-actions
 export const createMeeting = async (
     props: CreateMeetingProps
 ): Promise<CreateMeetingResultSuccess | CreateMeetingResultError> => {

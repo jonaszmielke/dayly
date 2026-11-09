@@ -34,7 +34,7 @@ export const RespondCell = ({
         <div
             data-iso={cell.date}
             className={cn(
-                'relative flex flex-col justify-between p-1.5 cursor-pointer select-none transition-all',
+                'relative flex flex-col justify-between p-1.5 cursor-pointer select-none transition-colors',
                 selected ? 'bg-mocha text-paper-2' : 'bg-white text-ink',
                 !selected && 'hover:bg-paper-3'
             )}

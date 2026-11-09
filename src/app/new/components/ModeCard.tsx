@@ -39,7 +39,7 @@ export const ModeCard = ({
         onClick={onClick}
         disabled={disabled}
         className={cn(
-            'grid items-start text-left p-4 border-brutal transition-all',
+            'grid items-start text-left p-4 border-brutal transition-[background-color,color,box-shadow,opacity]',
             'grid-cols-[24px_1fr] lg:grid-cols-[24px_1fr_auto]',
             CARD_STATE_CLASSES[getCardState(active, disabled)]
         )}

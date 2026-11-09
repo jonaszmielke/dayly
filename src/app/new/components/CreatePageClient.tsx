@@ -250,7 +250,7 @@ const CreatePageClient = () => {
                             title="Timezone"
                             hint={timezone === detectedTimeZone ? 'AUTO-DETECTED' : 'CUSTOM'}
                         >
-                            <div className="relative border-brutal shadow-brutal bg-white transition-all">
+                            <div className="relative border-brutal shadow-brutal bg-white">
                                 <select
                                     value={timezone}
                                     onChange={(e) => setPickedTimezone(e.target.value)}
@@ -295,7 +295,7 @@ const CreatePageClient = () => {
                         className={cn(
                             'w-full py-5 border-brutal shadow-brutal',
                             'font-sans text-[22px] font-bold uppercase tracking-[0.04em]',
-                            'transition-all press-effect-mocha',
+                            'transition-[transform,box-shadow,background-color,color] press-effect-mocha',
                             canSubmit
                                 ? 'bg-mocha text-paper-2 hover:bg-mocha-dark'
                                 : 'bg-paper-2 text-ink/30 cursor-not-allowed'
