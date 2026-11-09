@@ -14,7 +14,7 @@ import { SummaryMobileDrawer } from './SummaryMobileDrawer'
 import { WhosInPanel } from './WhosInPanel'
 import { StatCard } from '@/components/StatCard'
 import { MeetingMode } from '@/generated/prisma/enums'
-import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
+import { MEDIA_QUERIES, useMediaQuery } from '@/hooks/useMediaQuery'
 import { computeBest, computeBestHours } from '@/lib/best'
 import { getDisplayMonths, getDisplayWeeks } from '@/lib/calendar'
 import { dateRange, formatDate, formatDateMedium, ymd } from '@/lib/dates'
@@ -27,7 +27,7 @@ export const SummaryPageClient = ({ meeting }: { meeting: MeetingClean }) => {
     const [hoveredDate, setHoveredDate] = useState<string | null>(null)
     const [selectedDate, setSelectedDate] = useState<string | null>(null)
     const [burgerOpen, setBurgerOpen] = useState(false)
-    const isTouch = useIsTouchDevice()
+    const isTouch = useMediaQuery(MEDIA_QUERIES.touch)
 
     const hoursMeta = meeting.mode === MeetingMode.HOURS ? meeting : null
     const isHours = hoursMeta !== null

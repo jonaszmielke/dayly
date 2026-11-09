@@ -10,12 +10,13 @@ import { StatCard } from '@/components/StatCard'
 import { TopBar } from '@/components/TopBar'
 import { MeetingMode } from '@/generated/prisma/enums'
 import { useActionMutation } from '@/hooks/useActionMutation'
+import { useDetectedTimezone } from '@/hooks/useDetectedTimezone'
 import { useToday } from '@/hooks/useToday'
 import { MAX_DAY_MODE_LENGTH_DAYS, MAX_HOUR_MODE_LENGTH_DAYS } from '@/lib/config'
 import { daysBetweenInclusive, formatDate } from '@/lib/dates'
 import { formatHour, timezones } from '@/lib/slots'
 import { appShortUrl, cn } from '@/lib/utils'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 // Highlighted squares in each mode card's 7×2 preview glyph.
@@ -26,7 +27,9 @@ const MAX_NAME = 48
 
 const CreatePageClient = () => {
     // null until hydration; the pickers can't be opened before that anyway.
+    const router = useRouter()
     const today = useToday()
+
     const [name, setName] = useState<string>('')
     const [mode, setMode] = useState<MeetingMode>(MeetingMode.DAYS)
     const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({
@@ -36,19 +39,12 @@ const CreatePageClient = () => {
     const [deadline, setDeadline] = useState<string | null>(null)
     const [startHour, setStartHour] = useState(8)
     const [endHour, setEndHour] = useState(16)
-    const [timezone, setTimezone] = useState<string>('UTC')
-    const [detectedTimeZone, setDetectedTimeZone] = useState<string>('UTC')
-    const router = useRouter()
+
+    const detectedTimeZone = useDetectedTimezone()
+    const [pickedTimezone, setPickedTimezone] = useState<string | null>(null)
+    const timezone = pickedTimezone ?? detectedTimeZone
 
     const sortedTimezones = useMemo(() => [...timezones].sort(), [])
-
-    useEffect(() => {
-        const detected = Intl.DateTimeFormat().resolvedOptions().timeZone
-        if (timezones.has(detected)) {
-            setTimezone(detected)
-            setDetectedTimeZone(detected)
-        }
-    }, [])
 
     const createMeetingMutation = useActionMutation({
         mutationFn: (props: CreateMeetingProps) => createMeeting(props),
@@ -142,7 +138,7 @@ const CreatePageClient = () => {
             />
 
             <div className="flex-1 flex justify-center px-6 py-10">
-                <div className="w-full max-w-[760px] flex flex-col gap-9">
+                <div className="w-full max-w-190 flex flex-col gap-9">
                     {/* Section 1: Name */}
                     <CreateSection
                         number="01"
@@ -159,7 +155,7 @@ const CreatePageClient = () => {
                                 placeholder="NAME YOUR MEETING"
                                 maxLength={MAX_NAME}
                                 className={cn(
-                                    'w-full bg-white border-brutal shadow-brutal px-4 py-[18px] pr-20',
+                                    'w-full bg-white border-brutal shadow-brutal px-4 py-4.5 pr-20',
                                     'font-sans text-[18px] sm:text-[28px] font-bold uppercase',
                                     'placeholder:text-ink/30 text-ink',
                                     'outline-none focus:shadow-brutal-mocha',
@@ -257,7 +253,7 @@ const CreatePageClient = () => {
                             <div className="relative border-brutal shadow-brutal bg-white transition-all">
                                 <select
                                     value={timezone}
-                                    onChange={(e) => setTimezone(e.target.value)}
+                                    onChange={(e) => setPickedTimezone(e.target.value)}
                                     className="w-full appearance-none bg-transparent font-sans font-bold text-[22px] uppercase text-ink outline-none cursor-pointer"
                                     style={{ padding: '18px 48px 18px 16px' }}
                                 >

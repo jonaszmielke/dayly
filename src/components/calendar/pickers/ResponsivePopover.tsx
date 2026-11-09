@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { useIsMobile } from '@/hooks/useIsMobile'
+import { MEDIA_QUERIES, useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import { Popover } from '@base-ui/react/popover'
 import { type CSSProperties, type ReactNode } from 'react'
@@ -28,7 +28,7 @@ export const ResponsivePopover = ({
     subtext,
     children,
 }: ResponsivePopoverProps) => {
-    const isMobile = useIsMobile()
+    const isMobile = useMediaQuery(MEDIA_QUERIES.mobile)
 
     if (isMobile) {
         return (

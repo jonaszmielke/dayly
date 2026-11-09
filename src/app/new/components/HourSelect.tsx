@@ -1,4 +1,4 @@
-import { useIsMobile } from '@/hooks/useIsMobile'
+import { MEDIA_QUERIES, useMediaQuery } from '@/hooks/useMediaQuery'
 import { formatHour } from '@/lib/slots'
 
 type HourSelectProps = {
@@ -9,7 +9,7 @@ type HourSelectProps = {
 }
 
 export const HourSelect = ({ label, value, onChange, fromHour }: HourSelectProps) => {
-    const isMobile = useIsMobile()
+    const isMobile = useMediaQuery(MEDIA_QUERIES.mobile)
     const hourArrayLength = fromHour ? 24 - fromHour : 24
 
     return (

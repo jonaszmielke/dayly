@@ -4,7 +4,7 @@ import { saveResponse } from '../actions/saveResponse'
 import { getSaveState, SAVE_LABELS } from '../components/saveState'
 import { useActionMutation } from '@/hooks/useActionMutation'
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard'
-import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from 'react'
+import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const REDIRECT_DELAY_MS = 600
@@ -33,16 +33,15 @@ export const useRespondForm = ({
     onSaved,
 }: UseRespondFormOptions) => {
     const router = useRouter()
-    const [name, setName] = useState('')
-    const [editInitialized, setEditInitialized] = useState(false)
+    const [name, setName] = useState<string>('')
+    const [editInitialized, setEditInitialized] = useState<boolean>(false)
     const isEdit = !!editOriginalName
 
-    useEffect(() => {
-        if (!editOriginalName || isOriginalLoading || !originalKeys) return
+    if (!editInitialized && editOriginalName && !isOriginalLoading && originalKeys) {
+        setEditInitialized(true)
         setName(editOriginalName)
         setSelected(new Set(originalKeys))
-        setEditInitialized(true)
-    }, [originalKeys, editOriginalName, isOriginalLoading, setSelected])
+    }
 
     const saveMutation = useActionMutation({
         mutationFn: () =>
