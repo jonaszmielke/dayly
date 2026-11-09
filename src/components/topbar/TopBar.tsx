@@ -26,7 +26,7 @@ const desktopTitle = cva(
     {
         variants: {
             compact: {
-                true: 'text-[length:calc(var(--b-title)*0.75)]',
+                true: 'text-[calc(var(--b-title)*0.75)]',
                 false: 'text-(length:--b-title)',
             },
         },

@@ -33,7 +33,7 @@ export const MeetingHeader = ({
             className="flex items-center gap-2 px-3 py-2 bg-ink press-effect text-paper-2 font-sans text-[11px] font-bold uppercase tracking-[0.06em]"
             style={{ boxShadow: '3px 3px 0 #C5AC6A' }}
         >
-            <span className="inline-flex items-center justify-center w-3.5 h-3.5 border border-paper-2 font-mono text-[10px] leading-none">
+            <span className="inline-flex items-center justify-center size-3.5  border border-paper-2 font-mono text-[10px] leading-none">
                 +
             </span>
             ADD RESPONSE

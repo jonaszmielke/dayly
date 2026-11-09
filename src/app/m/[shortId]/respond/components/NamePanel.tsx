@@ -50,7 +50,7 @@ export const NamePanel = ({ name, onNameChange, editOriginalName }: NamePanelPro
                     minLength={3}
                     maxLength={MAX_NAME_LENGTH}
                     className={cn(
-                        'w-full bg-paper border-thin px-3 py-3',
+                        'w-full bg-paper border-thin p-3 ',
                         'font-sans text-[22px] font-bold uppercase',
                         'placeholder:text-ink/30 text-ink',
                         'outline-none focus:bg-white'

@@ -5,7 +5,7 @@ export const SmallHeader = () => {
     return (
         <nav className="sticky top-0 bg-paper border-b-2 border-ink z-50">
             <div
-                className="max-w-[1440px] mx-auto px-4 lg:px-10 py-3 lg:py-3.5 grid items-center gap-4 lg:gap-8"
+                className="max-w-360 mx-auto px-4 lg:px-10 py-3 lg:py-3.5 grid items-center gap-4 lg:gap-8"
                 style={{ gridTemplateColumns: 'auto 1fr auto' }}
             >
                 <Link href="/">

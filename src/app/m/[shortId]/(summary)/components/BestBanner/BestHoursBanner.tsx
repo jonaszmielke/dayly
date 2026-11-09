@@ -26,7 +26,7 @@ export const BestHoursBanner = ({
 
     return (
         <div
-            className="bg-white border-brutal flex items-center gap-3 lg:gap-4 px-3 lg:px-5 py-3 lg:py-4"
+            className="bg-white border-brutal flex items-center gap-3 lg:gap-4 p-3 lg:px-5  lg:py-4"
             style={{ boxShadow: 'var(--b-shadow-sm) #C5AC6A' }}
         >
             {hasResponses ? (

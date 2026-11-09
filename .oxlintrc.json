@@ -1,6 +1,15 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
     "plugins": ["typescript", "react", "nextjs", "jsx-a11y", "import", "unicorn", "oxc"],
+    // ESLint-compatible plugins run through oxlint's JS plugin support
+    "jsPlugins": ["eslint-plugin-better-tailwindcss"],
+    "settings": {
+        "better-tailwindcss": {
+            "entryPoint": "src/app/globals.css",
+            // lets px arbitrary values map to the spacing scale (e.g. px-[10px] → px-2.5)
+            "rootFontSize": 16
+        }
+    },
     "categories": {
         "correctness": "error"
     },
@@ -33,6 +42,9 @@
         "typescript/prefer-as-const": "error",
         "typescript/triple-slash-reference": "error",
         "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
+
+        // Tailwind: same check as the editor's suggestCanonicalClasses
+        "better-tailwindcss/enforce-canonical-classes": "warn",
 
         // Project overrides
         "eslint/curly": "off",

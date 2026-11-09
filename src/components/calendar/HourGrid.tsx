@@ -52,7 +52,7 @@ export const HourGrid = ({
     return (
         <div className="bg-white border-brutal shadow-brutal" aria-hidden={ariaHidden}>
             {/* Week head */}
-            <div className="flex items-baseline justify-between px-3 py-3 lg:px-5 lg:py-4 border-b-2 border-ink">
+            <div className="flex items-baseline justify-between p-3  lg:px-5 lg:py-4 border-b-2 border-ink">
                 <span
                     className={cn(
                         'font-sans text-[20px] lg:text-[26px] font-extrabold leading-none tracking-[-0.03em]',
@@ -160,7 +160,7 @@ export const HourGrid = ({
                                     <div
                                         key={c.date}
                                         className={cn(
-                                            'min-h-[40px] lg:min-h-[44px] border-ink',
+                                            'min-h-10 lg:min-h-11 border-ink',
                                             !lastCol && 'border-r-[1.5px]',
                                             !lastRow && 'border-b-[1.5px]'
                                         )}

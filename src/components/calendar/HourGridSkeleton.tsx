@@ -22,7 +22,7 @@ const SkeletonSlot = ({ inRange }: { inRange: boolean }) => {
 
     return (
         <div className="flex h-full items-center justify-center p-1.5">
-            <div className="h-full w-full bg-ink/10 animate-pulse" />
+            <div className="size-full  bg-ink/10 animate-pulse" />
         </div>
     )
 }

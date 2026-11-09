@@ -17,7 +17,7 @@ export const HeatLegend = ({ total, className, isLoading = false }: HeatLegendPr
                 {HEAT_PALETTE.map((color, i) => (
                     <div
                         key={color}
-                        className="h-[30px] flex items-center justify-center font-mono text-[11px] font-semibold border-r-[1.5px] border-ink last:border-r-0"
+                        className="h-7.5 flex items-center justify-center font-mono text-[11px] font-semibold border-r-[1.5px] border-ink last:border-r-0"
                         style={{ backgroundColor: color, color: pickFg(color) }}
                     >
                         {i}
@@ -28,7 +28,7 @@ export const HeatLegend = ({ total, className, isLoading = false }: HeatLegendPr
                 <span className="font-mono text-[9.5px] tracking-[0.06em] text-ink/55">0 FREE</span>
                 <span className="font-mono text-[9.5px] tracking-[0.06em] text-ink/55">
                     {isLoading ? (
-                        <span className="inline-block h-[8px] w-4 rounded-sm bg-ink/10 animate-pulse align-middle" />
+                        <span className="inline-block h-2 w-4 rounded-sm bg-ink/10 animate-pulse align-middle" />
                     ) : (
                         total
                     )}{' '}

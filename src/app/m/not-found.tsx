@@ -16,10 +16,10 @@ const MeetingNotFoundPage = () => (
     <div className="min-h-screen flex flex-col">
         <SmallHeader />
 
-        <section className="flex-1 max-w-[1440px] mx-auto w-full px-4 lg:px-10 py-10 lg:py-14">
+        <section className="flex-1 max-w-360 mx-auto w-full px-4 lg:px-10 py-10 lg:py-14">
             <Crumbs crumbs={NOT_FOUND_CRUMBS} className="mb-8 lg:mb-10" />
 
-            <div className="grid gap-10 lg:gap-24 grid-cols-1 lg:[grid-template-columns:minmax(0,560px)_minmax(0,1fr)]">
+            <div className="grid gap-10 lg:gap-24 grid-cols-1 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]">
                 <div className="flex flex-col gap-6">
                     <NotFoundIntro />
                     <RoomCodeCard />

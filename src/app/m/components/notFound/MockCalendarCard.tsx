@@ -19,7 +19,7 @@ export const MockCalendarCard = () => (
 
 const Tape = () => (
     <div
-        className="absolute -top-4 left-7 bg-ink text-paper font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] px-3 py-[6px] z-[2] whitespace-nowrap"
+        className="absolute -top-4 left-7 bg-ink text-paper font-mono text-[10.5px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5 z-2 whitespace-nowrap"
         style={{ transform: 'rotate(-2deg)', boxShadow: '3px 3px 0 #7e6038' }}
     >
         DAYLY · ROOM · not found
@@ -40,7 +40,7 @@ const NotFoundStamp = () => (
         <div className="font-sans text-[32px] lg:text-[44px] font-extrabold leading-[0.9] tracking-[0.04em]">
             404
         </div>
-        <div className="font-mono text-[10px] lg:text-[11px] font-semibold uppercase tracking-[0.24em] mt-[6px] text-paper/80">
+        <div className="font-mono text-[10px] lg:text-[11px] font-semibold uppercase tracking-[0.24em] mt-1.5 text-paper/80">
             NO SUCH ROOM
         </div>
     </div>

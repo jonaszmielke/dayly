@@ -13,11 +13,11 @@ export const RoomCodeCard = () => {
 
     return (
         <div
-            className="bg-white border-2 border-ink p-[18px] lg:p-[22px]"
+            className="bg-white border-2 border-ink p-4.5 lg:p-5.5"
             style={{ boxShadow: '6px 6px 0 #161514' }}
         >
-            <div className="mb-[14px] flex items-center gap-[10px]">
-                <span className="inline-flex items-center justify-center bg-ink text-paper-2 font-mono text-[11px] font-semibold tracking-[0.04em] px-2 py-[3px] leading-none">
+            <div className="mb-3.5 flex items-center gap-2.5">
+                <span className="inline-flex items-center justify-center bg-ink text-paper-2 font-mono text-[11px] font-semibold tracking-[0.04em] px-2 py-0.75 leading-none">
                     01
                 </span>
                 <label
@@ -30,7 +30,7 @@ export const RoomCodeCard = () => {
 
             <form
                 action={findRoom}
-                className="grid gap-[10px]"
+                className="grid gap-2.5"
                 style={{ gridTemplateColumns: '1fr auto' }}
             >
                 <input
@@ -38,12 +38,12 @@ export const RoomCodeCard = () => {
                     type="text"
                     name="code"
                     placeholder="ROOM-CODE"
-                    className="bg-paper border-thin border-ink px-4 py-[14px] font-mono text-[18px] lg:text-[20px] font-semibold uppercase tracking-[0.16em] placeholder:text-ink/35 placeholder:font-medium outline-none focus:bg-white min-w-0"
+                    className="bg-paper border-thin border-ink px-4 py-3.5 font-mono text-[18px] lg:text-[20px] font-semibold uppercase tracking-[0.16em] placeholder:text-ink/35 placeholder:font-medium outline-none focus:bg-white min-w-0"
                     required
                 />
                 <button
                     type="submit"
-                    className="px-4 lg:px-[22px] bg-ink text-paper-2 border-thin border-ink shadow-brutal-sm press-effect font-sans text-[13px] lg:text-[14px] font-extrabold tracking-[0.08em] inline-flex items-center gap-2"
+                    className="px-4 lg:px-5.5 bg-ink text-paper-2 border-thin border-ink shadow-brutal-sm press-effect font-sans text-[13px] lg:text-[14px] font-extrabold tracking-[0.08em] inline-flex items-center gap-2"
                 >
                     <span>Find</span>
                     <span aria-hidden="true">→</span>

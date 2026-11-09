@@ -12,7 +12,7 @@ export const CreateSection = ({ number, title, titleId, hint, children }: Create
         <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:justify-between lg:gap-3">
                 <div className="flex items-center gap-3">
-                    <div className="bg-ink text-paper-2 w-7 h-7 flex items-center justify-center font-mono text-[12px]">
+                    <div className="bg-ink text-paper-2 size-7  flex items-center justify-center font-mono text-[12px]">
                         {number}
                     </div>
                     <h2 id={titleId} className="font-sans text-[22px] font-bold">

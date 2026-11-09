@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 }
 
 const PrivacyPage = () => (
-    <main className="max-w-[720px] mx-auto px-4 lg:px-10 py-10 lg:py-16">
+    <main className="max-w-180 mx-auto px-4 lg:px-10 py-10 lg:py-16">
         <LegalTitle title="Privacy Policy" updatedAt="May 2026" />
 
         <div className="flex flex-col gap-6">

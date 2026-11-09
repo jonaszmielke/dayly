@@ -25,7 +25,7 @@ export const RespondHourCell = ({
     onPointerLeave,
 }: RespondHourCellProps) => {
     if (!inRange) {
-        return <div className="bg-hatch opacity-40 w-full h-full" />
+        return <div className="bg-hatch opacity-40 size-full " />
     }
 
     const key = slotKey(date, hour)
@@ -37,7 +37,7 @@ export const RespondHourCell = ({
             onPointerEnter={() => onPointerEnter(key)}
             onPointerLeave={onPointerLeave}
             className={cn(
-                'relative w-full h-full cursor-pointer select-none transition-colors',
+                'relative size-full  cursor-pointer select-none transition-colors',
                 selected ? 'bg-mocha' : 'bg-white hover:bg-paper-3'
             )}
             style={{ touchAction: 'none' }}

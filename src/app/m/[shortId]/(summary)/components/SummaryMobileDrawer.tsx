@@ -47,7 +47,7 @@ export const SummaryMobileDrawer = ({
             }}
         >
             <DrawerContent
-                className="lg:hidden bg-paper border-l-[2.5px] border-ink rounded-none sm:max-w-[420px] h-full overflow-y-auto p-4 gap-4"
+                className="lg:hidden bg-paper border-l-[2.5px] border-ink rounded-none sm:max-w-105 h-full overflow-y-auto p-4 gap-4"
                 aria-describedby={undefined}
             >
                 <DrawerTitle className="sr-only">Menu</DrawerTitle>
@@ -58,7 +58,7 @@ export const SummaryMobileDrawer = ({
                 <div className="flex justify-end">
                     <DrawerClose
                         aria-label="Close menu"
-                        className="flex items-center justify-center w-9 h-9 bg-white border-2 border-ink font-sans text-[20px] font-bold leading-none"
+                        className="flex items-center justify-center size-9  bg-white border-2 border-ink font-sans text-[20px] font-bold leading-none"
                         style={{ boxShadow: '3px 3px 0 #161514' }}
                     >
                         ×
@@ -77,7 +77,7 @@ export const SummaryMobileDrawer = ({
                         className="flex items-center justify-center gap-1.5 h-12 px-2 bg-ink text-paper-2 border-brutal font-sans text-[12px] font-bold uppercase tracking-[0.06em] whitespace-nowrap press-effect"
                         style={{ boxShadow: '4px 4px 0 #C5AC6A' }}
                     >
-                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 border border-paper-2 font-mono text-[10px] leading-none">
+                        <span className="inline-flex items-center justify-center size-3.5  border border-paper-2 font-mono text-[10px] leading-none">
                             +
                         </span>
                         ADD RESPONSE

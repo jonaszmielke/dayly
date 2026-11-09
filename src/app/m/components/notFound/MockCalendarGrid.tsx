@@ -21,7 +21,7 @@ const MockWeekdays = () => (
             <div
                 key={day}
                 className={cn(
-                    'px-1 lg:px-[10px] py-[7px] font-sans text-[9px] lg:text-[10.5px] font-semibold uppercase tracking-[0.08em] lg:tracking-[0.14em] text-ink/55',
+                    'px-1 lg:px-2.5 py-1.75 font-sans text-[9px] lg:text-[10.5px] font-semibold uppercase tracking-[0.08em] lg:tracking-[0.14em] text-ink/55',
                     !isLastColumn(index) && 'border-r-[1.5px] border-ink'
                 )}
             >
@@ -38,7 +38,7 @@ const MockDayCells = () => (
             <div
                 key={cellId}
                 className={cn(
-                    'bg-hatch h-[44px] lg:h-[74px] px-[6px] lg:px-[9px] py-[5px] lg:py-[7px] relative',
+                    'bg-hatch h-11 lg:h-18.5 px-1.5 lg:px-2.25 py-1.25 lg:py-1.75 relative',
                     !isLastColumn(cellId) && 'border-r-[1.5px] border-ink',
                     !isLastRow(cellId) && 'border-b-[1.5px] border-ink'
                 )}

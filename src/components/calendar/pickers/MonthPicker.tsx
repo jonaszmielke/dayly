@@ -45,11 +45,11 @@ export const MonthPicker = ({
     return (
         <div className="w-full">
             {/* Header */}
-            <div className="grid grid-cols-[auto_1fr_auto] items-center px-3.5 py-3.5 border-b-2 border-ink">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center p-3.5  border-b-2 border-ink">
                 <button
                     type="button"
                     onClick={prev}
-                    className="flex items-center justify-center w-9 h-9 border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
+                    className="flex items-center justify-center size-9  border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
                 >
                     &lt;
                 </button>
@@ -59,7 +59,7 @@ export const MonthPicker = ({
                 <button
                     type="button"
                     onClick={next}
-                    className="flex items-center justify-center w-9 h-9 border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
+                    className="flex items-center justify-center size-9  border-2 border-ink font-sans text-[14px] font-bold hover:bg-mocha hover:text-paper-2 transition-colors"
                 >
                     &gt;
                 </button>

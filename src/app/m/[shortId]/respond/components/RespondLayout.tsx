@@ -128,7 +128,7 @@ const MobileBanner = ({
     const heading = editOriginalName ? `Editing ${editOriginalName}'s response` : title
 
     return (
-        <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 px-3 py-3">
+        <div className="bg-white border-brutal shadow-brutal flex items-center gap-3 p-3 ">
             <div className={cn(BADGE_CLASSES, 'shrink-0')}>{badge}</div>
             <div className="flex-1 min-w-0">
                 <div className="font-sans text-[17px] font-bold leading-tight">{heading}</div>

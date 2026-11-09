@@ -52,7 +52,7 @@ export const SummaryHourCell = ({
     })
 
     if (!inRange) {
-        return <div className="bg-hatch opacity-40 w-full h-full" />
+        return <div className="bg-hatch opacity-40 size-full " />
     }
 
     const stats = getSlotStats(people, key, selectedPersonId)
@@ -64,7 +64,7 @@ export const SummaryHourCell = ({
                 type="button"
                 aria-label={getSlotAriaLabel(heading, stats)}
                 aria-pressed={isSelected}
-                className="relative flex items-center justify-center w-full h-full cursor-pointer transition-[background-color,color,box-shadow]"
+                className="relative flex items-center justify-center size-full  cursor-pointer transition-[background-color,color,box-shadow]"
                 style={{
                     backgroundColor: stats.heat,
                     color: stats.fg,

@@ -4,7 +4,7 @@ export const Wordmark = ({ className }: { className?: string }) => {
     return (
         <div
             className={cn(
-                'inline-flex items-baseline gap-[6px] px-3 py-[6px] bg-ink text-paper-2 shadow-brutal-mocha-sm select-none',
+                'inline-flex items-baseline gap-1.5 px-3 py-1.5 bg-ink text-paper-2 shadow-brutal-mocha-sm select-none',
                 className
             )}
         >

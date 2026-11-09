@@ -11,7 +11,7 @@ export const BestBannerNoResponses = ({ meetingShortId }: { meetingShortId: stri
             </div>
             <Link href={`/m/${meetingShortId}/respond`}>
                 <button className="inline-flex items-center gap-1.5 px-3 py-2 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-sm font-sans text-[12px] lg:text-[13px] font-bold uppercase tracking-[0.08em] press-effect-mocha shrink-0">
-                    <span className="inline-flex items-center justify-center w-4 h-4 border border-paper-2 font-mono text-[11px] leading-none">
+                    <span className="inline-flex items-center justify-center size-4  border border-paper-2 font-mono text-[11px] leading-none">
                         +
                     </span>
                     ADD RESPONSE

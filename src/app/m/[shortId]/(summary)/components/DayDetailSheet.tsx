@@ -23,7 +23,7 @@ export const DayDetailSheet = ({ iso, people, onClose, heading }: DayDetailSheet
 
     return (
         <div
-            className="fixed bottom-0 inset-x-0 z-40 mx-auto max-w-[430px] bg-white border-t-[2.5px] border-x-[2.5px] border-ink p-3"
+            className="fixed bottom-0 inset-x-0 z-40 mx-auto max-w-107.5 bg-white border-t-[2.5px] border-x-[2.5px] border-ink p-3"
             style={{
                 boxShadow: '0 -4px 0 -1px rgba(22,21,20,.08)',
                 paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',
@@ -41,7 +41,7 @@ export const DayDetailSheet = ({ iso, people, onClose, heading }: DayDetailSheet
                 </div>
                 <button
                     onClick={onClose}
-                    className="w-[30px] h-[30px] flex items-center justify-center bg-paper border-[1.5px] border-ink font-sans text-[20px] font-bold leading-none"
+                    className="size-7.5  flex items-center justify-center bg-paper border-[1.5px] border-ink font-sans text-[20px] font-bold leading-none"
                     aria-label="Close"
                 >
                     ×

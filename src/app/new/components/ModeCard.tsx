@@ -92,7 +92,7 @@ const ModeGlyph = ({ cells, active }: { cells: number[]; active: boolean }) => (
         {Array.from({ length: GLYPH_SIZE }, (_, i) => (
             <div
                 key={i}
-                className="w-[6px] h-[6px]"
+                className="size-1.5 "
                 style={{ backgroundColor: getDotColor(cells.includes(i), active) }}
             />
         ))}

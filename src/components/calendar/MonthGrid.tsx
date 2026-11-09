@@ -67,7 +67,7 @@ export const MonthGridFrame = ({
     ariaHidden,
 }: MonthGridFrameProps) => (
     <div className={cn('bg-white border-brutal shadow-brutal', className)} aria-hidden={ariaHidden}>
-        <div className="flex items-baseline justify-between px-3 py-3 lg:px-5 lg:py-4 border-b-2 border-ink">
+        <div className="flex items-baseline justify-between p-3  lg:px-5 lg:py-4 border-b-2 border-ink">
             {header}
         </div>
 

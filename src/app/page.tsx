@@ -10,7 +10,7 @@ const HomePage = () => {
                 <SmallHeader />
 
                 {/* Hero */}
-                <section className="max-w-[1440px] mx-auto w-full px-4 lg:px-10 py-8 lg:py-14">
+                <section className="max-w-360 mx-auto w-full px-4 lg:px-10 py-8 lg:py-14">
                     <div className="grid gap-8 lg:gap-12 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_420px] items-start">
                         {/* On mobile: copy block first, calendar second */}
                         {/* Right: copy */}
@@ -26,7 +26,7 @@ const HomePage = () => {
                                 work.
                             </h1>
 
-                            <p className="font-sans text-[16px] lg:text-[18px] font-medium max-w-[380px] text-ink/80 leading-snug">
+                            <p className="font-sans text-base/snug lg:text-[18px] font-medium max-w-95 text-ink/80 ">
                                 Share a link. Everyone picks their free days. Dayly shows you where
                                 they overlap.
                             </p>
@@ -66,7 +66,7 @@ const HomePage = () => {
                 {/* Features */}
                 <section
                     id="features"
-                    className="max-w-[1440px] mx-auto w-full px-4 lg:px-10 pb-10 lg:pb-16"
+                    className="max-w-360 mx-auto w-full px-4 lg:px-10 pb-10 lg:pb-16"
                 >
                     <div className="bg-white border-2 border-ink shadow-brutal">
                         <div className="grid grid-cols-1 lg:grid-cols-3 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-ink">
@@ -89,7 +89,7 @@ const HomePage = () => {
                             ].map((f) => (
                                 <div key={f.num} className="p-5 lg:p-7">
                                     <div
-                                        className="flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 bg-ink mb-4"
+                                        className="flex items-center justify-center size-10  lg:size-11  bg-ink mb-4"
                                         style={{ boxShadow: '3px 3px 0 #7E6038' }}
                                     >
                                         <span className="font-mono text-[13px] font-bold text-paper-2">
@@ -99,7 +99,7 @@ const HomePage = () => {
                                     <h3 className="font-sans text-[18px] lg:text-[20px] font-bold mb-2">
                                         {f.title}
                                     </h3>
-                                    <p className="font-sans text-[14px] text-ink/72 leading-relaxed">
+                                    <p className="font-sans text-sm/relaxed text-ink/72 ">
                                         {f.body}
                                     </p>
                                 </div>

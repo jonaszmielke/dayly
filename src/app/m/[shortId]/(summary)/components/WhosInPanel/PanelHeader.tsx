@@ -10,7 +10,7 @@ export const PanelHeader = ({ meetingShortId }: PanelHeaderProps) => (
         <Link
             href={`/m/${meetingShortId}/respond`}
             aria-label="Add your availability"
-            className="inline-flex items-center justify-center w-7 h-7 bg-ink text-paper-2 border-brutal shadow-brutal-mocha-xs font-sans text-[16px] font-bold leading-none press-effect-mocha"
+            className="inline-flex items-center justify-center size-7  bg-ink text-paper-2 border-brutal shadow-brutal-mocha-xs font-sans text-[16px] font-bold leading-none press-effect-mocha"
         >
             <span aria-hidden="true">+</span>
         </Link>

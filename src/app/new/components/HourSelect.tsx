@@ -48,7 +48,7 @@ export const HourSelect = ({ label, value, onChange, fromHour }: HourSelectProps
                     value={value}
                     onChange={(e) => onChange(Number(e.target.value))}
                     className={cn(
-                        'w-full h-full appearance-none bg-white px-4 pr-10 font-sans font-bold uppercase text-ink outline-none cursor-pointer',
+                        'size-full  appearance-none bg-white px-4 pr-10 font-sans font-bold uppercase text-ink outline-none cursor-pointer',
                         style.text
                     )}
                     style={{ padding: style.padding }}

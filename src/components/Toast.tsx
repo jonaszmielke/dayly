@@ -58,10 +58,10 @@ const ToastCard = ({ toast, onClose }: { toast: Toast; onClose: () => void }) =>
             'font-mono'
         )}
     >
-        <div className="w-[6px] shrink-0 bg-danger" />
+        <div className="w-1.5 shrink-0 bg-danger" />
         <div className="flex-1 py-2.5">
             <div className="text-[10px] font-bold uppercase tracking-widest text-danger">Error</div>
-            <div className="mt-1 text-[12px] leading-snug text-ink">{toast.message}</div>
+            <div className="mt-1 text-xs/snug  text-ink">{toast.message}</div>
         </div>
         <button
             onClick={onClose}
