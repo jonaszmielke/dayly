@@ -5,7 +5,7 @@ import { MonthPicker } from './MonthPicker'
 import { addDays, daysBetweenInclusive, formatDate } from '@/lib/dates'
 import { useState } from 'react'
 
-type DateRangeValue = {
+export type DateRangeValue = {
     start: string | null
     end: string | null
 }

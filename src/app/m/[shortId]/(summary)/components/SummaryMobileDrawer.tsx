@@ -1,7 +1,7 @@
 'use client'
 
 import { type Person } from '../../types'
-import { WhosInPanel } from './WhosInPanel'
+import { WhosInPanel } from './WhosInPanel/WhosInPanel'
 import { CopyButton } from '@/components/CopyButton'
 import {
     Drawer,

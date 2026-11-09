@@ -1,5 +1,5 @@
+import { Crumbs, type Crumb } from '../Crumbs'
 import { Wordmark } from '../Wordmark'
-import { Crumbs, type Crumb } from './Crumbs'
 import { MetaPills } from './MetaPills'
 import { cn } from '@/lib/utils'
 import { cva } from 'class-variance-authority'
